@@ -1,0 +1,34 @@
+/**
+ * @file GpioCommons.h
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Commons structs for Gpio Objects
+ * @version 0.1
+ * @date 2019-02-19
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
+#ifndef GpioCommons_h
+#define GpioCommons_h
+
+#include "ESPConfig.h"
+
+struct interruptLastTimeinMillisStruct
+{
+   int valueInMillis;
+   interruptLastTimeinMillisStruct *next;
+};
+
+struct interruptParameters 
+{
+   uint32_t gpioInterruptPin = -1;
+   int gpioInterruptPinStatus = -1;
+   int gpioInterruptPinLastStatus = -1;
+   unsigned long interruptLastTimeInMillis = 0;
+   ESPConfig *espConfig = NULL;
+   void *gpioManager; //it's an workaround because it's not able to create an GpioManager object. I will check soon (probably) if it's a Platformio issue.
+   DataParameter **interruptLastTimeinMillisParameters = NULL;
+};
+
+#endif
