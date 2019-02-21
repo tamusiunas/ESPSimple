@@ -12,15 +12,16 @@
 #ifndef GpioManager_h
 #define GpioManager_h
 
+#include "Arduino.h"
 #include "ESPConfig.h"
 #include "DataStore.h"
 #include "GpioActionInterrupts.h"
 #include "GpioCommons.h"
-//#include <PubSubClient.h>
-//#include "WiFiAliases.h"
-//#include "JsonManager.h"
-//#include "MqttManagerOut.h"
 #ifdef ESP8266
+// PubSubClient.h, WiFiAliases.h and JsonManager.h must be removed in a near future. They are here "probably" for a PATH issue in Platformio with ESP8266
+#include <PubSubClient.h>
+#include "WiFiAliases.h"
+#include "JsonManager.h"
 #include <FunctionalInterrupt.h>
 #include <Ticker.h>
 #endif
@@ -32,7 +33,9 @@
 #define ZEROCROSSTIMER 0
 #define NONZEROCROSSTIMER 1
 #endif
+#include <MqttManagerOut.h>
 #define PWMSTEPS 1024
+
 
 class GpioManager
 {

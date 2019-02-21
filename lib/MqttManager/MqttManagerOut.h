@@ -11,7 +11,6 @@
 #ifndef MqttManagerOut_h
 #define MqttManagerOut_h
 
-#define MQTT_MAX_PACKET_SIZE 2048
 #include <PubSubClient.h>
 #include "WiFiAliases.h"
 #include "JsonManager.h"

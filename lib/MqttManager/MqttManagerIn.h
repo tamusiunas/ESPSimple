@@ -11,7 +11,6 @@
 #ifndef MqttManagerIn_h
 #define MqttManagerIn_h
 
-#define MQTT_MAX_PACKET_SIZE 2048
 #include <PubSubClient.h>
 #include "GpioManager.h"
 #include "ESPConfig.h"
