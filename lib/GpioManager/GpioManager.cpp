@@ -10,17 +10,17 @@
  */
 #include "GpioManager.h"
 
-/*GpioManager::GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut)
+GpioManager::GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut)
 {
   _espConfig = espConfig;
   _mqttManagerOut = mqttManagerOut;
   initializeTimers();
-}*/
+}
 
 GpioManager::GpioManager(ESPConfig *espConfig)
 {
   _espConfig = espConfig;
-  //_mqttManagerOut = NULL;
+  _mqttManagerOut = NULL;
   initializeTimers();
 }
 

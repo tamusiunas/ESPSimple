@@ -68,5 +68,5 @@ SyslogManager *syslogManager;
 ESPConfig *espConfig; // Config values passed through objects
 WiFiSTIManager *wiFiSTIManager; // To configure WiFi parameters
 MqttManagerIn *mqttManagerIn; // Receive MQTT Messages
-MqttManagerOut *mqttManagerOut; // Send MQTT Messages
+MqttManagerOut *mqttManagerOut = NULL; // Send MQTT Messages
 GpioManager *gpioManager; // Config and read data from GPIO

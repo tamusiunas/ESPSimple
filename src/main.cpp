@@ -40,14 +40,23 @@ void setup(){
   syslogManager->sendMessage("main","Teste syslog");
 
   Serial.println("Configuring MQTT");
-  mqttManagerIn = new MqttManagerIn(dataStore->getValue("mqtt_ip_address"), 1883, espConfig, gpioManager);
-  mqttManagerIn->connect();
-  mqttManagerOut = new MqttManagerOut(dataStore->getValue("mqtt_ip_address"), 1883);
-  mqttManagerOut->connect();
+  if (String(dataStore->getValue("mqtt_ip_address")) != "")
+  {
+    int mqttPort = 1883;
+    if (String(dataStore->getValue("mqtt_ip_address")) != "")
+    {
+      mqttPort = String(dataStore->getValue("mqtt_ip_address")).toInt();
+    }
+    mqttManagerIn = new MqttManagerIn(dataStore->getValue("mqtt_ip_address"), mqttPort, espConfig, gpioManager);
+    mqttManagerIn->connect();
+    mqttManagerOut = new MqttManagerOut(dataStore->getValue("mqtt_ip_address"), mqttPort);
+    mqttManagerOut->connect();
+  }
+  
 
   Serial.println("Configuring GPIO");
-  //gpioManager = new GpioManager(espConfig, mqttManagerOut);
-  gpioManager = new GpioManager(espConfig);
+  gpioManager = new GpioManager(espConfig, mqttManagerOut);
+  //gpioManager = new GpioManager(espConfig);
   gpioManager->initializeGpio();
 
   Serial.print("Free size: ");
@@ -68,20 +77,23 @@ void loop()
 
   doubleReset.handle();
   otaHandler.handle();
-  mqttManagerIn->handleMqtt();
-  mqttManagerOut->handleMqtt();
-  JsonManager *jsonManager = new JsonManager();
-  String mqttKey[3];
-  String mqttValue[3];
-  mqttKey[0] = "Key0";
-  mqttKey[1] = "Key1";
-  mqttKey[2] = "Key2";
-  mqttValue[0] = "Value0";
-  mqttValue[1] = "Value1";
-  mqttValue[2] = "Value2";
-  //String jsonStr = jsonManager->formatJson(mqttKey,mqttValue,3);
-  mqttManagerOut->publishMessage(jsonManager->formatJson(mqttKey,mqttValue,3,"Title"));
-  //mqttManagerOut->publishMessage("Mensagem de Teste");
+  if (mqttManagerIn != NULL)
+  {
+    mqttManagerIn->handleMqtt();
+    mqttManagerOut->handleMqtt();
+    JsonManager *jsonManager = new JsonManager();
+    String mqttKey[3];
+    String mqttValue[3];
+    mqttKey[0] = "Key0";
+    mqttKey[1] = "Key1";
+    mqttKey[2] = "Key2";
+    mqttValue[0] = "Value0";
+    mqttValue[1] = "Value1";
+    mqttValue[2] = "Value2";
+    //String jsonStr = jsonManager->formatJson(mqttKey,mqttValue,3);
+    mqttManagerOut->publishMessage(jsonManager->formatJson(mqttKey,mqttValue,3,"Title"));
+    //mqttManagerOut->publishMessage("Mensagem de Teste");
+  }
   delay(1000);
   yield();
 

@@ -12,7 +12,7 @@
 #ifndef GpioManager_h
 #define GpioManager_h
 
-#include "Arduino.h"
+// #include "Arduino.h"
 #include "ESPConfig.h"
 #include "DataStore.h"
 #include "GpioActionInterrupts.h"
@@ -23,7 +23,6 @@
 #include "WiFiAliases.h"
 #include "JsonManager.h"
 #include <FunctionalInterrupt.h>
-#include <Ticker.h>
 #endif
 #ifdef ESP32
 #include <driver/gpio.h>
@@ -44,10 +43,15 @@ public:
    * @brief Construct a new Gpio Manager object
    * 
    * @param espConfig ESPConfig Object with config parameters
+   * #param mqttManagerOut Pointer to MqttManagerOut object
    */
-  //GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut);
+  GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut);
   
-
+  /**
+   * @brief Construct a new Gpio Manager object
+   * 
+   * @param espConfig ESPConfig Object with config parameters
+   */
   GpioManager(ESPConfig *espConfig);
   
   /**
@@ -188,7 +192,6 @@ private:
    * 
    */
   void ICACHE_RAM_ATTR handleZeroCrossInterrupt();
-  Ticker _tickerPwm;
   #endif
 
   /**
@@ -209,7 +212,7 @@ private:
   void executeDigitalAction(uint32_t gpio, int gpioStatus);
 
   ESPConfig *_espConfig;
-  // MqttManagerOut *_mqttManagerOut;
+  MqttManagerOut *_mqttManagerOut;
   bool interrupInitialized = false;
   bool _zeroCrossEnable = false;
 
