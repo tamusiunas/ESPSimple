@@ -19,7 +19,7 @@ void setup(){
   // Initialize espConfig with predefined parameters
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
-            TOTALPWMSW, dataStore);
+            TOTALPWMSW, pinGpioMode, pinGpioStatusChanged, pinGpioDigitalStatus, dataStore);
 
   WebConfig webConfig(espConfig,spiffsManager);
   if (mustStartWebConfig)
@@ -40,22 +40,29 @@ void setup(){
   syslogManager->sendMessage("main","Teste syslog");
 
   Serial.println("Configuring MQTT");
-  if (String(dataStore->getValue("mqtt_ip_address")) != "")
+  String mqttServerStr = dataStore->getValue("mqtt_ip_address");
+  if (mqttServerStr != "")
   {
-    int mqttPort = 1883;
-    if (String(dataStore->getValue("mqtt_ip_address")) != "")
+    int mqttPort = 0;
+    if (String(dataStore->getValue("mqtt_port")) != "")
     {
-      mqttPort = String(dataStore->getValue("mqtt_ip_address")).toInt();
+      mqttPort = String(dataStore->getValue("mqtt_port")).toInt();
     }
-    mqttManagerIn = new MqttManagerIn(dataStore->getValue("mqtt_ip_address"), mqttPort, espConfig, gpioManager);
+    if (mqttPort <= 0)
+    {
+      mqttPort = 1883;
+    }
+    Serial.println("mqttServerStr: " + mqttServerStr);
+    Serial.println("mqttPort: " + String(mqttPort));
+    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager);
     mqttManagerIn->connect();
-    mqttManagerOut = new MqttManagerOut(dataStore->getValue("mqtt_ip_address"), mqttPort);
+    mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort);
     mqttManagerOut->connect();
   }
-  
+
 
   Serial.println("Configuring GPIO");
-  gpioManager = new GpioManager(espConfig, mqttManagerOut);
+  gpioManager = new GpioManager(espConfig);
   //gpioManager = new GpioManager(espConfig);
   gpioManager->initializeGpio();
 
@@ -70,31 +77,62 @@ void setup(){
 void loop()
 {
 
+  unsigned long lastTimeinMillisDoubleReset = 0;
+  unsigned long lastTimeinMillisOta = 0;
+  unsigned long lastTimeinMillisMqtt = 0;
+
   //int valueRandrom = random(0,1023);
   //gpioManager->setPwm(12,valueRandrom);
   //valueRandrom = random(0,1023);
   //gpioManager->setPwm(14,valueRandrom);
 
-  doubleReset.handle();
-  otaHandler.handle();
-  if (mqttManagerIn != NULL)
+  if ((millis() - lastTimeinMillisDoubleReset) > 1000)
   {
-    mqttManagerIn->handleMqtt();
-    mqttManagerOut->handleMqtt();
-    JsonManager *jsonManager = new JsonManager();
-    String mqttKey[3];
-    String mqttValue[3];
-    mqttKey[0] = "Key0";
-    mqttKey[1] = "Key1";
-    mqttKey[2] = "Key2";
-    mqttValue[0] = "Value0";
-    mqttValue[1] = "Value1";
-    mqttValue[2] = "Value2";
-    //String jsonStr = jsonManager->formatJson(mqttKey,mqttValue,3);
-    mqttManagerOut->publishMessage(jsonManager->formatJson(mqttKey,mqttValue,3,"Title"));
-    //mqttManagerOut->publishMessage("Mensagem de Teste");
+    doubleReset.handle();
+    lastTimeinMillisDoubleReset = millis();
   }
-  delay(1000);
+  if ((millis() - lastTimeinMillisOta) > 1000)
+  {
+    otaHandler.handle();
+    lastTimeinMillisOta = millis();
+  }
+
+  if (mqttManagerOut != NULL)
+  {
+    if ((millis() - lastTimeinMillisMqtt) > 1000)
+    {
+      mqttManagerIn->handleMqtt();
+      mqttManagerOut->handleMqtt();
+      lastTimeinMillisMqtt = millis();
+    }
+    
+    for (int cont = 0; cont < TOTALGPIO ; cont++)
+    {
+      if (pinGpioStatusChanged[cont] == 1)
+      {
+        int pinGpioDigitalStatusLocal = pinGpioDigitalStatus[cont];
+        Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(pinGpioDigitalStatus[cont]));
+        String mqttKey[2];
+        String mqttValue[2];
+        mqttKey[0] = "gpio";
+        mqttValue[0] = String(cont);
+        mqttKey[1] = "status";
+        if (pinGpioDigitalStatusLocal == HIGH)
+        {
+          mqttValue[1] = "high";
+        }
+        else
+        {
+          mqttValue[1] = "low";
+        }
+        pinGpioStatusChanged[cont] = 0;
+        mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "GpioInfo");
+      }
+    }
+
+    // TO IMPLEMENT A POLLING SYSTEM TO SEND MQTT MESSAGES WITH GPIO STATUS CHANGE
+  }
+  //delay(1000);
   yield();
 
 }

@@ -74,26 +74,6 @@ bool GpioActionInterrupts::processDigitalAction()
         {
           // Serial.println("Action " + String(cont) + " is not usable here");
         }
-        /*else if (digitalTriggerType == "off")
-        {
-          if ((_iparameters->gpioInterruptPinStatus == 1) and (triggerArmed))
-          {
-            // Serial.println("Interrupt off will be processed");
-            // Serial.println("Trigger Status: " + String(triggerArmed));
-            executeDigitalAction(digitalAction, digitalGpioTarget.toInt(), digitalTelegramMessage);
-            _iparameters->interruptLastTimeinMillisParameters[cont]->setValue(String(millisNow).c_str());
-          }
-        }
-        else if (digitalTriggerType == "reversed")
-        {
-          if ((_iparameters->gpioInterruptPinStatus != _iparameters->gpioInterruptPinLastStatus) and (triggerArmed))
-          {
-            // Serial.println("Interrupt off will be processed");
-            // Serial.println("Trigger Status: " + String(triggerArmed));
-            executeDigitalAction(digitalAction, digitalGpioTarget.toInt(), digitalTelegramMessage);
-            _iparameters->interruptLastTimeinMillisParameters[cont]->setValue(String(millisNow).c_str());
-          }
-        }*/
       }
       else
       {
@@ -125,16 +105,22 @@ bool GpioActionInterrupts::executeDigitalAction(String action, int gpioPinTarget
   if (action == "reverse")
   {
     // Serial.println("Reversing GPIO: " + String(gpioPinTarget));
+    _iparameters->espConfig->setPinGpioStatusChanged(gpioPinTarget,1);
+    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,!gpioManagerLocal->getDigitalOutput(gpioPinTarget));
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, !gpioManagerLocal->getDigitalOutput(gpioPinTarget));
   }
   else if (action == "on")
   {
     // Serial.println("Turning on GPIO: " + String(gpioPinTarget));
+    _iparameters->espConfig->setPinGpioStatusChanged(gpioPinTarget,1);
+    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,HIGH);
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, HIGH);
   }
   else if (action == "off")
   {
     // Serial.println("Turning off GPIO: " + String(gpioPinTarget));
+    _iparameters->espConfig->setPinGpioStatusChanged(gpioPinTarget,1);
+    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,LOW);
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, LOW);
   }
   else if (action == "sendmessagetelegram")

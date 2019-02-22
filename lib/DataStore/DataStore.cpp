@@ -155,6 +155,7 @@ bool DataStore::clearParameters()
       clearSuccess = true;
     }
   }
+  _paramsCount = 0;
   return clearSuccess;
 }
 

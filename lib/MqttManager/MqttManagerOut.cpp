@@ -29,6 +29,12 @@ bool MqttManagerOut::connect()
   return _client.connected();
 }
 
+bool MqttManagerOut::disconnect()
+{
+  _client.disconnect();
+  return !_client.connected();
+}
+
 bool MqttManagerOut::status()
 {
   return _client.connected();
@@ -38,6 +44,12 @@ bool MqttManagerOut::publishMessage(String mqttMessage)
 {
   // to do: use a queue
   return _client.publish(_hostName.c_str(), mqttMessage.c_str());
+}
+
+bool MqttManagerOut::publishMessageJson(String mqttKey[], String mqttValue[], int arraySize, String title)
+{
+  JsonManager *jsonManager = new JsonManager();
+  return publishMessage(jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
 }
 
 void MqttManagerOut::handleMqtt()

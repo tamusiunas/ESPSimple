@@ -10,17 +10,17 @@
  */
 #include "GpioManager.h"
 
-GpioManager::GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut)
+/*GpioManager::GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut)
 {
   _espConfig = espConfig;
   _mqttManagerOut = mqttManagerOut;
   initializeTimers();
-}
+}*/
 
 GpioManager::GpioManager(ESPConfig *espConfig)
 {
   _espConfig = espConfig;
-  _mqttManagerOut = NULL;
+  //_mqttManagerOut = NULL;
   initializeTimers();
 }
 
@@ -83,6 +83,7 @@ void GpioManager::initializeGpio()
 void GpioManager::setGpioMode(int gpio, byte mode)
 {
   pinMode(gpio, mode);
+  _espConfig->setPinGpioMode(gpio,mode);
   Serial.println("setGpioMode: " + String(gpio) + "(" + String(mode) + ")");
 }
 
@@ -106,4 +107,17 @@ uint32_t GpioManager::getDigitalOutput(uint32_t gpio)
 bool GpioManager::setDigitalOutput(uint32_t gpio, uint32_t status)
 {
   digitalWrite(gpio,status);
+  String mqttKey[1];
+  String mqttValue[1];
+  mqttKey[0] = "gpio";
+  if (status == HIGH)
+  {
+    mqttValue[0] = "high";
+  }
+  else
+  {
+    mqttValue[0] = "low";
+  }
+  
+  //_mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 1, "GpioInfo");
 }

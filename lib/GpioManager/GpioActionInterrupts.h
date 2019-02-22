@@ -26,7 +26,7 @@ public:
 
 
 private:
-  ESPConfig *_espConfig;
+  //ESPConfig *_espConfig;
   interruptParameters *_iparameters;
 };
 

@@ -18,7 +18,8 @@
 #include "GpioActionInterrupts.h"
 #include "GpioCommons.h"
 #ifdef ESP8266
-// PubSubClient.h, WiFiAliases.h and JsonManager.h must be removed in a near future. They are here "probably" for a PATH issue in Platformio with ESP8266
+// PubSubClient.h, WiFiAliases.h and JsonManager.h must be removed in a near future. 
+// They are here "probably" 'cause a PATH issue in Platformio with ESP8266.
 #include <PubSubClient.h>
 #include "WiFiAliases.h"
 #include "JsonManager.h"
@@ -45,7 +46,7 @@ public:
    * @param espConfig ESPConfig Object with config parameters
    * #param mqttManagerOut Pointer to MqttManagerOut object
    */
-  GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut);
+  //GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut);
   
   /**
    * @brief Construct a new Gpio Manager object
@@ -212,7 +213,7 @@ private:
   void executeDigitalAction(uint32_t gpio, int gpioStatus);
 
   ESPConfig *_espConfig;
-  MqttManagerOut *_mqttManagerOut;
+  //MqttManagerOut *_mqttManagerOut;
   bool interrupInitialized = false;
   bool _zeroCrossEnable = false;
 

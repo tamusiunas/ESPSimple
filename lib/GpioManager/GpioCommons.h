@@ -14,12 +14,6 @@
 
 #include "ESPConfig.h"
 
-struct interruptLastTimeinMillisStruct
-{
-   int valueInMillis;
-   interruptLastTimeinMillisStruct *next;
-};
-
 struct interruptParameters 
 {
    uint32_t gpioInterruptPin = -1;
@@ -29,6 +23,15 @@ struct interruptParameters
    ESPConfig *espConfig = NULL;
    void *gpioManager; //it's an workaround because it's not able to create an GpioManager object. I will check soon (probably) if it's a Platformio issue.
    DataParameter **interruptLastTimeinMillisParameters = NULL;
+};
+
+struct mqttOutputQueueInterrupts
+{
+   bool isMqttQueueLocked = false; // check if queue is in use
+   DataParameter **gpioDigitalStatus = NULL;
+   DataParameter **gpioPwmStatus = NULL;
+   int gpioDigitalCount = 0;
+   int gpioPwmCount = 0;
 };
 
 #endif

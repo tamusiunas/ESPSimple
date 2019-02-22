@@ -53,7 +53,7 @@ bool MqttManagerIn::connect()
 void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length)
 {
   String mqttMsg = "";
-  for(int cont = 0; cont < length; cont++) 
+  for(int cont = 0; cont < (int) length; cont++) 
   {
     mqttMsg += (char) payload[cont];
   }

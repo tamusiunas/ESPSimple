@@ -18,7 +18,7 @@
 #include <ArduinoJson.h>
 
 #ifndef DATASTORE_MAX_PARAMS
-#define DATASTORE_MAX_PARAMS 20
+#define DATASTORE_MAX_PARAMS 5
 #endif
 
 /**

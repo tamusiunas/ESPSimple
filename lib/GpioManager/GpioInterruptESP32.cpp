@@ -34,6 +34,7 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   iparameters->interruptLastTimeInMillis = 0;
   iparameters->espConfig = _espConfig;
   iparameters->gpioManager = this;
+  
   int digitalActionTotalInt = String(iparameters->espConfig->getDataStore()->getValue("action_digital_total")).toInt();
   iparameters->interruptLastTimeinMillisParameters = (DataParameter**)malloc(digitalActionTotalInt * sizeof(DataParameter*));
   for (int cont = 0 ; cont < digitalActionTotalInt ; cont++)

@@ -55,6 +55,14 @@ public:
   bool connect();
 
   /**
+   * @brief Disconnect server
+   * 
+   * @return true Success
+   * @return false Fail
+   */
+  bool disconnect();
+
+  /**
    * @brief Check if connected
    * 
    * @return true Connected
@@ -70,6 +78,8 @@ public:
    * @return false Fail
    */
   bool publishMessage(String mqttMessage);
+
+  bool publishMessageJson(String mqttKey[], String mqttValue[], int arraySize, String title);
 
   void handleMqtt();
 
