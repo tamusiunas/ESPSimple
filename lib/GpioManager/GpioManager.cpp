@@ -118,6 +118,4 @@ bool GpioManager::setDigitalOutput(uint32_t gpio, uint32_t status)
   {
     mqttValue[0] = "low";
   }
-  
-  //_mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 1, "GpioInfo");
 }

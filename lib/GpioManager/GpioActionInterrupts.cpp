@@ -104,21 +104,21 @@ bool GpioActionInterrupts::executeDigitalAction(String action, int gpioPinTarget
 
   if (action == "reverse")
   {
-    // Serial.println("Reversing GPIO: " + String(gpioPinTarget));
+    Serial.println("Reversing GPIO: " + String(gpioPinTarget));
     _iparameters->espConfig->setPinGpioStatusChanged(gpioPinTarget,1);
     _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,!gpioManagerLocal->getDigitalOutput(gpioPinTarget));
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, !gpioManagerLocal->getDigitalOutput(gpioPinTarget));
   }
   else if (action == "on")
   {
-    // Serial.println("Turning on GPIO: " + String(gpioPinTarget));
+    Serial.println("Turning on GPIO: " + String(gpioPinTarget));
     _iparameters->espConfig->setPinGpioStatusChanged(gpioPinTarget,1);
     _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,HIGH);
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, HIGH);
   }
   else if (action == "off")
   {
-    // Serial.println("Turning off GPIO: " + String(gpioPinTarget));
+    Serial.println("Turning off GPIO: " + String(gpioPinTarget));
     _iparameters->espConfig->setPinGpioStatusChanged(gpioPinTarget,1);
     _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,LOW);
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, LOW);

@@ -86,16 +86,22 @@ private:
    * @param payload Payload
    * @param length Message Lenght
    */
-  static void callback(char *topic, byte *payload, unsigned int length);
+  static void callback(char *topic, byte *payload, unsigned int length, void *argLocal);
 
   WiFiClient _wifiClient;
-  PubSubClient _client = PubSubClient(_wifiClient);
+  PubSubClient *_client;
   String _mqttServer;
   uint16_t _mqttPort;
   String _hostName;
+  unsigned long _connectTimeTry = 0;
   ESPConfig *_espConfig;
   GpioManager *_gpioManager;
-  unsigned long _connectTimeTry = 0;
+  struct configLocalStruct
+  {
+    ESPConfig *_espConfig;
+    GpioManager *_gpioManager;
+  };
+
 };
 
 #endif
