@@ -88,6 +88,8 @@ private:
    */
   static void callback(char *topic, byte *payload, unsigned int length, void *argLocal);
 
+  void processSetGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
+
   WiFiClient _wifiClient;
   PubSubClient *_client;
   String _mqttServer;
@@ -100,6 +102,7 @@ private:
   {
     ESPConfig *_espConfig;
     GpioManager *_gpioManager;
+    MqttManagerIn *mqttManagerLocal;
   };
 
 };

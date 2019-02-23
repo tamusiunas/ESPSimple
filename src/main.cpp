@@ -105,32 +105,7 @@ void loop()
       mqttManagerOut->handleMqtt();
       lastTimeinMillisMqtt = millis();
     }
-    
-    for (int cont = 0; cont < TOTALGPIO ; cont++)
-    {
-      if (pinGpioStatusChanged[cont] == 1)
-      {
-        int pinGpioDigitalStatusLocal = pinGpioDigitalStatus[cont];
-        Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(pinGpioDigitalStatus[cont]));
-        String mqttKey[2];
-        String mqttValue[2];
-        mqttKey[0] = "gpio";
-        mqttValue[0] = String(cont);
-        mqttKey[1] = "status";
-        if (pinGpioDigitalStatusLocal == HIGH)
-        {
-          mqttValue[1] = "high";
-        }
-        else
-        {
-          mqttValue[1] = "low";
-        }
-        pinGpioStatusChanged[cont] = 0;
-        mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "GpioInfo");
-      }
-    }
-
-    // TO IMPLEMENT A POLLING SYSTEM TO SEND MQTT MESSAGES WITH GPIO STATUS CHANGE
+    gpioManager->checkGpioChange(mqttManagerOut);
   }
   //delay(1000);
   yield();

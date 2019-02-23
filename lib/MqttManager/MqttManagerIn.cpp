@@ -8,6 +8,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *es
     configLocalStruct *configLocalStr = (configLocalStruct *)malloc(sizeof(configLocalStruct));
     configLocalStr->_espConfig = espConfig;
     configLocalStr->_gpioManager = gpioManager;
+    configLocalStr->mqttManagerLocal = this;
     _client = new PubSubClient(_wifiClient, configLocalStr);
     Serial.println("Testing -> " + configLocalStr->_espConfig->getTotalGpio());
 
@@ -78,47 +79,63 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(mqttMsg);
-  JsonArray& statusGpio = root["SetGpio"];
+
+  JsonArray& statusGpio = root["SetDigitalGpio"];
   if (statusGpio.size() > 0)
   {
-    for (JsonObject& elem : statusGpio)
+    configCallbackStr->mqttManagerLocal->processSetGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, statusGpio);
+    
+  }
+  else
+  {
+    JsonArray& statusGpio = root["SetPwmGpio"];
+    if (statusGpio.size() > 0)
     {
-      int gpioInt = elem["gpio"].as<int>();
-      String valueStr = elem["value"].as<String>();
-      Serial.println("GPIO: " + String(gpioInt));
-      Serial.println("Value: " + valueStr);
-      if ((gpioInt >= 0) and (gpioInt < configCallbackStr->_espConfig->getTotalGpio()))
-      {
-        if (configCallbackStr->_espConfig->getPinGpioMode()[gpioInt] == OUTPUT)
-        {
-          Serial.println("GPIO " + String(gpioInt) + " is configured as output");
-          uint32_t gpioMode = -1;
-          if (valueStr == "high")
-          {
-            gpioMode = HIGH;
-          }
-          else if (valueStr == "low")
-          {
-            gpioMode = LOW;
-          }
-          if (gpioMode >= 0)
-          {
-            configCallbackStr->_gpioManager->setDigitalOutput(gpioInt,gpioMode);
-            configCallbackStr->_espConfig->setPinGpioStatusChanged(gpioInt,1);
-            configCallbackStr->_espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
-          }
-        }
-        else
-        {
-          Serial.println("GPIO " + String(gpioInt) + " is not configured as output");
-        } 
-      }
+      Serial.println("It's a SetPwmGpio");
     }
   }
+  
 
 }
 
 bool MqttManagerIn::status()
 {
   return _client->connected();
+}
+
+void MqttManagerIn::processSetGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio)
+{
+  for (JsonObject& elem : statusGpio)
+  {
+    int gpioInt = elem["gpio"].as<int>();
+    String valueStr = elem["value"].as<String>();
+    Serial.println("GPIO: " + String(gpioInt));
+    Serial.println("Value: " + valueStr);
+    if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
+    {
+      if (espConfig->getPinGpioMode()[gpioInt] == OUTPUT)
+      {
+        Serial.println("GPIO " + String(gpioInt) + " is configured as output");
+        uint32_t gpioMode = -1;
+        if (valueStr == "high")
+        {
+          gpioMode = HIGH;
+        }
+        else if (valueStr == "low")
+        {
+          gpioMode = LOW;
+        }
+        if (gpioMode >= 0)
+        {
+          gpioManager->setDigitalOutput(gpioInt,gpioMode);
+          espConfig->setPinGpioStatusChanged(gpioInt,1);
+          espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
+        }
+      }
+      else
+      {
+        Serial.println("GPIO " + String(gpioInt) + " is not configured as output");
+      } 
+    }
+  }
 }

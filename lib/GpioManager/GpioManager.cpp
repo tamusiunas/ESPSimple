@@ -92,6 +92,34 @@ ESPConfig *GpioManager::getESPConfig()
   return _espConfig;
 }
 
+void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut)
+{
+  for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
+    {
+      if (_espConfig->getPinGpioStatusChanged()[cont] == 1)
+      {
+        int pinGpioDigitalStatusLocal = _espConfig->getPinGpioDigitalStatus()[cont];
+        Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(_espConfig->getPinGpioDigitalStatus()[cont]));
+        String mqttKey[2];
+        String mqttValue[2];
+        mqttKey[0] = "gpio";
+        mqttValue[0] = String(cont);
+        mqttKey[1] = "status";
+        if (pinGpioDigitalStatusLocal == HIGH)
+        {
+          mqttValue[1] = "high";
+        }
+        else
+        {
+          mqttValue[1] = "low";
+        }
+        _espConfig->getPinGpioStatusChanged()[cont] = 0;
+        //Serial.println("Sending " + mqttValue[0]);
+        mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "GpioInfo");
+      }
+    }
+}
+
 void GpioManager::executeDigitalAction(uint32_t gpio, int gpioStatus)
 {
   int digitalActionTotalInt = String(_espConfig->getDataStore()->getValue("action_digital_total")).toInt();
@@ -104,7 +132,7 @@ uint32_t GpioManager::getDigitalOutput(uint32_t gpio)
   return (digitalRead(gpio));
 }
 
-bool GpioManager::setDigitalOutput(uint32_t gpio, uint32_t status)
+void GpioManager::setDigitalOutput(uint32_t gpio, uint32_t status)
 {
   digitalWrite(gpio,status);
   String mqttKey[1];

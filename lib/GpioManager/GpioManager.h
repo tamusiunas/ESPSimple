@@ -40,13 +40,6 @@
 class GpioManager
 {
 public:
-  /**
-   * @brief Construct a new Gpio Manager object
-   * 
-   * @param espConfig ESPConfig Object with config parameters
-   * #param mqttManagerOut Pointer to MqttManagerOut object
-   */
-  //GpioManager(ESPConfig *espConfig, MqttManagerOut *mqttManagerOut);
   
   /**
    * @brief Construct a new Gpio Manager object
@@ -60,7 +53,7 @@ public:
    * 
    */
   ~GpioManager();
-  
+
   /**
    * @brief Initialize GPIO config from ESPConfig Parameters
    * 
@@ -82,15 +75,15 @@ public:
    */
   uint32_t getDigitalOutput(uint32_t gpio);
 
+  void checkGpioChange(MqttManagerOut *mqttManagerOut);
+
   /**
    * @brief Set Gpio output
    * 
    * @param gpio GPIO
    * @param status GPIO Status (LOW or HIGH)
-   * @return true Sucess
-   * @return false Failure
    */
-  bool setDigitalOutput(uint32_t gpio, uint32_t status);
+  void setDigitalOutput(uint32_t gpio, uint32_t status);
 
 private:
   /**
