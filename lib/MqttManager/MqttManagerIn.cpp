@@ -10,8 +10,6 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *es
     configLocalStr->_gpioManager = gpioManager;
     configLocalStr->mqttManagerLocal = this;
     _client = new PubSubClient(_wifiClient, configLocalStr);
-    Serial.println("Testing -> " + configLocalStr->_espConfig->getTotalGpio());
-
     _mqttServer = mqttServer;
     _mqttPort = mqttPort;
     _hostName = "iot-" + String(WifiGetChipId()) + "-in";
@@ -83,19 +81,17 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
   JsonArray& statusGpio = root["SetDigitalGpio"];
   if (statusGpio.size() > 0)
   {
-    configCallbackStr->mqttManagerLocal->processSetGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, statusGpio);
-    
+    configCallbackStr->mqttManagerLocal->processSetDigitalGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, statusGpio);
   }
   else
   {
     JsonArray& statusGpio = root["SetPwmGpio"];
     if (statusGpio.size() > 0)
     {
+      configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, statusGpio);
       Serial.println("It's a SetPwmGpio");
     }
   }
-  
-
 }
 
 bool MqttManagerIn::status()
@@ -103,7 +99,7 @@ bool MqttManagerIn::status()
   return _client->connected();
 }
 
-void MqttManagerIn::processSetGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio)
+void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio)
 {
   for (JsonObject& elem : statusGpio)
   {
@@ -113,29 +109,61 @@ void MqttManagerIn::processSetGpio(ESPConfig *espConfig, GpioManager *gpioManage
     Serial.println("Value: " + valueStr);
     if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
     {
-      if (espConfig->getPinGpioMode()[gpioInt] == OUTPUT)
+      if (_espConfig->getPinPwmEnable()[gpioInt] == true)
       {
-        Serial.println("GPIO " + String(gpioInt) + " is configured as output");
-        uint32_t gpioMode = -1;
-        if (valueStr == "high")
-        {
-          gpioMode = HIGH;
-        }
-        else if (valueStr == "low")
-        {
-          gpioMode = LOW;
-        }
-        if (gpioMode >= 0)
-        {
-          gpioManager->setDigitalOutput(gpioInt,gpioMode);
-          espConfig->setPinGpioStatusChanged(gpioInt,1);
-          espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
-        }
+        Serial.println("GPIO " + String(gpioInt) + " is configured as Pwm");
+        int pwmValue = valueStr.toInt();
+        gpioManager->setPwm(gpioInt,pwmValue);
       }
       else
       {
-        Serial.println("GPIO " + String(gpioInt) + " is not configured as output");
-      } 
+        Serial.println("GPIO " + String(gpioInt) + " is not configured as pwm");
+      }
+      
+    }
+  }
+}
+
+void MqttManagerIn::processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio)
+{
+  for (JsonObject& elem : statusGpio)
+  {
+    int gpioInt = elem["gpio"].as<int>();
+    String valueStr = elem["value"].as<String>();
+    Serial.println("GPIO: " + String(gpioInt));
+    Serial.println("Value: " + valueStr);
+    if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
+    {
+      if (_espConfig->getPinPwmEnable()[gpioInt] == false)
+      {
+        if (espConfig->getPinGpioMode()[gpioInt] == OUTPUT)
+        {
+          Serial.println("GPIO " + String(gpioInt) + " is configured as output");
+          uint32_t gpioMode = -1;
+          if (valueStr == "high")
+          {
+            gpioMode = HIGH;
+          }
+          else if (valueStr == "low")
+          {
+            gpioMode = LOW;
+          }
+          if (gpioMode >= 0)
+          {
+            gpioManager->setDigitalOutput(gpioInt,gpioMode);
+            espConfig->setPinGpioStatusChanged(gpioInt,1);
+            espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
+          }
+        }
+        else
+        {
+          Serial.println("GPIO " + String(gpioInt) + " is not configured as output");
+        } 
+      }
+      else
+      {
+        Serial.println("GPIO " + String(gpioInt) + " is configured as pwm");
+      }
     }
   }
 }

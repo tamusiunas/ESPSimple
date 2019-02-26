@@ -88,7 +88,9 @@ private:
    */
   static void callback(char *topic, byte *payload, unsigned int length, void *argLocal);
 
-  void processSetGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
+  void processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
+
+  void processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
 
   WiFiClient _wifiClient;
   PubSubClient *_client;

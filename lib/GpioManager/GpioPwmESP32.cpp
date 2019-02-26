@@ -71,7 +71,7 @@ void GpioManager::initializeTimers()
   if (_zeroCrossEnable)
   {
     zeroCrossGpio = String(_espConfig->getDataStore()->getValue("pwm_zero_cross_gpio")).toInt();
-    configGpioTimer(ZEROCROSSTIMER,frequency*2); // // channel zero has eletric frequency * 2 (for zero cross)
+    configGpioTimer(ZEROCROSSTIMER,frequency*2); // // channel zero has electric frequency * 2 (for zero cross)
     if (!interrupInitialized)
     {
       gpio_install_isr_service(ESP_INTR_FLAG_LOWMED);
@@ -89,7 +89,18 @@ void GpioManager::setPwm(int gpio, int pwm)
 {
   Serial.println("");
   Serial.println("Pwm: " + String(pwm));
-  int channel = _espConfig->getPwmChannelHwByGpio(gpio);
+
+  //int channel = _espConfig->getPwmChannelHwByGpio(gpio);
+  int channel = -1;
+
+  for (int cont=0 ; cont < _espConfig->getPwmChannelTotalHw() ; cont++)
+  {
+    if (_espConfig->getPwmChannelHw()[cont] == gpio)
+    {
+      channel = cont;
+    }
+  }
+
   Serial.println("channel: " + String(channel));
   int totalSteps = PWMSTEPS;
   Serial.println("totalSteps: " + String(totalSteps));

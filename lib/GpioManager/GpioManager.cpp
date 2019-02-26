@@ -75,6 +75,7 @@ void GpioManager::initializeGpio()
         {
           addGpioPwmNonZeroCross(PwmGpio);
         }
+        _espConfig->setPinPwmEnable(PwmGpio,true);
       }
     }
   }

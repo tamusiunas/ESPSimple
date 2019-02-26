@@ -19,7 +19,8 @@ void setup(){
   // Initialize espConfig with predefined parameters
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
-            TOTALPWMSW, pinGpioMode, pinGpioStatusChanged, pinGpioDigitalStatus, dataStore);
+            TOTALPWMSW, pinGpioMode, pinGpioStatusChanged, pinGpioDigitalStatus, pinGpioAdcValue, 
+            pinGpioAdcPreviousValue, pinPwmEnable, dataStore);
 
   WebConfig webConfig(espConfig,spiffsManager);
   if (mustStartWebConfig)

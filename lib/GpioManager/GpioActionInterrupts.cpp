@@ -66,10 +66,17 @@ bool GpioActionInterrupts::processDigitalAction()
         {
           // Serial.println("Interrupt off will be processed");
           // Serial.println("Trigger Status: " + String(triggerArmed));
-          executeDigitalAction(digitalAction, digitalGpioTarget.toInt(), digitalTelegramMessage);
+          if (_iparameters->espConfig->getPinPwmEnable()[digitalGpioTarget.toInt()] == false)
+          {
+            executeDigitalAction(digitalAction, digitalGpioTarget.toInt(), digitalTelegramMessage);
           _iparameters->interruptLastTimeinMillisParameters[cont]->setValue(String(millisNow).c_str());
+          }
+          else
+          {
+            Serial.println("GPIO " + digitalGpioTarget + " is set as Pwm not Output");
+          }
+          
         }
-        
         else
         {
           // Serial.println("Action " + String(cont) + " is not usable here");
