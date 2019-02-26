@@ -40,6 +40,18 @@ void setup(){
   syslogManager = new SyslogManager("192.168.130.101", 514);
   syslogManager->sendMessage("main","Teste syslog");
 
+  pwmAdcDataLocal = (PwmAdcData *)malloc(sizeof(PwmAdcData));
+  pwmAdcDataLocal->pinGpioAdcPreviousValue = pinGpioAdcPreviousValue;
+  pwmAdcDataLocal->pinGpioAdcValue = pinGpioAdcValue;
+  pwmAdcDataLocal->pinGpioDigitalStatus = pinGpioDigitalStatus;
+  pwmAdcDataLocal->pinGpioStatusChanged = pinGpioStatusChanged;
+  pwmAdcDataLocal->pinPwmEnable = pinPwmEnable;
+  pwmAdcDataLocal->pwmChannelGpioHw = pwmChannelGpioHw;
+  pwmAdcDataLocal->pwmChannelGpioSw = pwmChannelGpioSw;
+  pwmAdcDataLocal->totalGPIO = TOTALGPIO;
+  pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
+  pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
+
   Serial.println("Configuring MQTT");
   String mqttServerStr = dataStore->getValue("mqtt_ip_address");
   if (mqttServerStr != "")
@@ -55,12 +67,11 @@ void setup(){
     }
     Serial.println("mqttServerStr: " + mqttServerStr);
     Serial.println("mqttPort: " + String(mqttPort));
-    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager);
+    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager, pwmAdcDataLocal);
     mqttManagerIn->connect();
     mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort);
     mqttManagerOut->connect();
   }
-
 
   Serial.println("Configuring GPIO");
   gpioManager = new GpioManager(espConfig);

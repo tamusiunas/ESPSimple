@@ -1,6 +1,6 @@
 #include "MqttManagerIn.h"
 
-MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager)
+MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal)
 {
     _espConfig = espConfig;
     _gpioManager = gpioManager;
@@ -8,6 +8,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *es
     configLocalStruct *configLocalStr = (configLocalStruct *)malloc(sizeof(configLocalStruct));
     configLocalStr->_espConfig = espConfig;
     configLocalStr->_gpioManager = gpioManager;
+    configLocalStr->_pwmAdcDataLocal = pwmAdcDataLocal;
     configLocalStr->mqttManagerLocal = this;
     _client = new PubSubClient(_wifiClient, configLocalStr);
     _mqttServer = mqttServer;
@@ -15,7 +16,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *es
     _hostName = "iot-" + String(WifiGetChipId()) + "-in";
 }
 
-MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager)
+MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal)
 {
     _espConfig = espConfig;
     _gpioManager = gpioManager;
@@ -23,6 +24,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostNa
     configLocalStruct *configLocalStr = (configLocalStruct *)malloc(sizeof(configLocalStruct));
     configLocalStr->_espConfig = espConfig;
     configLocalStr->_gpioManager = gpioManager;
+    configLocalStr->_pwmAdcDataLocal = pwmAdcDataLocal;
     _client = new PubSubClient(_wifiClient, configLocalStr);
 
     _mqttServer = mqttServer;
@@ -32,7 +34,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostNa
 
 MqttManagerIn::~MqttManagerIn()
 {
-
+  
 }
 
 void MqttManagerIn::handleMqtt()
@@ -88,7 +90,7 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
     JsonArray& statusGpio = root["SetPwmGpio"];
     if (statusGpio.size() > 0)
     {
-      configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, statusGpio);
+      configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, configCallbackStr->_pwmAdcDataLocal, statusGpio);
       Serial.println("It's a SetPwmGpio");
     }
   }
@@ -99,7 +101,7 @@ bool MqttManagerIn::status()
   return _client->connected();
 }
 
-void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio)
+void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio)
 {
   for (JsonObject& elem : statusGpio)
   {
@@ -113,7 +115,7 @@ void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioMan
       {
         Serial.println("GPIO " + String(gpioInt) + " is configured as Pwm");
         int pwmValue = valueStr.toInt();
-        gpioManager->setPwm(gpioInt,pwmValue);
+        gpioManager->setPwm(gpioInt,pwmValue, pwmAdcDataLocal);
       }
       else
       {

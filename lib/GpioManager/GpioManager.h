@@ -66,7 +66,7 @@ public:
    * @param gpio GPIO
    * @param pwm frequency (MAX and MIN defined in ESPConfig)
    */
-  void setPwm(int gpio, int pwm);
+  void setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal);
 
   /**
    * @brief Get Gpio output

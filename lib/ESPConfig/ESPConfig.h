@@ -36,7 +36,7 @@ public:
    */
   ESPConfig(int *pinGpioArray, int *pinGpioAvaliable, int *pinGpioAdcChannelArray, int *pinGpioAdcNumberArray,
             int *pinGpioInOut, const char **pinGpioDesc, int *pinPwmValue, int totalGpio, volatile int *pwmChannelGpioHw,
-            volatile int pwmChannelTotalHw, int *pwmChannelGpioSw, int pwmChannelTotalSw, int *pinGpioMode, volatile int *pinGpioStatusChanged, 
+            volatile int pwmChannelTotalHw, volatile int *pwmChannelGpioSw, int pwmChannelTotalSw, int *pinGpioMode, volatile int *pinGpioStatusChanged, 
             volatile int *pinGpioDigitalStatus, volatile int *pinGpioAdcValue, volatile int *pinGpioAdcPreviousValue, 
             volatile bool *pinPwmEnable, DataStore *dataStore);
   ~ESPConfig();
@@ -76,8 +76,8 @@ public:
 
 private:
   int *_pinGpioArray, *_pinGpioAvaliable, *_pinGpioAdcChannelArray, *_pinGpioAdcNumberArray, *_pinGpioInOut,
-      *_pinPwmValue, _totalGpio, *_pwmChannelGpioSw, _pwmChannelTotalSw, *_pinGpioMode;
-  volatile int *_pinGpioStatusChanged, *_pinGpioDigitalStatus, *_pinGpioAdcValue, *_pinGpioAdcPreviousValue, *_pwmChannelGpioHw, _pwmChannelTotalHw;
+      *_pinPwmValue, _totalGpio, _pwmChannelTotalSw, *_pinGpioMode;
+  volatile int *_pinGpioStatusChanged, *_pinGpioDigitalStatus, *_pinGpioAdcValue, *_pwmChannelGpioSw, *_pinGpioAdcPreviousValue, *_pwmChannelGpioHw, _pwmChannelTotalHw;
   volatile bool *_pinPwmEnable;
   const char **_pinGpioDesc;
   DataStore *_dataStore;

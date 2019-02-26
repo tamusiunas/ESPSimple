@@ -54,7 +54,7 @@ void GpioManager::addGpioPwmNonZeroCross(int gpio)
 
 }
 
-void GpioManager::setPwm(int gpio, int pwm)
+void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal)
 {
   if (String(_espConfig->getDataStore()->getValue("pwm_enable_zero_cross")) == "yes")
   {

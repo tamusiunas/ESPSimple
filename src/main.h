@@ -18,7 +18,7 @@
 #define TOTALPWMSW 8
 #define TOTALPWMHW 8
 volatile int pwmChannelGpioHw[] =           {-1,-1,-1,-1,-1,-1,-1}; // each position is a channel (0-8)
-int pwmChannelGpioSw[] =                    {-1,-1,-1,-1,-1,-1,-1}; // each position is a channel (0-8)
+volatile int pwmChannelGpioSw[] =                    {-1,-1,-1,-1,-1,-1,-1}; // each position is a channel (0-8)
 int pinGpioArray[] =                        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16};
 int pinGpioAvaliable[] =                    { 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1};
 int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -69,6 +69,8 @@ int pinPwmValue[] =                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 #endif
 
 #define PWMTOTALPIN 4
+
+volatile PwmAdcData *pwmAdcDataLocal;
 
 int pwmGpioPin[PWMTOTALPIN];
 int pwmValue[PWMTOTALPIN];

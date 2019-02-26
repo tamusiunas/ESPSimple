@@ -53,6 +53,7 @@ void IRAM_ATTR GpioManager::handleZeroCrossInterrupt(void* arg)
 
 void GpioManager::initializeTimers()
 {
+  ledc_fade_func_install(ESP_INTR_FLAG_LOWMED);
   int frequency = 60;
   int zeroCrossGpio = -1;
   if (String(_espConfig->getDataStore()->getValue("pwm_enable_zero_cross")) == "yes")
@@ -85,18 +86,20 @@ void GpioManager::initializeTimers()
   configGpioTimer(NONZEROCROSSTIMER,5120); // channel zero has frequency of 5 kbit
 }
 
-void GpioManager::setPwm(int gpio, int pwm)
+void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal)
 {
   Serial.println("");
   Serial.println("Pwm: " + String(pwm));
-
+  Serial.println("P1");
   //int channel = _espConfig->getPwmChannelHwByGpio(gpio);
   int channel = -1;
 
-  for (int cont=0 ; cont < _espConfig->getPwmChannelTotalHw() ; cont++)
+  for (int cont=0 ; cont < pwmAdcDataLocal->totalPwmHw ; cont++)
   {
-    if (_espConfig->getPwmChannelHw()[cont] == gpio)
+    Serial.println("P2");
+    if (pwmAdcDataLocal->pwmChannelGpioHw[cont] == gpio)
     {
+      Serial.println("P3");
       channel = cont;
     }
   }

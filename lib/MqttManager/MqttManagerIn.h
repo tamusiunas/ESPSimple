@@ -34,7 +34,7 @@ public:
    * @param *espConfig Pointer to ESPConfig object
    * @param *gpioManager Pointer ro GpioManager object
    */
-  MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager);
+  MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal);
  
   /**
    * @brief Construct a new Mqtt Manager object
@@ -47,7 +47,7 @@ public:
    * @param *espConfig Pointer to ESPConfig object
    * @param *gpioManager Pointer ro GpioManager object
    */
-  MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager);
+  MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal);
 
   /**
    * @brief Destroy the Mqtt Manager In object
@@ -90,7 +90,7 @@ private:
 
   void processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
 
-  void processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
+  void processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
 
   WiFiClient _wifiClient;
   PubSubClient *_client;
@@ -104,6 +104,7 @@ private:
   {
     ESPConfig *_espConfig;
     GpioManager *_gpioManager;
+    volatile PwmAdcData *_pwmAdcDataLocal;
     MqttManagerIn *mqttManagerLocal;
   };
 

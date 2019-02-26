@@ -34,4 +34,18 @@ struct mqttOutputQueueInterrupts
    int gpioPwmCount = 0;
 };
 
+struct PwmAdcData
+{
+   volatile int *pinGpioStatusChanged;
+   volatile int *pinGpioDigitalStatus;
+   volatile int *pinGpioAdcValue;
+   volatile int *pinGpioAdcPreviousValue;
+   volatile bool *pinPwmEnable;
+   volatile int *pwmChannelGpioHw;
+   volatile int *pwmChannelGpioSw;
+   volatile int totalGPIO;
+   volatile int totalPwmSw; 
+   volatile int totalPwmHw;
+};
+
 #endif
