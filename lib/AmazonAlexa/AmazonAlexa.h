@@ -8,8 +8,11 @@ class AmazonAlexa
 {
 public:
     AmazonAlexa(ESPConfig *espConfig, unsigned long tcpPort);
+    AmazonAlexa(ESPConfig *espConfig);
     ~AmazonAlexa();
     void Handle();
+    void Enable();
+    void Disable();
     void AddDevice(const char *deviceName);
 private:
     fauxmoESP *_fauxmo;

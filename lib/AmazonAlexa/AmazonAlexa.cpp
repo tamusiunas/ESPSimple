@@ -7,6 +7,13 @@ AmazonAlexa::AmazonAlexa(ESPConfig *espConfig, unsigned long tcpPort)
     _espConfig = espConfig;
 }
 
+AmazonAlexa::AmazonAlexa(ESPConfig *espConfig)
+{
+    _fauxmo = new fauxmoESP();
+    _fauxmo->setPort(80);
+    _espConfig = espConfig;
+}
+
 AmazonAlexa::~AmazonAlexa()
 {
 
@@ -20,4 +27,14 @@ void AmazonAlexa::Handle()
 void AmazonAlexa::AddDevice(const char *deviceName)
 {
     _fauxmo->addDevice(deviceName);
+}
+
+void AmazonAlexa::Enable()
+{
+    _fauxmo->enable(true);
+}
+
+void AmazonAlexa::Disable()
+{
+    _fauxmo->enable(false);
 }
