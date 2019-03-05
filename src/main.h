@@ -10,6 +10,7 @@
 #include "GpioManager.h"
 #include "MqttManagerIn.h"
 #include "MqttManagerOut.h"
+#include "AmazonAlexa.h"
 
 #define FORMAT_SPIFFS_IF_FAILED true
 
@@ -22,11 +23,13 @@ volatile int pwmChannelGpioSw[] =                    {-1,-1,-1,-1,-1,-1,-1}; // 
 int pinGpioArray[] =                        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16};
 int pinGpioAvaliable[] =                    { 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1};
 int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-volatile int pinGpioStatusChanged[] =       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // name must be changed to pinGpioDigitalStatusChanged
+volatile int pinGpioDigitalStatusChanged[] ={ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // name must be changed to pinGpioDigitalStatusChanged
 volatile int pinGpioDigitalStatus[] =       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+volatile int pinGpioPwmStatusChanged[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
+volatile int pinGpioPwmStatus[] =           {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioAdcValue[] =            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioAdcPreviousValue[] =    {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-volatile bool pinPwmEnable[] =               { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};;
+volatile bool pinPwmEnable[] =              { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int pinGpioAdcChannelArray[] =              {0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int pinGpioAdcNumberArray[] =               {0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int pinGpioInOut[] =                        { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 2, 2};
@@ -44,11 +47,15 @@ int pinGpioAvaliable[] =                    { 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0
                                               0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1};
 int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                              -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-volatile int pinGpioStatusChanged[] =       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+volatile int pinGpioDigitalStatusChanged[] ={ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 volatile int pinGpioDigitalStatus[] =       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                              -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-volatile int pinGpioAdcValue[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+volatile int pinGpioPwmStatusChanged[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+volatile int pinGpioPwmStatus[] =           {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+                                             -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+volatile int pinGpioAdcValue[] =            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 volatile int pinGpioAdcPreviousValue[] =    {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                              -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};

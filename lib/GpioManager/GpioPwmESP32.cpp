@@ -88,35 +88,38 @@ void GpioManager::initializeTimers()
 
 void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal)
 {
-  Serial.println("");
-  Serial.println("Pwm: " + String(pwm));
-  Serial.println("P1");
-  //int channel = _espConfig->getPwmChannelHwByGpio(gpio);
-  int channel = -1;
-
-  for (int cont=0 ; cont < pwmAdcDataLocal->totalPwmHw ; cont++)
+  if (pwm < PWMSTEPS)
   {
-    Serial.println("P2");
-    if (pwmAdcDataLocal->pwmChannelGpioHw[cont] == gpio)
-    {
-      Serial.println("P3");
-      channel = cont;
-    }
-  }
+    Serial.println("");
+    Serial.println("Pwm: " + String(pwm));
+    int channel = -1;
 
-  Serial.println("channel: " + String(channel));
-  int totalSteps = PWMSTEPS;
-  Serial.println("totalSteps: " + String(totalSteps));
-  int dutyBitDec = 1 << DUTY_BIT_DEPTH;
-  Serial.println("dutyBitDec: " + String(dutyBitDec));
-  int hpoint = (dutyBitDec - (pwm*(dutyBitDec/totalSteps)));
-  Serial.println("hpoint: " + String(hpoint));
-  int duty = (pwm*(dutyBitDec/totalSteps));
-  Serial.println("duty: " + String(duty));
-  duty -= (dutyBitDec - duty - hpoint);
-  Serial.println("duty: " + String(duty));
-  Serial.println("");
-  ledc_set_duty_and_update(LEDC_HIGH_SPEED_MODE, (ledc_channel_t) channel, duty, hpoint);
+    for (int cont=0 ; cont < pwmAdcDataLocal->totalPwmHw ; cont++)
+    {
+      if (pwmAdcDataLocal->pwmChannelGpioHw[cont] == gpio)
+      {
+        channel = cont;
+      }
+    }
+
+    Serial.println("channel: " + String(channel));
+    int totalSteps = PWMSTEPS;
+    Serial.println("totalSteps: " + String(totalSteps));
+    int dutyBitDec = 1 << DUTY_BIT_DEPTH;
+    Serial.println("dutyBitDec: " + String(dutyBitDec));
+    int hpoint = (dutyBitDec - (pwm*(dutyBitDec/totalSteps)));
+    Serial.println("hpoint: " + String(hpoint));
+    int duty = (pwm*(dutyBitDec/totalSteps));
+    Serial.println("duty: " + String(duty));
+    duty -= (dutyBitDec - duty - hpoint);
+    Serial.println("duty: " + String(duty));
+    Serial.println("");
+    ledc_set_duty_and_update(LEDC_HIGH_SPEED_MODE, (ledc_channel_t) channel, duty, hpoint);
+  }
+  else
+  {
+    Serial.println("PWM too high");
+  }
 }
 
 void GpioManager::addGpioPwmZeroCross(int gpio)

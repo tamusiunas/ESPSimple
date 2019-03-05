@@ -36,7 +36,7 @@ struct mqttOutputQueueInterrupts
 
 struct PwmAdcData
 {
-   volatile int *pinGpioStatusChanged;
+   volatile int *pinGpioDigitalStatusChanged;
    volatile int *pinGpioDigitalStatus;
    volatile int *pinGpioAdcValue;
    volatile int *pinGpioAdcPreviousValue;

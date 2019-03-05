@@ -97,7 +97,7 @@ void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut)
 {
   for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
     {
-      if (_espConfig->getPinGpioStatusChanged()[cont] == 1)
+      if (_espConfig->getPinGpioDigitalStatusChanged()[cont] == 1)
       {
         int pinGpioDigitalStatusLocal = _espConfig->getPinGpioDigitalStatus()[cont];
         Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(_espConfig->getPinGpioDigitalStatus()[cont]));
@@ -114,9 +114,9 @@ void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut)
         {
           mqttValue[1] = "low";
         }
-        _espConfig->getPinGpioStatusChanged()[cont] = 0;
+        _espConfig->getPinGpioDigitalStatusChanged()[cont] = 0;
         //Serial.println("Sending " + mqttValue[0]);
-        mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "GpioInfo");
+        mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoDigitalGpio");
       }
     }
 }

@@ -153,7 +153,7 @@ void MqttManagerIn::processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpi
           if (gpioMode >= 0)
           {
             gpioManager->setDigitalOutput(gpioInt,gpioMode);
-            espConfig->setPinGpioStatusChanged(gpioInt,1);
+            espConfig->setPinGpioDigitalStatusChanged(gpioInt,1);
             espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
           }
         }
