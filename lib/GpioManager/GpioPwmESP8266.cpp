@@ -56,16 +56,22 @@ void GpioManager::addGpioPwmNonZeroCross(int gpio)
 
 void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal)
 {
-  if (String(_espConfig->getDataStore()->getValue("pwm_enable_zero_cross")) == "yes")
+  Serial.println("Setting Pwm");
+  if ((gpio >= 0) and (gpio < pwmAdcDataLocal->totalGPIO ))
   {
-    // To-do: enable Zero Cross for ESP8266
-  }
-  else
-  {
-    Serial.println("");
-    Serial.println("Gpio: " + String(gpio));
-    Serial.println("Pwm: " + String(pwm));
-    analogWrite(gpio,pwm);
+    if (String(_espConfig->getDataStore()->getValue("pwm_enable_zero_cross")) == "yes")
+    {
+      // To-do: enable Zero Cross for ESP8266
+    }
+    else
+    {
+      Serial.println("");
+      Serial.println("Gpio: " + String(gpio));
+      Serial.println("Pwm: " + String(pwm));
+      analogWrite(gpio,pwm);
+      pwmAdcDataLocal->pinGpioPwmStatusChanged[gpio] = 1;
+      pwmAdcDataLocal->pinGpioPwmStatus[gpio] = pwm;
+    }
   }
 }
 

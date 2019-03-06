@@ -93,32 +93,53 @@ ESPConfig *GpioManager::getESPConfig()
   return _espConfig;
 }
 
-void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut)
+void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
 {
-  for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
+  // for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
+  for (int cont = 0; cont < pwmAdcDataLocal->totalGPIO; cont++)
+  {
+    //if (_espConfig->getPinGpioDigitalStatusChanged()[cont] == 1)
+    if (pwmAdcDataLocal->pinGpioDigitalStatusChanged[cont] == 1)
     {
-      if (_espConfig->getPinGpioDigitalStatusChanged()[cont] == 1)
+      //int pinGpioDigitalStatusLocal = _espConfig->getPinGpioDigitalStatus()[cont];
+      int pinGpioDigitalStatusLocal = pwmAdcDataLocal->pinGpioDigitalStatus[cont];
+      Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(pinGpioDigitalStatusLocal));
+      String mqttKey[2];
+      String mqttValue[2];
+      mqttKey[0] = "gpio";
+      mqttValue[0] = String(cont);
+      mqttKey[1] = "status";
+      if (pinGpioDigitalStatusLocal == HIGH)
       {
-        int pinGpioDigitalStatusLocal = _espConfig->getPinGpioDigitalStatus()[cont];
-        Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(_espConfig->getPinGpioDigitalStatus()[cont]));
-        String mqttKey[2];
-        String mqttValue[2];
-        mqttKey[0] = "gpio";
-        mqttValue[0] = String(cont);
-        mqttKey[1] = "status";
-        if (pinGpioDigitalStatusLocal == HIGH)
-        {
-          mqttValue[1] = "high";
-        }
-        else
-        {
-          mqttValue[1] = "low";
-        }
-        _espConfig->getPinGpioDigitalStatusChanged()[cont] = 0;
-        //Serial.println("Sending " + mqttValue[0]);
-        mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoDigitalGpio");
+        mqttValue[1] = "high";
       }
+      else
+      {
+        mqttValue[1] = "low";
+      }
+      //_espConfig->getPinGpioDigitalStatusChanged()[cont] = 0;
+      pwmAdcDataLocal->pinGpioDigitalStatusChanged[cont] = 0;
+      //Serial.println("Sending " + mqttValue[0]);
+      mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoDigitalGpio");
     }
+    //if (_espConfig->getPinGpioPwmStatusChanged()[cont] == 1)
+    if (pwmAdcDataLocal->pinGpioPwmStatusChanged[cont] == 1)
+    {
+      // int pinGpioPwmStatusLocal = _espConfig->getPinGpioPwmStatus()[cont];
+      int pinGpioPwmStatusLocal = pwmAdcDataLocal->pinGpioPwmStatus[cont];
+      Serial.println("Gpio Pwm status changed: " + String(cont) + ". New status: " + String(pinGpioPwmStatusLocal));
+      String mqttKey[2];
+      String mqttValue[2];
+      mqttKey[0] = "gpio";
+      mqttValue[0] = String(cont);
+      mqttKey[1] = "status";
+      mqttValue[1] = String(pinGpioPwmStatusLocal);
+      // _espConfig->getPinGpioPwmStatusChanged()[cont] = 0;
+      pwmAdcDataLocal->pinGpioPwmStatusChanged[cont] = 0;
+      //Serial.println("Sending " + mqttValue[0]);
+      mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoPwmGpio");
+    }
+  }
 }
 
 void GpioManager::executeDigitalAction(uint32_t gpio, int gpioStatus)

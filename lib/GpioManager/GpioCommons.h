@@ -40,6 +40,8 @@ struct PwmAdcData
    volatile int *pinGpioDigitalStatus;
    volatile int *pinGpioAdcValue;
    volatile int *pinGpioAdcPreviousValue;
+   volatile int *pinGpioPwmStatusChanged; 
+   volatile int *pinGpioPwmStatus;
    volatile bool *pinPwmEnable;
    volatile int *pwmChannelGpioHw;
    volatile int *pwmChannelGpioSw;

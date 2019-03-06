@@ -91,3 +91,6 @@ WiFiSTIManager *wiFiSTIManager; // To configure WiFi parameters
 MqttManagerIn *mqttManagerIn; // Receive MQTT Messages
 MqttManagerOut *mqttManagerOut = NULL; // Send MQTT Messages
 GpioManager *gpioManager; // Config and read data from GPIO
+AmazonAlexa *amazonAlexa; // Send and receive Amazon Alexa Messages
+AlexaStruct *alexaStruct; // Struct to carry Alexa useful data
+//fauxmoESP *fauxmo;

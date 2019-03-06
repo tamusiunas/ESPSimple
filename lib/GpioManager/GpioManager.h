@@ -75,7 +75,7 @@ public:
    */
   uint32_t getDigitalOutput(uint32_t gpio);
 
-  void checkGpioChange(MqttManagerOut *mqttManagerOut);
+  void checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal);
 
   /**
    * @brief Set Gpio output

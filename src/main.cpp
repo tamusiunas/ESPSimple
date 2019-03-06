@@ -20,7 +20,7 @@ void setup(){
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
             TOTALPWMSW, pinGpioMode, pinGpioDigitalStatusChanged, pinGpioDigitalStatus, pinGpioAdcValue, 
-            pinGpioAdcPreviousValue, pinPwmEnable, dataStore);
+            pinGpioAdcPreviousValue, pinPwmEnable, pinGpioPwmStatusChanged, pinGpioPwmStatus, dataStore);
 
   WebConfig webConfig(espConfig,spiffsManager);
   if (mustStartWebConfig)
@@ -45,6 +45,8 @@ void setup(){
   pwmAdcDataLocal->pinGpioAdcValue = pinGpioAdcValue;
   pwmAdcDataLocal->pinGpioDigitalStatus = pinGpioDigitalStatus;
   pwmAdcDataLocal->pinGpioDigitalStatusChanged = pinGpioDigitalStatusChanged;
+  pwmAdcDataLocal->pinGpioPwmStatusChanged = pinGpioPwmStatusChanged;
+  pwmAdcDataLocal->pinGpioPwmStatus = pinGpioPwmStatus;
   pwmAdcDataLocal->pinPwmEnable = pinPwmEnable;
   pwmAdcDataLocal->pwmChannelGpioHw = pwmChannelGpioHw;
   pwmAdcDataLocal->pwmChannelGpioSw = pwmChannelGpioSw;
@@ -78,6 +80,14 @@ void setup(){
   //gpioManager = new GpioManager(espConfig);
   gpioManager->initializeGpio();
 
+  alexaStruct = (AlexaStruct *)malloc(sizeof(alexaStruct));
+  alexaStruct->espConfig = espConfig;
+  alexaStruct->gpioManager = gpioManager;
+  amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal);
+  amazonAlexa->Enable();
+  amazonAlexa->AddDevice("Lamp one");
+
+
   Serial.print("Free size: ");
   Serial.println(ESP.getFreeSketchSpace());
 
@@ -88,6 +98,9 @@ void setup(){
 
 void loop()
 {
+
+  amazonAlexa->Handle();
+  //fauxmo->handle();
 
   unsigned long lastTimeinMillisDoubleReset = 0;
   unsigned long lastTimeinMillisOta = 0;
@@ -117,7 +130,7 @@ void loop()
       mqttManagerOut->handleMqtt();
       lastTimeinMillisMqtt = millis();
     }
-    gpioManager->checkGpioChange(mqttManagerOut);
+    gpioManager->checkGpioChange(mqttManagerOut, pwmAdcDataLocal);
   }
   //delay(1000);
   yield();
