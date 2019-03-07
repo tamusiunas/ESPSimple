@@ -27,7 +27,8 @@ static const char HEADER_EN_US[] PROGMEM = "<!DOCTYPE html><html><head> <meta ch
 #endif
 "<li class=\"nav-item\"><a class=\"nav-link\" href=\"management.html\">Management</a></li> <li class=\"nav-item\"><a class=\"nav-link\""
 " href=\"telegram.html\">Telegram<br></a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"components.html\">Components</a></li> "
-"<li class=\"nav-item\"><a class=\"nav-link\" href=\"pwm.html\">PWM</a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"/exit.html\">Exit</a></li> </ul> <a class=\"btn btn-outline-light "
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"pwm.html\">PWM</a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"alexa.html\">Alexa</a></li>"
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"/exit.html\">Exit</a></li> </ul> <a class=\"btn btn-outline-light "
 "navbar-btn ml-md-2\" target=\"_blank\" href=\"https://tamusiunas.com\" id=\"tamusiunas.com\">Project Page</a> "
 "</div> </div> </nav>";
 
@@ -76,6 +77,34 @@ static const char TELEGRAM_JS_EN_US_P3[] PROGMEM = ""
 "});\n"
 "</script>\n";
 
+static const char ALEXA_JS_EN_US_P1[] PROGMEM = ""
+"   <script> $(document).ready(function () { var counter = ";
+
+static const char ALEXA_JS_EN_US_P2[] PROGMEM = ""
+";\n"
+"      $(\"#addrow\").on(\"click\", function () {\n"
+"          var newRow = $(\"<tr>\");\n"
+"          var cols = \"\";\n"
+"          cols += '<td class=\"align-middle\"><label>Device Name</label><input name=\"alexa_device_name_r_' + counter + '\" "
+"class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"alexa_device_name_r_' + counter + '\"></td>';\n"
+"          cols += '<td class=\"align-middle\"> <label>Support Dimmer?</label> <select class=\"form-control h-25\" "
+"id=\"alexa_support_dimmer_r_' + counter + '\" name=\"alexa_support_dimmer_r_' + counter + '\"> <option value=\"yes\">Yes</option>"
+" <option value=\"no\">No</option> </select> <label><br />GPIO Target</label> <select class=\"form-control h-25\" "
+"id=\"alexa_gpio_target_r_' + counter + '\" name=\"alexa_gpio_target_r_' + counter + '\"> ";
+
+static const char ALEXA_JS_EN_US_P3[] PROGMEM = ""
+"</select> </td>';\n"
+"cols += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary my-2\"  value=\"Delete\"></td>';\n"
+"newRow.append(cols);\n"
+"$(\"table.table-alexa-action\").append(newRow);\n"
+"counter++;\n"
+"});\n"
+"$(\"table.table-alexa-action\").on(\"click\", \".ibtnDel\", function (event) {\n"
+"$(this).closest(\"tr\").remove();\n"
+"});\n"
+"});\n"
+"</script>\n";
+
 static const char RESPONSE_OK[] PROGMEM = "<div class=\"py-5\"> <div class=\"container\"> <div class=\"row\"> <div "
 "class=\"col-md-12 p-0\"> <div class=\"row\"> <div class=\"col-md-12\"> <h2 class=\"text-center\" style=\"\">"
 "{::CONFIG_NAME::} Config Saved!</h2> </div> </div> </div> </div> </div> </div>";
@@ -105,6 +134,26 @@ static const char TELEGRAM_EN_US_P4[] PROGMEM = ""
 "table-bordered\"> <tbody>";
 
 static const char TELEGRAM_EN_US_P5[] PROGMEM = ""
+"</tbody> <tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> <input "
+"type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow\" value=\"Add Row\" /> </td> </tr> <tr> </tr> "
+"</tfoot> </table> <button type=\"submit\" class=\"btn btn-primary my-2\">Submit</button> </div> </div> </div> "
+"</div> </div> </form>";
+
+static const char ALEXA_EN_US_P1[] PROGMEM = ""
+"<form method=\"post\" action=\"/alexaConfig\"> <div class=\"py-5\"> "
+"<div class=\"container\"> <div class=\"row\"> <div class=\"col-md-12 p-0\"> <div class=\"row\"> "
+"<div class=\"col-md-12\"> <h2 class=\"text-center\" style=\"\">Alexa</h2> </div> </div> <div class=\"col-md-12"
+" p-3\" style=\"\"> <table class=\"table table-hover table-striped table-bordered\"> <tbody> <tr> <th scope=\"row\" "
+"class=\"align-middle\" style=\"\" >Enable Alexa</th> <td class=\"align-middle\"> "
+"<select class=\"form-control h-25\" id=\"alexa_enable\" name=\"alexa_enable\">";
+
+static const char ALEXA_EN_US_P2[] PROGMEM = ""
+"</select> </td> </tr> </tbody> </table> </div> <div class=\"row\"> <div "
+"class=\"col-md-12\"> <h2 class=\"text-center\" style=\"\">Alexa Actions</h2> </div> </div> <div "
+"class=\"col-md-12 p-3\" style=\"\"> <table class=\"table table-alexa-action table-hover table-striped "
+"table-bordered\"> <tbody>";
+
+static const char ALEXA_EN_US_P3[] PROGMEM = ""
 "</tbody> <tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> <input "
 "type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow\" value=\"Add Row\" /> </td> </tr> <tr> </tr> "
 "</tfoot> </table> <button type=\"submit\" class=\"btn btn-primary my-2\">Submit</button> </div> </div> </div> "

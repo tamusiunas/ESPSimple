@@ -103,6 +103,17 @@ String WebConfig::getPwmZeroCrossOptions(String zeroCrossConfigured)
   #endif
 }
 
+String WebConfig::getOnOffOption(String digitalAnalisisTypeConfigured)
+{
+  String offStr = "";
+
+  if (digitalAnalisisTypeConfigured.indexOf("off") >= 0)
+  {
+    offStr = "selected";
+  }
+  return "<option value=\"on\">On</option> <option value=\"off\" " + offStr + ">Off</option> ";
+}
+
 String WebConfig::getOnOffReversedOption(String digitalAnalisisTypeConfigured)
 {
   String offStr = "";
@@ -216,6 +227,27 @@ String WebConfig::getTelegramBody(String indexTelegram)
   telegramBody += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary "
   "my-2\" value=\"Delete\"></td> </tr>";
   return telegramBody;
+}
+
+String WebConfig::getAlexaBody(String indexAlexa)
+{
+  String indexAlexaStr = String(indexAlexa);
+  String alexaMessageStr = "alexa_device_name_r_" + indexAlexaStr;
+  String alexaGpioActionStr = "alexa_support_dimmer_r_" + indexAlexaStr;
+  String alexaGpioTargetStr = "alexa_gpio_target_r_" + indexAlexaStr;
+
+  String alexaBody = "<tr> <td class=\"align-middle\"><label>Device Name</label><input name=\"" + alexaMessageStr +
+  "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + alexaMessageStr + "\" value=\"" +
+  getStringFormatted(_espConfig->getDataStore()->getValue(alexaMessageStr.c_str())) + "\"></td> "
+  "<td class=\"align-middle\"> <label>Support Dimmer?</label> <select class=\"form-control h-25\" id=\"" + alexaGpioActionStr +
+  "\" name=\"" + alexaGpioActionStr + "\">";
+  alexaBody += getYesNoOptions(_espConfig->getDataStore()->getValue(alexaGpioActionStr.c_str()));
+  alexaBody += "</select> <label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
+  alexaGpioTargetStr + "\" name=\"" + alexaGpioTargetStr + "\">";
+  alexaBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(alexaGpioTargetStr.c_str()));
+  alexaBody += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary "
+  "my-2\" value=\"Delete\"></td> </tr>";
+  return alexaBody;
 }
 
 String WebConfig::getComponentDht(String indexDht)

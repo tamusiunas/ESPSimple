@@ -29,7 +29,9 @@ void WebConfig::handlePages()
   _webServer->on("/pwm.html", std::bind(&WebConfig::handlePwm, this));
   _webServer->on("/pwmConfig", std::bind(&WebConfig::handlePwmConfig, this));
   _webServer->on("/telegram.html", std::bind(&WebConfig::handleTelegram, this));
+  _webServer->on("/alexa.html", std::bind(&WebConfig::handleAlexa, this));
   _webServer->on("/telegramConfig", std::bind(&WebConfig::handleTelegramConfig, this));
+  _webServer->on("/alexaConfig", std::bind(&WebConfig::handleAlexaConfig, this));
   _webServer->on("/components.html", std::bind(&WebConfig::handleComponents, this));
   _webServer->on("/componentsConfig", std::bind(&WebConfig::handleComponentsConfig, this));
   _webServer->on("/styles.css", std::bind(&WebConfig::handleStylesCss, this));
@@ -112,6 +114,58 @@ void WebConfig::handleTelegram()
   _webServer->sendContent_P(TELEGRAM_JS_EN_US_P2);
   _webServer->sendContent(getGpioInputOptions(-1,""));
   _webServer->sendContent_P(TELEGRAM_JS_EN_US_P3);
+  _webServer->sendContent_P(FOOTER_EN_US_P2);
+}
+
+void WebConfig::handleAlexa()
+{
+  int totalParameters = _espConfig->getDataStore()->getDataParametersCount();
+  int alexaLength = 0;
+  int totalAlexa = 0;
+
+  for (int cont=0; cont<totalParameters; cont++)
+  {
+    if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
+    {
+      String parameterLocal = _espConfig->getDataStore()->getParameterByPos(cont)->getField();
+      if (parameterLocal.indexOf("alexa_message_r_") == 0)
+      {
+        ++totalAlexa;
+        String alexaIndexStr = parameterLocal.substring(16);
+        alexaLength += getAlexaBody(alexaIndexStr).length();
+      }
+    }
+  }
+  
+  _webServer->setContentLength(strlen_P(HEADER_EN_US)+strlen_P(ALEXA_EN_US_P1)+getYesNoOptions("alexa_enable").length()+
+                               strlen_P(ALEXA_EN_US_P2)+alexaLength+strlen_P(ALEXA_EN_US_P3)+strlen_P(FOOTER_EN_US_P1)+
+                               strlen_P(ALEXA_JS_EN_US_P1)+String(totalAlexa).length()+strlen_P(ALEXA_JS_EN_US_P2)+
+                               getGpioInputOptions(-1,"").length()+strlen_P(ALEXA_JS_EN_US_P3)+strlen_P(FOOTER_EN_US_P2));
+
+  _webServer->send(200, FPSTR(HTTP_HEAD_CT_HTML),"");
+  _webServer->sendContent_P(HEADER_EN_US);
+  _webServer->sendContent_P(ALEXA_EN_US_P1);
+  _webServer->sendContent(getYesNoOptions("alexa_enable"));
+  _webServer->sendContent_P(ALEXA_EN_US_P2);
+  for (int cont=0; cont<totalParameters; cont++)
+  {
+    if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
+    {
+      String parameterLocal = _espConfig->getDataStore()->getParameterByPos(cont)->getField();
+      if (parameterLocal.indexOf("alexa_message_r_") == 0)
+      {
+        String alexaIndexStr = parameterLocal.substring(16);
+        _webServer->sendContent(getAlexaBody(alexaIndexStr));
+      }
+    }
+  }
+  _webServer->sendContent_P(ALEXA_EN_US_P3);
+  _webServer->sendContent_P(FOOTER_EN_US_P1);
+  _webServer->sendContent_P(ALEXA_JS_EN_US_P1);
+  _webServer->sendContent(String(totalAlexa));
+  _webServer->sendContent_P(ALEXA_JS_EN_US_P2);
+  _webServer->sendContent(getGpioInputOptions(-1,""));
+  _webServer->sendContent_P(ALEXA_JS_EN_US_P3);
   _webServer->sendContent_P(FOOTER_EN_US_P2);
 }
 
@@ -631,6 +685,37 @@ void WebConfig::handleTelegramConfig()
   }
   _spiffsManager->saveFile();
   sendResponseOk("Telegram");
+}
+
+void WebConfig::handleAlexaConfig()
+{
+  int indexRealAlexa = 0;
+  _espConfig->getDataStore()->deleteParameterPrefix("alexa_");
+  _espConfig->getDataStore()->addParameter(new DataParameter("alexa_enable",_webServer->arg("alexa_enable").c_str()));
+  for (int cont = 0; cont < _webServer->args(); cont++)
+  {
+    String argNameStr = _webServer->argName(cont);
+    if (argNameStr.indexOf("alexa_device_name_r_") >= 0)
+    {
+      String alexaMessageIndexStr = argNameStr.substring(20);
+      String alexaMessageStr = _webServer->arg("alexa_device_name_r_" + alexaMessageIndexStr);
+      String alexaGpioActionStr = _webServer->arg("alexa_support_dimmer_r_" + alexaMessageIndexStr);
+      String alexaGpioTargetStr = _webServer->arg("alexa_gpio_target_r_" + alexaMessageIndexStr);
+
+      String indexRealAlexaStr = String(indexRealAlexa);
+      String alexaMessageNameStr = "alexa_device_name_r_" + indexRealAlexaStr;
+      String alexaGpioActionNameStr = "alexa_support_dimmer_r_" + indexRealAlexaStr;
+      String alexaGpioTargetNameStr = "alexa_gpio_target_r_" + indexRealAlexaStr;
+
+      _espConfig->getDataStore()->addParameter(new DataParameter(alexaMessageNameStr.c_str(),alexaMessageStr.c_str()));
+      _espConfig->getDataStore()->addParameter(new DataParameter(alexaGpioActionNameStr.c_str(),alexaGpioActionStr.c_str()));
+      _espConfig->getDataStore()->addParameter(new DataParameter(alexaGpioTargetNameStr.c_str(),alexaGpioTargetStr.c_str()));
+
+      ++indexRealAlexa;
+    }
+  }
+  _spiffsManager->saveFile();
+  sendResponseOk("Alexa");
 }
 
 void WebConfig::handleComponentsConfig()

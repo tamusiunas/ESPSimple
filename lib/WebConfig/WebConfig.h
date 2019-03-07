@@ -174,11 +174,15 @@ private:
    */
   void handleTelegram();
 
+  void handleAlexa();
+
   /**
    * @brief Handle telegram process and store data
    * 
    */
   void handleTelegramConfig();
+
+  void handleAlexaConfig();
 
   /**
    * @brief Handle ADC web page
@@ -251,10 +255,12 @@ private:
   String getAdcAnalisisTypeOptions(String adcAnalisisTypeConfigured);
   String getOnOffReversedOption(String adcAnalisisTypeConfigured);
   String getOnOffReverseOption(String digitalAnalisisTypeConfigured);
+  String getOnOffOption(String digitalAnalisisTypeConfigured);
   String getActionDigitalBody(String indexDigital);
   String getActionAdcBody(String indexAdc);
   String getYesNoOptions(String configuredParameter);
   String getTelegramBody(String);
+  String getAlexaBody(String);
   String getComponentDht(String indexDht);
   String getComponentBmp180(String indexBmp180);
   String getComponentMcp3008(String indexMcp3008);
