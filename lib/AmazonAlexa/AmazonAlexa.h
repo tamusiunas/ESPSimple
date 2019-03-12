@@ -10,10 +10,11 @@ public:
     AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, unsigned long tcpPort);
     AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData);
     ~AmazonAlexa();
-    void Handle();
-    void Enable();
-    void Disable();
-    void AddDevice(const char *deviceName);
+    void handle();
+    void enable();
+    void disable();
+    void addDevice(const char *deviceName);
+    void addConfiguredDevices();
 private:
     fauxmoESP *_fauxmo;
     

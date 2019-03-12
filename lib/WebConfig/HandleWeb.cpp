@@ -38,8 +38,9 @@ void WebConfig::handlePages()
   _webServer->on("/jquery-3.3.1.slim.min.js", std::bind(&WebConfig::handleJQuery, this));
   _webServer->on("/popper.min.js", std::bind(&WebConfig::handlePopper, this));
   _webServer->on("/bootstrap.min.js", std::bind(&WebConfig::handleBootStrap, this));
-  // add support to captive portal (disabled in development environment)
-  //_webServer->onNotFound(std::bind(&WebConfig::handleNotFound, this));
+  #ifdef ENABLE_CAPTIVE_PORTAL
+  _webServer->onNotFound(std::bind(&WebConfig::handleNotFound, this));
+  #endif
 }
 
 void WebConfig::handleNotFound()
@@ -122,16 +123,18 @@ void WebConfig::handleAlexa()
   int totalParameters = _espConfig->getDataStore()->getDataParametersCount();
   int alexaLength = 0;
   int totalAlexa = 0;
-
+  //Serial.println("P1");
   for (int cont=0; cont<totalParameters; cont++)
   {
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
     {
       String parameterLocal = _espConfig->getDataStore()->getParameterByPos(cont)->getField();
-      if (parameterLocal.indexOf("alexa_message_r_") == 0)
+      //Serial.println(parameterLocal);
+      if (parameterLocal.indexOf("alexa_device_name_r_") == 0)
       {
+        //Serial.println("Found I1");
         ++totalAlexa;
-        String alexaIndexStr = parameterLocal.substring(16);
+        String alexaIndexStr = parameterLocal.substring(20);
         alexaLength += getAlexaBody(alexaIndexStr).length();
       }
     }
@@ -152,9 +155,9 @@ void WebConfig::handleAlexa()
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
     {
       String parameterLocal = _espConfig->getDataStore()->getParameterByPos(cont)->getField();
-      if (parameterLocal.indexOf("alexa_message_r_") == 0)
+      if (parameterLocal.indexOf("alexa_device_name_r_") == 0)
       {
-        String alexaIndexStr = parameterLocal.substring(16);
+        String alexaIndexStr = parameterLocal.substring(20);
         _webServer->sendContent(getAlexaBody(alexaIndexStr));
       }
     }
@@ -485,7 +488,7 @@ void WebConfig::handleGpio()
   int gpioSelectLenght = 0;
   for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
   {
-    gpioSelectLenght += WebConfig::getGpioInOutAdcRowSelect(cont).length();
+    gpioSelectLenght += getGpioInOutAdcRowSelect(cont).length();
   }
   _webServer->setContentLength(strlen_P(HEADER_EN_US)+strlen_P(GPIO_EN_US_P1)+gpioSelectLenght+strlen_P(GPIO_EN_US_P2)+
                                strlen_P(FOOTER_EN_US_P1)+strlen_P(FOOTER_EN_US_P2));
@@ -494,7 +497,7 @@ void WebConfig::handleGpio()
   _webServer->sendContent_P(GPIO_EN_US_P1);
   for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
   {
-    _webServer->sendContent(WebConfig::getGpioInOutAdcRowSelect(cont));
+    _webServer->sendContent(getGpioInOutAdcRowSelect(cont));
   }
   _webServer->sendContent_P(GPIO_EN_US_P2);
   _webServer->sendContent_P(FOOTER_EN_US_P1);

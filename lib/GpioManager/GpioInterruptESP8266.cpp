@@ -40,7 +40,7 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 
 void ICACHE_RAM_ATTR GpioManager::handleInterrupt(void *arg)
 {
-  //Serial.println("I got an interrupt!");
+  Serial.println("I got an interrupt!");
   //int gpioInterruptStatus = digitalRead(gpio);
   //Serial.println("It is: " + String(gpio) + " (" + String(gpioInterruptStatus) + ")");
   interruptParameters *iparameters = (interruptParameters *) arg;

@@ -19,10 +19,11 @@
 #define TOTALPWMSW 8
 #define TOTALPWMHW 8
 volatile int pwmChannelGpioHw[] =           {-1,-1,-1,-1,-1,-1,-1}; // each position is a channel (0-8)
-volatile int pwmChannelGpioSw[] =                    {-1,-1,-1,-1,-1,-1,-1}; // each position is a channel (0-8)
+volatile int pwmChannelGpioSw[] =           {-1,-1,-1,-1,-1,-1,-1}; // each position is a channel (0-8)
 int pinGpioArray[] =                        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16};
 int pinGpioAvaliable[] =                    { 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1};
 int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+int pinAnalogOnly[] =                       { 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioDigitalStatusChanged[] ={ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // name must be changed to pinGpioDigitalStatusChanged
 volatile int pinGpioDigitalStatus[] =       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioPwmStatusChanged[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
@@ -30,8 +31,8 @@ volatile int pinGpioPwmStatus[] =           {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
 volatile int pinGpioAdcValue[] =            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioAdcPreviousValue[] =    {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile bool pinPwmEnable[] =              { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int pinGpioAdcChannelArray[] =              {0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-int pinGpioAdcNumberArray[] =               {0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+int pinGpioAdcChannelArray[] =              {-1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+int pinGpioAdcNumberArray[] =               {-1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int pinGpioInOut[] =                        { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 2, 2};
 const char *pinGpioDesc[] =                 {"D3","RXD0","D4","TXD0","D2","D1","","","","","SD3","","D6","D7","D5","D8","D0"};
 int pinPwmValue[] =                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -46,6 +47,8 @@ int pinGpioArray[] =                        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11
 int pinGpioAvaliable[] =                    { 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,
                                               0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1};
 int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+                                             -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+int pinAnalogOnly[] =                       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                              -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioDigitalStatusChanged[] ={ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -75,13 +78,17 @@ int pinPwmValue[] =                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 #endif
 
-#define PWMTOTALPIN 4
+//#define PWMTOTALPIN 4
+
+unsigned long lastTimeinMillisDoubleReset = 0;
+unsigned long lastTimeinMillisOta = 0;
+unsigned long lastTimeinMillisMqtt = 0;
 
 volatile PwmAdcData *pwmAdcDataLocal;
 
-int pwmGpioPin[PWMTOTALPIN];
-int pwmValue[PWMTOTALPIN];
-int pwmLastValue[PWMTOTALPIN];
+//int pwmGpioPin[PWMTOTALPIN];
+//int pwmValue[PWMTOTALPIN];
+//int pwmLastValue[PWMTOTALPIN];
 DoubleReset doubleReset = DoubleReset(5000);
 bool mustStartWebConfig = false;
 OTAHandler otaHandler = OTAHandler();
@@ -93,4 +100,5 @@ MqttManagerOut *mqttManagerOut = NULL; // Send MQTT Messages
 GpioManager *gpioManager; // Config and read data from GPIO
 AmazonAlexa *amazonAlexa; // Send and receive Amazon Alexa Messages
 AlexaStruct *alexaStruct; // Struct to carry Alexa useful data
+bool isAlexaEnable = false;
 //fauxmoESP *fauxmo;

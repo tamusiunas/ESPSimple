@@ -28,6 +28,7 @@
 #ifdef ESP32
 #include <driver/gpio.h>
 #include <driver/ledc.h>
+#include <driver/adc.h>
 #include <soc/ledc_struct.h>
 #define DUTY_BIT_DEPTH LEDC_TIMER_10_BIT
 #define ZEROCROSSTIMER 0
@@ -85,7 +86,12 @@ public:
    */
   void setDigitalOutput(uint32_t gpio, uint32_t status);
 
+  int getAdcValue(String gpioAdc);
+
 private:
+
+  void ConfigAdc(String gpioAdc);
+
   /**
    * @brief Configure the GPIO as an interrupt (EDGE in)
    * 

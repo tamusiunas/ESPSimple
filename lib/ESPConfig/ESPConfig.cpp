@@ -15,7 +15,7 @@ ESPConfig::ESPConfig(int *pinGpioArray, int *pinGpioAvaliable, int *pinGpioAdcCh
           int *pinGpioInOut, const char **pinGpioDesc, int *pinPwmValue, int totalGpio, volatile int *pwmChannelGpioHw,
           volatile int pwmChannelTotalHw, volatile int *pwmChannelGpioSw, int pwmChannelTotalSw, int *pinGpioMode, volatile int *pinGpioDigitalStatusChanged, 
           volatile int *pinGpioDigitalStatus, volatile int *pinGpioAdcValue, volatile int *pinGpioAdcPreviousValue, 
-          volatile bool *pinPwmEnable, volatile int *pinGpioPwmStatusChanged, volatile int *pinGpioPwmStatus, DataStore *dataStore)
+          volatile bool *pinPwmEnable, volatile int *pinGpioPwmStatusChanged, volatile int *pinGpioPwmStatus, int *pinAnalogOnly, DataStore *dataStore)
 
 {
   _pwmChannelGpioHw = pwmChannelGpioHw;
@@ -38,6 +38,7 @@ ESPConfig::ESPConfig(int *pinGpioArray, int *pinGpioAvaliable, int *pinGpioAdcCh
   _pinPwmEnable = pinPwmEnable;
   _pinGpioPwmStatusChanged = pinGpioPwmStatusChanged; 
   _pinGpioPwmStatus = _pinGpioPwmStatus;
+  _pinAnalogOnly = pinAnalogOnly;
   _dataStore = dataStore;
 }
 
@@ -184,6 +185,11 @@ void ESPConfig::setPinGpioPwmStatusChanged(int gpio, int changed)
 void ESPConfig::setPinGpioPwmStatus(int gpio, int pwmStatus)
 {
   _pinGpioPwmStatus[gpio] = pwmStatus;
+}
+
+int *ESPConfig::getPinAnalogOnly()
+{
+  return _pinAnalogOnly;
 }
 
 int *ESPConfig::getPinGpioAvaliable()

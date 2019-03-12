@@ -64,11 +64,19 @@ String WebConfig::getZeroCrossFrequencyOptions()
 String WebConfig::getGpioAdcOptions(int ignoreGpioInt, String configParameterStr)
 {
   String gpioAdcOptionsStr = "";
-#ifdef ESP8266
-  gpioAdcOptionsStr += "<option value=\"0\">0 (A0)</option>";
-#else
   for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
   {
+    
+    if (_espConfig->getPinAnalogOnly()[cont] == 1)
+    {
+      String adcSelected = "";
+      String adcString = "a" + String(cont);
+      if (configParameterStr == adcString)
+        {
+          adcSelected = "selected";
+        }
+        gpioAdcOptionsStr += "<option value=\"" + adcString +"\" " + adcSelected + "> Analog " + String(cont) + "</option>";
+    }
     if (ignoreGpioInt != cont)
     {
       if (_espConfig->getPinGpioAdcNumberArray()[cont] >= 0)
@@ -83,7 +91,6 @@ String WebConfig::getGpioAdcOptions(int ignoreGpioInt, String configParameterStr
       }
     }
   }
-#endif
  return (gpioAdcOptionsStr);
 }
 
@@ -231,6 +238,7 @@ String WebConfig::getTelegramBody(String indexTelegram)
 
 String WebConfig::getAlexaBody(String indexAlexa)
 {
+  //Serial.println("getAlexaBody: " + indexAlexa);
   String indexAlexaStr = String(indexAlexa);
   String alexaMessageStr = "alexa_device_name_r_" + indexAlexaStr;
   String alexaGpioActionStr = "alexa_support_dimmer_r_" + indexAlexaStr;
@@ -466,6 +474,23 @@ String WebConfig::getGpioOutputOptions(int ignoreGpioInt, String configuredParam
 String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
 {
   String gpioSelectStr = "";
+  Serial.println("getPinAnalogOnly()[" + String(gpioNumber) + "]: " + String(_espConfig->getPinAnalogOnly()[gpioNumber]));
+  if (_espConfig->getPinAnalogOnly()[gpioNumber] == 1)
+  {
+    String gpioAdcAttenStr = "gpio_adc_analog_only_" + String(gpioNumber);
+    gpioSelectStr += "<tr> <th scope=\"row\" class=\"align-middle\" style=\"\">Analog " + String(gpioNumber) +
+                    "</th> <td class=\"align-middle\"><label>Enable</label><select class=\"form-control h-25\" id=\"" +
+                    gpioAdcAttenStr + "\" name=\"" + gpioAdcAttenStr + "\">";
+    String adcOnlySelectedYes = "";
+    if (strcmp(_espConfig->getDataStore()->getValue(gpioAdcAttenStr.c_str()),"yes") == 0)
+    {
+      adcOnlySelectedYes = "selected";
+    }
+    gpioSelectStr += "<option value=\"no\">No</option>";
+    gpioSelectStr += "<option value=\"yes\" " + adcOnlySelectedYes + ">Yes</option>";
+    gpioSelectStr += "</select></td> </tr>";
+  }
+  
   String gpioGpioStr = "gpio_mode_" + String(gpioNumber);
   String gpioCommentStr = "gpio_comment_" + String(gpioNumber);
   String gpioAdcAttenStr = "gpio_adc_atten_" + String(gpioNumber);
@@ -473,7 +498,7 @@ String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
   int gpioInOutInt = _espConfig->getPinGpioInOut()[gpioNumber];
   if (_espConfig->getPinGpioAvaliable()[gpioNumber] == 1)
   {
-    gpioSelectStr = "<tr> <th scope=\"row\" class=\"align-middle\" style=\"\">" + String(gpioNumber) + "(" + gpioDesc +
+    gpioSelectStr += "<tr> <th scope=\"row\" class=\"align-middle\" style=\"\">" + String(gpioNumber) + "(" + gpioDesc +
                     ")</th> <td class=\"align-middle\"><label>Mode</label><select class=\"form-control h-25\" id=\"" +
                     gpioGpioStr + "\" name=\"" + gpioGpioStr + "\"><option value=\"none\">None</option>";
 
@@ -530,7 +555,7 @@ String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
       gpioSelectStr += "<option value=\"output\" " + outputSelectedStr + ">OUTPUT</option>";
     }
     #ifdef ESP32
-    // if ESP32 ADC will be used only fot channel 1. Channel 2 needs Wi-Fi disabled :-(
+    // if ESP32 then ADC will be used only with channel 1. Channel 2 needs Wi-Fi disabled :-(
     if ((_espConfig->getPinGpioAdcNumberArray()[gpioNumber] >= 0) and (_espConfig->getPinGpioAdcChannelArray()[gpioNumber] == 1))
     #else
     if (_espConfig->getPinGpioAdcNumberArray()[gpioNumber] >= 0)
@@ -540,7 +565,7 @@ String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
     }
     gpioSelectStr += "</select><div class=\"form-group\">";
     #ifdef ESP32
-    // ESP32 allows attenuation. That's great!
+    // ESP32 allows attenuation. That's great! 
     if ((_espConfig->getPinGpioAdcNumberArray()[gpioNumber] >= 0) and (_espConfig->getPinGpioAdcChannelArray()[gpioNumber] == 1))
     {
       gpioSelectStr += "<label><br />ADC Attenuation</label><select class=\"form-control h-25\" id=\"" + gpioAdcAttenStr + "\" name=\"" +

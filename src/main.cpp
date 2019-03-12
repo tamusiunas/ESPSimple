@@ -20,7 +20,7 @@ void setup(){
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
             TOTALPWMSW, pinGpioMode, pinGpioDigitalStatusChanged, pinGpioDigitalStatus, pinGpioAdcValue, 
-            pinGpioAdcPreviousValue, pinPwmEnable, pinGpioPwmStatusChanged, pinGpioPwmStatus, dataStore);
+            pinGpioAdcPreviousValue, pinPwmEnable, pinGpioPwmStatusChanged, pinGpioPwmStatus, pinAnalogOnly, dataStore);
 
   WebConfig webConfig(espConfig,spiffsManager);
   if (mustStartWebConfig)
@@ -37,6 +37,7 @@ void setup(){
 
   otaHandler.setEspConfig(espConfig);
   otaHandler.start();
+
   syslogManager = new SyslogManager("192.168.130.101", 514);
   syslogManager->sendMessage("main","Teste syslog");
 
@@ -80,48 +81,54 @@ void setup(){
   //gpioManager = new GpioManager(espConfig);
   gpioManager->initializeGpio();
 
-  alexaStruct = (AlexaStruct *)malloc(sizeof(alexaStruct));
-  alexaStruct->espConfig = espConfig;
-  alexaStruct->gpioManager = gpioManager;
-  amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal);
-  amazonAlexa->Enable();
-  amazonAlexa->AddDevice("Lamp one");
+  if (strcmp(dataStore->getValue("alexa_enable"),"yes") == 0)
+  {
+    Serial.println("Configuring Alexa");
+    alexaStruct = (AlexaStruct *)malloc(sizeof(AlexaStruct));
+    alexaStruct->espConfig = espConfig;
+    alexaStruct->gpioManager = gpioManager;
+    amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal);
+    amazonAlexa->enable();
+    amazonAlexa->addConfiguredDevices();
+    //amazonAlexa->addDevice("Lamp one");
+    isAlexaEnable = true;
+  }
 
+  /*adc1_config_width(ADC_WIDTH_BIT_12);
+  adc1_config_channel_atten(ADC1_CHANNEL_6,ADC_ATTEN_DB_11);
+  int val = adc1_get_raw(ADC1_CHANNEL_6);
+  Serial.println("adc1_get_raw: " + String(val));*/
 
-  Serial.print("Free size: ");
-  Serial.println(ESP.getFreeSketchSpace());
-
-  Serial.print("Free Heap: ");
-  Serial.println(ESP.getFreeHeap());
+  Serial.println("Free size: " + String(ESP.getFreeSketchSpace()));
+  Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
 
 }
 
 void loop()
 {
 
-  amazonAlexa->Handle();
-  //fauxmo->handle();
+  if (isAlexaEnable)
+  {
+      amazonAlexa->handle();
+  }
 
-  unsigned long lastTimeinMillisDoubleReset = 0;
-  unsigned long lastTimeinMillisOta = 0;
-  unsigned long lastTimeinMillisMqtt = 0;
-
-  //int valueRandrom = random(0,1023);
-  //gpioManager->setPwm(12,valueRandrom);
-  //valueRandrom = random(0,1023);
-  //gpioManager->setPwm(14,valueRandrom);
-
+  // check for double reset every one second
   if ((millis() - lastTimeinMillisDoubleReset) > 1000)
   {
     doubleReset.handle();
     lastTimeinMillisDoubleReset = millis();
+    /*int val = adc1_get_raw(ADC1_CHANNEL_6);
+    Serial.println("adc1_get_raw: " + String(val));*/
   }
+
+  // check for OTA every one second
   if ((millis() - lastTimeinMillisOta) > 1000)
   {
     otaHandler.handle();
     lastTimeinMillisOta = millis();
   }
 
+  // Check for messages to MQTT Out
   if (mqttManagerOut != NULL)
   {
     if ((millis() - lastTimeinMillisMqtt) > 1000)
