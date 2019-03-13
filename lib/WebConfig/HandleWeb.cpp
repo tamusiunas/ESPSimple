@@ -630,6 +630,7 @@ void WebConfig::handleActionsConfig()
       String actionAdcGpioTargetStr = _webServer->arg("action_adc_gpio_target_r_" + actionAdcIndexStr);
       String actionAdcTelegramMessageStr = _webServer->arg("action_adc_telegram_message_r_" + actionAdcIndexStr);
       String actionAdcWaitingTimeRearmStr = _webServer->arg("action_adc_waiting_time_rearm_r_" + actionAdcIndexStr);
+      String actionAdcTimeBeforeActionReversalStr = _webServer->arg("action_adc_time_before_action_reversal_r_" + actionAdcIndexStr);
 
       String indexRealAdcStr = String(indexRealAdc);
       String actionAdcGpioOriginNameStr = "action_adc_gpio_origin_r_" + indexRealAdcStr;
@@ -639,6 +640,7 @@ void WebConfig::handleActionsConfig()
       String actionAdcGpioTargetNameStr = "action_adc_gpio_target_r_" + indexRealAdcStr;
       String actionAdcTelegramMessageNameStr = "action_adc_telegram_message_r_" + indexRealAdcStr;
       String actionAdcWaitingTimeRearmNameStr = "action_adc_waiting_time_rearm_r_" + indexRealAdcStr;
+      String actionAdcTimeBeforeActionReversalNameStr = "action_adc_time_before_action_reversal_r_" + indexRealAdcStr;
 
       _espConfig->getDataStore()->addParameter(new DataParameter(actionAdcGpioOriginNameStr.c_str(),actionAdcGpioOriginStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionAdcTriggerAnalisisTypeNameStr.c_str(),actionAdcTriggerAnalisisTypeStr.c_str()));
@@ -647,6 +649,7 @@ void WebConfig::handleActionsConfig()
       _espConfig->getDataStore()->addParameter(new DataParameter(actionAdcGpioTargetNameStr.c_str(),actionAdcGpioTargetStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionAdcTelegramMessageNameStr.c_str(),actionAdcTelegramMessageStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionAdcWaitingTimeRearmNameStr.c_str(),actionAdcWaitingTimeRearmStr.c_str()));
+      _espConfig->getDataStore()->addParameter(new DataParameter(actionAdcTimeBeforeActionReversalNameStr.c_str(),actionAdcTimeBeforeActionReversalStr.c_str()));
 
       ++indexRealAdc;
     }

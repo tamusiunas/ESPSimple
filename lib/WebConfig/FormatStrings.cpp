@@ -397,6 +397,7 @@ String WebConfig::getActionAdcBody(String indexAdc)
   String actionAdcGpioTarget = "action_adc_gpio_target_r_" + indexAdcStr;
   String actionAdcTelegramMessage = "action_adc_telegram_message_r_" + indexAdcStr;
   String actionAdcWaitingTimeRearm = "action_adc_waiting_time_rearm_r_" + indexAdcStr;
+  String actionAdcTimeBeforeActionReversal = "action_adc_time_before_action_reversal_r_" + indexAdcStr;
 
   String adcBody = "<tr> <td scope=\"row\" class=\"align-middle\" style=\"\"> <label>GPIO</label> "
   "<select class=\"form-control h-25\" id=\"" + actionAdcGpioOrigin + "\" name=\"" + actionAdcGpioOrigin + "\">";
@@ -409,8 +410,11 @@ String WebConfig::getActionAdcBody(String indexAdc)
   getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTriggerValueAction.c_str())) + "\">";
   adcBody += "<label><br>Action</label> <select class=\"form-control h-25\" id=\"" + actionAdcAction + "\" name=\"" + actionAdcAction + "\">";
   adcBody += getActionOptions(_espConfig->getDataStore()->getValue(actionAdcAction.c_str()));
-  adcBody += "</select> <label><br>GPIO Target</label> <select class=\"form-control h-25\" "
-  "id=\"" + actionAdcGpioTarget + "\" name=\"" + actionAdcGpioTarget + "\">";
+  adcBody += "</select><label><br />Time Before Action Reversal</label><input name=\"" + actionAdcTimeBeforeActionReversal;
+  adcBody += "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"" + actionAdcTimeBeforeActionReversal;
+  adcBody += "\" value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTimeBeforeActionReversal.c_str())) + "\">";
+  adcBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" ";
+  adcBody += "id=\"" + actionAdcGpioTarget + "\" name=\"" + actionAdcGpioTarget + "\">";
   adcBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionAdcGpioTarget.c_str()));
   adcBody += "</select><label><br>Telegram message (output)</label><input name=\"" + actionAdcTelegramMessage + "\" "
   "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + actionAdcTelegramMessage + "\" value=\"" +

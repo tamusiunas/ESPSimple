@@ -601,9 +601,11 @@ static const char ACTIONS_JS_EN_US_P5[] PROGMEM = ""
 "maxlength=\"5\" id=\"action_adc_trigger_value_r_' + counter_adc + '\"><label><br />Action</label> <select "
 "class=\"form-control h-25\" id=\"action_adc_action_r_' + counter_adc + '\" name=\"action_adc_action_r_' + counter_adc + '\"> "
 "<option value=\"reverse\">Reverse Voltage</option> <option value=\"on\">Turn on</option> <option value=\"off\">Turn "
-"off</option> <option value=\"sendmessagetelegram\">Send Telegram Message</option></select> <label><br />GPIO "
-"Target</label> <select class=\"form-control h-25\" id=\"action_adc_gpio_target_r_' + counter_adc + '\" name=\"action_adc_gpio_target_r_' "
-"+ counter_adc + '\">";
+"off</option> <option value=\"sendmessagetelegram\">Send Telegram Message</option></select> <label><br />Time Before Action "
+"Reversal</label><input name=\"action_adc_time_before_action_reversal_r_' + counter_adc + '\" class=\"form-control h-25\" "
+"placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"action_adc_time_before_action_reversal_r_' + counter_adc + '\"> <label><br />"
+"GPIO Target</label> <select class=\"form-control h-25\" id=\"action_adc_gpio_target_r_' + counter_adc + '\" "
+"name=\"action_adc_gpio_target_r_' + counter_adc + '\">";
 
 static const char ACTIONS_JS_EN_US_P6[] PROGMEM = ""
 "</select><label><br />Telegram message (output)</label><input name=\"action_adc_telegram_message_r_' + counter_adc + '\" "

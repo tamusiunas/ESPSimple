@@ -106,7 +106,11 @@ ESPConfig *GpioManager::getESPConfig()
 
 void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
 {
-
+  int actionAdcTotal = String(_espConfig->getDataStore()->getValue("action_adc_total")).toInt();
+  for (int cont = 0 ; cont < actionAdcTotal ; cont++)
+  {
+    
+  }
 }
 
 void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)

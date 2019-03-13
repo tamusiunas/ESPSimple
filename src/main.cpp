@@ -36,10 +36,15 @@ void setup(){
   wiFiSTIManager->start();
 
   otaHandler.setEspConfig(espConfig);
-  otaHandler.start();
+  otaHandler.start(); 
 
-  syslogManager = new SyslogManager("192.168.130.101", 514);
-  syslogManager->sendMessage("main","Teste syslog");
+  int syslogPort = 514;
+  if (strcmp(dataStore->getValue("syslog_port"),"") != 0)
+  {
+    syslogPort = String(dataStore->getValue("syslog_port")).toInt();
+  }
+  syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
+  syslogManager->sendMessage("main","Initializing Syslog");
 
   pwmAdcDataLocal = (PwmAdcData *)malloc(sizeof(PwmAdcData));
   pwmAdcDataLocal->pinGpioAdcPreviousValue = pinGpioAdcPreviousValue;
@@ -53,6 +58,8 @@ void setup(){
   pwmAdcDataLocal->pwmChannelGpioSw = pwmChannelGpioSw;
   pwmAdcDataLocal->sendAdcGpioValue = sendAdcGpioValue;
   pwmAdcDataLocal->sendAdcAnalogOnlyValue = sendAdcAnalogOnlyValue;
+  pwmAdcDataLocal->pinAnalogOnlyValue = pinAnalogOnlyValue;
+  pwmAdcDataLocal->pinAnalogOnlyPreviousValue = pinAnalogOnlyPreviousValue;
   pwmAdcDataLocal->totalGPIO = TOTALGPIO;
   pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
   pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
@@ -92,14 +99,8 @@ void setup(){
     amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal);
     amazonAlexa->enable();
     amazonAlexa->addConfiguredDevices();
-    //amazonAlexa->addDevice("Lamp one");
     isAlexaEnable = true;
   }
-
-  /*adc1_config_width(ADC_WIDTH_BIT_12);
-  adc1_config_channel_atten(ADC1_CHANNEL_6,ADC_ATTEN_DB_11);
-  int val = adc1_get_raw(ADC1_CHANNEL_6);
-  Serial.println("adc1_get_raw: " + String(val));*/
 
   Serial.println("WifiGetChipId(): " + String(WifiGetChipId()));
   Serial.println("Free size: " + String(ESP.getFreeSketchSpace()));
@@ -115,18 +116,14 @@ void loop()
       amazonAlexa->handle();
   }
 
-  // check for double reset every one second
+  // check for double reset each second
   if ((millis() - lastTimeinMillisDoubleReset) > 1000)
   {
     doubleReset.handle();
     lastTimeinMillisDoubleReset = millis();
-    //int val = adc1_get_raw(ADC1_CHANNEL_6);
-    /*Serial.println("adc1_get_raw: " + String(gpioManager->getAdcValue("34")));
-    Serial.println("adc1_get_raw: " + String(gpioManager->getAdcValue("36")));
-    Serial.println("adc1_get_raw: " + String(gpioManager->getAdcValue("39")));*/
   }
 
-  // check for OTA every one second
+  // check for OTA each second
   if ((millis() - lastTimeinMillisOta) > 1000)
   {
     otaHandler.handle();
@@ -143,6 +140,7 @@ void loop()
       lastTimeinMillisMqtt = millis();
     }
     gpioManager->checkGpioChange(mqttManagerOut, pwmAdcDataLocal);
+    gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
   }
   //delay(1000);
   yield();
