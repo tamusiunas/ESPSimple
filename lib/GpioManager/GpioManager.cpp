@@ -58,6 +58,17 @@ void GpioManager::initializeGpio()
         {
           setGpioMode(gpioInt,OUTPUT);
         }
+        else
+        if (strcmp(gpioModeCChar,"adc") == 0)
+        {
+          configAdc(String(gpioInt));
+        }
+      }
+      else if (String(dataParameter->getField()).indexOf("gpio_adc_analog_only_") == 0)
+      {
+        int gpioAnalogInt = String(dataParameter->getField()).substring(21).toInt();
+        String gpioString = "a" + String(gpioAnalogInt);
+        configAdc(gpioString);
       }
       else
       if (String(dataParameter->getField()).indexOf("pwm_gpio_r_") == 0)
@@ -93,21 +104,35 @@ ESPConfig *GpioManager::getESPConfig()
   return _espConfig;
 }
 
+void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
+{
+
+}
+
 void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
 {
-  // for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
   for (int cont = 0; cont < pwmAdcDataLocal->totalGPIO; cont++)
   {
-    //if (_espConfig->getPinGpioDigitalStatusChanged()[cont] == 1)
-    if (pwmAdcDataLocal->pinGpioDigitalStatusChanged[cont] == 1)
+    checkGpioDigitalStatusChanged(mqttManagerOut, pwmAdcDataLocal, cont);
+
+    checkGpioPwmStatusChanged(mqttManagerOut, pwmAdcDataLocal, cont);
+
+    checkSendAdcGpioValue(mqttManagerOut, pwmAdcDataLocal, cont);
+
+    checkSendAdcAnalogOnlyValue(mqttManagerOut, pwmAdcDataLocal, cont);
+  }
+}
+
+void GpioManager::checkGpioDigitalStatusChanged(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position)
+{
+  if (pwmAdcDataLocal->pinGpioDigitalStatusChanged[position] == 1)
     {
-      //int pinGpioDigitalStatusLocal = _espConfig->getPinGpioDigitalStatus()[cont];
-      int pinGpioDigitalStatusLocal = pwmAdcDataLocal->pinGpioDigitalStatus[cont];
-      Serial.println("Gpio status changed: " + String(cont) + ". New status: " + String(pinGpioDigitalStatusLocal));
+      int pinGpioDigitalStatusLocal = pwmAdcDataLocal->pinGpioDigitalStatus[position];
+      Serial.println("Gpio status changed: " + String(position) + ". New status: " + String(pinGpioDigitalStatusLocal));
       String mqttKey[2];
       String mqttValue[2];
       mqttKey[0] = "gpio";
-      mqttValue[0] = String(cont);
+      mqttValue[0] = String(position);
       mqttKey[1] = "status";
       if (pinGpioDigitalStatusLocal == HIGH)
       {
@@ -117,29 +142,58 @@ void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAd
       {
         mqttValue[1] = "low";
       }
-      //_espConfig->getPinGpioDigitalStatusChanged()[cont] = 0;
-      pwmAdcDataLocal->pinGpioDigitalStatusChanged[cont] = 0;
-      //Serial.println("Sending " + mqttValue[0]);
+      pwmAdcDataLocal->pinGpioDigitalStatusChanged[position] = 0;
       mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoDigitalGpio");
     }
-    //if (_espConfig->getPinGpioPwmStatusChanged()[cont] == 1)
-    if (pwmAdcDataLocal->pinGpioPwmStatusChanged[cont] == 1)
+}
+void GpioManager::checkGpioPwmStatusChanged(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position)
+{
+  if (pwmAdcDataLocal->pinGpioPwmStatusChanged[position] == 1)
     {
-      // int pinGpioPwmStatusLocal = _espConfig->getPinGpioPwmStatus()[cont];
-      int pinGpioPwmStatusLocal = pwmAdcDataLocal->pinGpioPwmStatus[cont];
-      Serial.println("Gpio Pwm status changed: " + String(cont) + ". New status: " + String(pinGpioPwmStatusLocal));
+      int pinGpioPwmStatusLocal = pwmAdcDataLocal->pinGpioPwmStatus[position];
+      Serial.println("Gpio Pwm status changed: " + String(position) + ". New status: " + String(pinGpioPwmStatusLocal));
       String mqttKey[2];
       String mqttValue[2];
       mqttKey[0] = "gpio";
-      mqttValue[0] = String(cont);
+      mqttValue[0] = String(position);
       mqttKey[1] = "status";
       mqttValue[1] = String(pinGpioPwmStatusLocal);
-      // _espConfig->getPinGpioPwmStatusChanged()[cont] = 0;
-      pwmAdcDataLocal->pinGpioPwmStatusChanged[cont] = 0;
-      //Serial.println("Sending " + mqttValue[0]);
+      pwmAdcDataLocal->pinGpioPwmStatusChanged[position] = 0;
       mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoPwmGpio");
     }
-  }
+}
+
+void GpioManager::checkSendAdcGpioValue(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position)
+{
+  if (pwmAdcDataLocal->sendAdcGpioValue[position] == 1)
+    {
+      int adcLocal = getAdcValue(String(position));
+      String mqttKey[2];
+      String mqttValue[2];
+      mqttKey[0] = "gpio";
+      mqttValue[0] = String(position);
+      mqttKey[1] = "value";
+      mqttValue[1] = String(adcLocal);
+      pwmAdcDataLocal->sendAdcGpioValue[position] = 0;
+      mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoAdcGpio");
+    }
+}
+
+void GpioManager::checkSendAdcAnalogOnlyValue(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position)
+{
+  if (pwmAdcDataLocal->sendAdcAnalogOnlyValue[position] == 1)
+    {
+      String adcStr = "a" + String(position);
+      int adcLocal = getAdcValue(String(position));
+      String mqttKey[2];
+      String mqttValue[2];
+      mqttKey[0] = "gpio";
+      mqttValue[0] = adcStr;
+      mqttKey[1] = "value";
+      mqttValue[1] = String(adcLocal);
+      pwmAdcDataLocal->sendAdcAnalogOnlyValue[position] = 0;
+      mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 2, "InfoAdcGpio");
+    }
 }
 
 void GpioManager::executeDigitalAction(uint32_t gpio, int gpioStatus)

@@ -78,6 +78,8 @@ public:
 
   void checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal);
 
+  void checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal);
+
   /**
    * @brief Set Gpio output
    * 
@@ -90,7 +92,15 @@ public:
 
 private:
 
-  void ConfigAdc(String gpioAdc);
+  void checkGpioDigitalStatusChanged(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
+
+  void checkGpioPwmStatusChanged(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
+
+  void checkSendAdcGpioValue(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
+
+  void checkSendAdcAnalogOnlyValue(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
+
+  void configAdc(String gpioAdc);
 
   /**
    * @brief Configure the GPIO as an interrupt (EDGE in)

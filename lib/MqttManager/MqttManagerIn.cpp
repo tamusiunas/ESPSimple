@@ -83,16 +83,66 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
   JsonArray& statusGpio = root["SetDigitalGpio"];
   if (statusGpio.size() > 0)
   {
-    configCallbackStr->mqttManagerLocal->processSetDigitalGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, statusGpio);
+    configCallbackStr->mqttManagerLocal->processSetDigitalGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
+                                                               statusGpio);
   }
   else
   {
     JsonArray& statusGpio = root["SetPwmGpio"];
     if (statusGpio.size() > 0)
     {
-      configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, configCallbackStr->_pwmAdcDataLocal, statusGpio);
+      configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
+                                                             configCallbackStr->_pwmAdcDataLocal, statusGpio);
       Serial.println("It's a SetPwmGpio");
     }
+    else
+    {
+      JsonArray& statusGpio = root["GetAdcGpio"];
+      if (statusGpio.size() > 0)
+      {
+        //configCallbackStr->mqttManagerLocal->
+        configCallbackStr->mqttManagerLocal->processGetAdcGpio(configCallbackStr->_pwmAdcDataLocal, statusGpio);
+        Serial.println("It's a GetAdcGpio");
+      }
+    }
+  }
+}
+
+void MqttManagerIn::processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio)
+{
+  for (JsonObject& elem : statusGpio)
+  {
+    bool isAnalogOnly = false;
+    int gpio = -1;
+    String gpioString = elem["gpio"].as<String>();
+    Serial.println("GPIO: " + gpioString);
+    if (gpioString.indexOf("a") == 0)
+    {
+      gpio = gpioString.substring(1).toInt();
+      isAnalogOnly = true;
+    }
+    else
+    {
+      gpio = gpioString.toInt();
+    }
+    if ((gpio >= 0) and (gpio < pwmAdcDataLocal->totalGPIO))
+    {
+      if (isAnalogOnly)
+      {
+        Serial.println("It's Analog Only pin");
+        pwmAdcDataLocal->sendAdcAnalogOnlyValue[gpio] = 1;
+      }
+      else
+      {
+        Serial.println("It's GPIO pin");
+        pwmAdcDataLocal->sendAdcGpioValue[gpio] = 1;
+      }
+    }
+    else
+    {
+      // send message Out of Range
+    }
+    
   }
 }
 

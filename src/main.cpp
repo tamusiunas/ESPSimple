@@ -51,6 +51,8 @@ void setup(){
   pwmAdcDataLocal->pinPwmEnable = pinPwmEnable;
   pwmAdcDataLocal->pwmChannelGpioHw = pwmChannelGpioHw;
   pwmAdcDataLocal->pwmChannelGpioSw = pwmChannelGpioSw;
+  pwmAdcDataLocal->sendAdcGpioValue = sendAdcGpioValue;
+  pwmAdcDataLocal->sendAdcAnalogOnlyValue = sendAdcAnalogOnlyValue;
   pwmAdcDataLocal->totalGPIO = TOTALGPIO;
   pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
   pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
@@ -99,6 +101,7 @@ void setup(){
   int val = adc1_get_raw(ADC1_CHANNEL_6);
   Serial.println("adc1_get_raw: " + String(val));*/
 
+  Serial.println("WifiGetChipId(): " + String(WifiGetChipId()));
   Serial.println("Free size: " + String(ESP.getFreeSketchSpace()));
   Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
 
@@ -117,8 +120,10 @@ void loop()
   {
     doubleReset.handle();
     lastTimeinMillisDoubleReset = millis();
-    /*int val = adc1_get_raw(ADC1_CHANNEL_6);
-    Serial.println("adc1_get_raw: " + String(val));*/
+    //int val = adc1_get_raw(ADC1_CHANNEL_6);
+    /*Serial.println("adc1_get_raw: " + String(gpioManager->getAdcValue("34")));
+    Serial.println("adc1_get_raw: " + String(gpioManager->getAdcValue("36")));
+    Serial.println("adc1_get_raw: " + String(gpioManager->getAdcValue("39")));*/
   }
 
   // check for OTA every one second

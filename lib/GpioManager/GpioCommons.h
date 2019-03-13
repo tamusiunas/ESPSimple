@@ -45,6 +45,8 @@ struct PwmAdcData
    volatile bool *pinPwmEnable;
    volatile int *pwmChannelGpioHw;
    volatile int *pwmChannelGpioSw;
+   volatile int *sendAdcGpioValue;
+   volatile int *sendAdcAnalogOnlyValue;
    volatile int totalGPIO;
    volatile int totalPwmSw; 
    volatile int totalPwmHw;

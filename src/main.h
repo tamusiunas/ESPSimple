@@ -24,6 +24,8 @@ int pinGpioArray[] =                        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11
 int pinGpioAvaliable[] =                    { 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1};
 int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int pinAnalogOnly[] =                       { 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+volatile int sendAdcGpioValue[] =           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+volatile int sendAdcAnalogOnlyValue[] =     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 volatile int pinGpioDigitalStatusChanged[] ={ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // name must be changed to pinGpioDigitalStatusChanged
 volatile int pinGpioDigitalStatus[] =       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioPwmStatusChanged[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
@@ -50,6 +52,10 @@ int pinGpioMode[] =                         {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
                                              -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int pinAnalogOnly[] =                       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                              -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+volatile int sendAdcGpioValue[] =           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+volatile int sendAdcAnalogOnlyValue[] =     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 volatile int pinGpioDigitalStatusChanged[] ={ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 volatile int pinGpioDigitalStatus[] =       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,

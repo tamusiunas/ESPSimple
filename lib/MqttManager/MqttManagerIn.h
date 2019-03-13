@@ -92,6 +92,8 @@ private:
 
   void processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
 
+  void processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
+
   WiFiClient _wifiClient;
   PubSubClient *_client;
   String _mqttServer;
