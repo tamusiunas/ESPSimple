@@ -60,6 +60,10 @@ void setup(){
   pwmAdcDataLocal->sendAdcAnalogOnlyValue = sendAdcAnalogOnlyValue;
   pwmAdcDataLocal->pinAnalogOnlyValue = pinAnalogOnlyValue;
   pwmAdcDataLocal->pinAnalogOnlyPreviousValue = pinAnalogOnlyPreviousValue;
+  pwmAdcDataLocal->pinGpioAdcLastAction = pinGpioAdcLastAction;
+  pwmAdcDataLocal->pinGpioAdcLastActionTime = pinGpioAdcLastActionTime;
+  pwmAdcDataLocal->pinAnalogOnlyLastAction = pinAnalogOnlyLastAction;
+  pwmAdcDataLocal->pinAnalogOnlyLastActionTime = pinAnalogOnlyLastActionTime;
   pwmAdcDataLocal->totalGPIO = TOTALGPIO;
   pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
   pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
@@ -102,6 +106,8 @@ void setup(){
     isAlexaEnable = true;
   }
 
+  timeClient.begin();
+
   Serial.println("WifiGetChipId(): " + String(WifiGetChipId()));
   Serial.println("Free size: " + String(ESP.getFreeSketchSpace()));
   Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
@@ -114,6 +120,14 @@ void loop()
   if (isAlexaEnable)
   {
       amazonAlexa->handle();
+  }
+
+  // check for ntp reset each second
+  if ((millis() - lastTimeinMillisNtp) > 1000)
+  {
+    timeClient.update();
+    //Serial.println(timeClient.getFormattedTime());
+    lastTimeinMillisNtp = millis();
   }
 
   // check for double reset each second

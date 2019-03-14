@@ -11,17 +11,11 @@ AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcDa
 
 AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData)
 {
-    Serial.println("I0");
     _fauxmo = new fauxmoESP();
-    Serial.println("I1");
     _fauxmo->createServer(true);
-    Serial.println("I2");
     _fauxmo->setPort(80);
-    Serial.println("I3");
     _alexaStruct = alexaStruct;
-    Serial.println("I4");
     _pwmAdcData = pwmAdcData;
-    Serial.println("I5");
 }
 
 AmazonAlexa::~AmazonAlexa()

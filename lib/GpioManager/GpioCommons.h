@@ -49,6 +49,12 @@ struct PwmAdcData
    volatile int *sendAdcAnalogOnlyValue;
    volatile int *pinAnalogOnlyValue;
    volatile int *pinAnalogOnlyPreviousValue;
+
+   volatile int *pinGpioAdcLastAction;
+   volatile unsigned long *pinGpioAdcLastActionTime;
+   volatile int *pinAnalogOnlyLastAction;
+   volatile unsigned long *pinAnalogOnlyLastActionTime;
+
    volatile int totalGPIO;
    volatile int totalPwmSw; 
    volatile int totalPwmHw;
