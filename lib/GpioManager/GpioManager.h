@@ -35,6 +35,11 @@
 #define NONZEROCROSSTIMER 1
 #endif
 #include <MqttManagerOut.h>
+// "SyslogManager.h" and <NTPClient.h> must be removed in a near future. 
+// They are here "probably" 'cause a PATH issue in Platformio with ESP8266.
+//#include "SyslogManager.h"
+//#include <NTPClient.h>
+#include "DebugMessage.h"
 #define PWMSTEPS 1024
 
 
@@ -47,7 +52,7 @@ public:
    * 
    * @param espConfig ESPConfig Object with config parameters
    */
-  GpioManager(ESPConfig *espConfig);
+  GpioManager(ESPConfig *espConfig, DebugMessage *debugMessage);
   
   /**
    * @brief Destroy the Gpio Manager object
@@ -225,7 +230,7 @@ private:
   //MqttManagerOut *_mqttManagerOut;
   bool interrupInitialized = false;
   bool _zeroCrossEnable = false;
-
+  DebugMessage *_debugMessage;
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include "WebServerAliases.h"
 #include "WiFiAliases.h"
 #include "ESPConfig.h"
+#include "DebugMessage.h"
 
 class WiFiSTIManager
 {
@@ -21,6 +22,7 @@ private:
 #endif
   bool _hadBeenConnected = false;
   unsigned long connectTimeTry = 0;
+  DebugMessage *debugMessage = new DebugMessage();
 };
 
 #endif

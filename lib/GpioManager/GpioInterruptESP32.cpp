@@ -15,7 +15,7 @@
 
 void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 {
-  Serial.println("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
+  _debugMessage->debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
   gpio_num_t gpioReceived = (gpio_num_t) gpioInterruptPin;
   if (!interrupInitialized)
   {

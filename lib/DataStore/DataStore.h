@@ -16,6 +16,7 @@
 #include <string.h>
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "DebugMessage.h"
 
 #ifndef DATASTORE_MAX_PARAMS
 #define DATASTORE_MAX_PARAMS 5
@@ -202,6 +203,7 @@ private:
   DataParameter** _parameters;
   int _paramsCount = 0;
   int _max_params;
+  DebugMessage *_debugMessage = new DebugMessage();
 };
 
 #endif

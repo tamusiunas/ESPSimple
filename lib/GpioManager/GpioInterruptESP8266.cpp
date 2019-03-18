@@ -15,7 +15,7 @@
 
 void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 {
-  Serial.println("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
+  _debugMessage->debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
 
   // Pointer to struct to transport gpio status and ESPConfig to the handleInterruptrr
   volatile interruptParameters *iparameters = (interruptParameters *)malloc(sizeof(interruptParameters));

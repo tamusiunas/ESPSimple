@@ -56,7 +56,7 @@ void GpioManager::addGpioPwmNonZeroCross(int gpio)
 
 void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal)
 {
-  Serial.println("Setting Pwm");
+  DebugMessage debugMessageLocal = DebugMessage();
   if ((gpio >= 0) and (gpio < pwmAdcDataLocal->totalGPIO ))
   {
     if (String(_espConfig->getDataStore()->getValue("pwm_enable_zero_cross")) == "yes")
@@ -65,9 +65,7 @@ void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal
     }
     else
     {
-      Serial.println("");
-      Serial.println("Gpio: " + String(gpio));
-      Serial.println("Pwm: " + String(pwm));
+      debugMessageLocal.debug("Setting PWM - Gpio: " + String(gpio) + " - PWM: " + String(pwm));
       analogWrite(gpio,pwm);
       pwmAdcDataLocal->pinGpioPwmStatusChanged[gpio] = 1;
       pwmAdcDataLocal->pinGpioPwmStatus[gpio] = pwm;

@@ -17,6 +17,7 @@
 #ifdef ESP32
 #include <SPIFFS.h>
 #endif
+#include "DebugMessage.h"
 
 class SpiffsManager
 {
@@ -61,6 +62,7 @@ private:
   const char *_fileName;
   bool _formatIfError;
   DataStore *_dataStore;
+  DebugMessage *_debugMessage = new DebugMessage();
 };
 
 #endif

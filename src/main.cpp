@@ -10,12 +10,13 @@ void setup(){
     mustStartWebConfig = true;
     doubleReset.stop(); // it's a double reset so stop double reset check
     Serial.println("doubleReset.getResetValue(): " + String(doubleReset.getResetValue()));
-  }
+  }  
 
   DataStore *dataStore = new DataStore(); // initialize DataStore
   SpiffsManager *spiffsManager = new SpiffsManager("/config.json",true,dataStore);
   spiffsManager->readFile();
   dataStore->printParameters(); // print Parameters read from spiffsManager
+
   // Initialize espConfig with predefined parameters
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
@@ -25,18 +26,16 @@ void setup(){
   WebConfig webConfig(espConfig,spiffsManager);
   if (mustStartWebConfig)
   {
-    Serial.println("Web Config Started");
     webConfig.startSsid(80,"192.168.4.1",NULL,NULL);
     webConfig.processClient();
   }
 
-  Serial.println("Connecting to network");
-
   wiFiSTIManager = new WiFiSTIManager(espConfig);
   wiFiSTIManager->start();
 
-  otaHandler.setEspConfig(espConfig);
-  otaHandler.start(); 
+  timeClient = new NTPClient(ntpUDP,"pool.ntp.org",0,1800);
+  timeClient->begin();
+  timeClient->update();
 
   int syslogPort = 514;
   if (strcmp(dataStore->getValue("syslog_port"),"") != 0)
@@ -45,6 +44,13 @@ void setup(){
   }
   syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
   syslogManager->sendMessage("main","Initializing Syslog");
+
+  debugMessage = new DebugMessage(syslogManager);
+  debugMessage->debug("DEBUG started");
+
+  otaHandler = new OTAHandler(debugMessage);
+  otaHandler->setEspConfig(espConfig);
+  otaHandler->start(); 
 
   pwmAdcDataLocal = (PwmAdcData *)malloc(sizeof(PwmAdcData));
   pwmAdcDataLocal->pinGpioAdcPreviousValue = pinGpioAdcPreviousValue;
@@ -68,7 +74,7 @@ void setup(){
   pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
   pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
 
-  Serial.println("Configuring MQTT");
+  debugMessage->debug("Configuring MQTT");
   String mqttServerStr = dataStore->getValue("mqtt_ip_address");
   if (mqttServerStr != "")
   {
@@ -81,36 +87,34 @@ void setup(){
     {
       mqttPort = 1883;
     }
-    Serial.println("mqttServerStr: " + mqttServerStr);
-    Serial.println("mqttPort: " + String(mqttPort));
-    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager, pwmAdcDataLocal);
+    debugMessage->debug("mqttServerStr: " + mqttServerStr);
+    debugMessage->debug("mqttPort: " + String(mqttPort));
+    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager, pwmAdcDataLocal, debugMessage);
     mqttManagerIn->connect();
-    mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort);
+    mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort, debugMessage);
     mqttManagerOut->connect();
   }
 
-  Serial.println("Configuring GPIO");
-  gpioManager = new GpioManager(espConfig);
+  debugMessage->debug("Configuring GPIO");
+  gpioManager = new GpioManager(espConfig,debugMessage);
   //gpioManager = new GpioManager(espConfig);
   gpioManager->initializeGpio();
 
   if (strcmp(dataStore->getValue("alexa_enable"),"yes") == 0)
   {
-    Serial.println("Configuring Alexa");
+    debugMessage->debug("Configuring Alexa");
     alexaStruct = (AlexaStruct *)malloc(sizeof(AlexaStruct));
     alexaStruct->espConfig = espConfig;
     alexaStruct->gpioManager = gpioManager;
-    amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal);
+    amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal, debugMessage);
     amazonAlexa->enable();
     amazonAlexa->addConfiguredDevices();
     isAlexaEnable = true;
   }
 
-  timeClient.begin();
-
-  Serial.println("WifiGetChipId(): " + String(WifiGetChipId()));
-  Serial.println("Free size: " + String(ESP.getFreeSketchSpace()));
-  Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
+  debugMessage->debug("WifiGetChipId(): " + String(WifiGetChipId()));
+  debugMessage->debug("Free size: " + String(ESP.getFreeSketchSpace()));
+  debugMessage->debug("Free Heap: " + String(ESP.getFreeHeap()));
 
 }
 
@@ -125,8 +129,8 @@ void loop()
   // check for ntp reset each second
   if ((millis() - lastTimeinMillisNtp) > 1000)
   {
-    timeClient.update();
-    //Serial.println(timeClient.getFormattedTime());
+    timeClient->update();
+    // zqdebugMessage->debug(" <-- Now");
     lastTimeinMillisNtp = millis();
   }
 
@@ -140,7 +144,7 @@ void loop()
   // check for OTA each second
   if ((millis() - lastTimeinMillisOta) > 1000)
   {
-    otaHandler.handle();
+    otaHandler->handle();
     lastTimeinMillisOta = millis();
   }
 

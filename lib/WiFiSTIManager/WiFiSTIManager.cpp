@@ -59,19 +59,19 @@ bool WiFiSTIManager::connect()
   {
     hasDNS=true;
   }
-  Serial.println("IPIp: " + IPIp.toString());
-  Serial.println("IPMask: " + IPMask.toString());
-  Serial.println("IPGw: " + IPGw.toString());
-  Serial.println("IPDns: " + IPDns.toString());
+  debugMessage->debug("WiFiSTIManager - Ip: " + IPIp.toString());
+  debugMessage->debug("WiFiSTIManager - Mask: " + IPMask.toString());
+  debugMessage->debug("WiFiSTIManager - Gw: " + IPGw.toString());
+  debugMessage->debug("WiFiSTIManager - Dns: " + IPDns.toString());
   if (hasIP and hasMask and hasGw and hasDNS)
   {
-    Serial.println("IPIp, IPGw, IPMask, IPDns");
+    //debugMessage->debug("IPIp, IPGw, IPMask, IPDns");
     WiFi.config(IPIp, IPGw, IPMask, IPDns);
   }
   else
   if (hasIP and hasMask and hasGw)
   {
-    Serial.println("IPIp, IPGw, IPMask");
+    //debugMessage->debug("IPIp, IPGw, IPMask");
     WiFi.config(IPIp, IPGw, IPMask);
   }
   WiFi.persistent(true);
@@ -92,25 +92,25 @@ bool WiFiSTIManager::connect()
     WiFi.begin(wifiName.c_str(),wifiPassword.c_str());
     if (WiFi.status() != WL_CONNECTED)
     {
-      Serial.println("Not connected");
-      WiFi.printDiag(Serial);
+      debugMessage->debug("WiFiSTIManager - Wifi is not connected");
+      // WiFi.printDiag(Serial);
       return false;
     }
     else
     {
       _hadBeenConnected = true;
-      Serial.println("Connected");
-      WiFi.printDiag(Serial);
-      Serial.println("IP: " + WiFi.localIP());
+      debugMessage->debug("WiFiSTIManager - Wifi is connected");
+      //WiFi.printDiag(Serial);
+      debugMessage->debug("WiFiSTIManager - IP: " + WiFi.localIP());
       return true;
     }
   }
   else
   {
     _hadBeenConnected = true;
-    Serial.println("Connected");
+    debugMessage->debug("Connected");
     WiFi.printDiag(Serial);
-    Serial.println("IP: " + WiFi.localIP());
+    debugMessage->debug("WiFiSTIManager - IP: " + WiFi.localIP());
     return true;
   }
 }
@@ -130,88 +130,89 @@ bool WiFiSTIManager::isConnected()
 #ifdef ESP32
 void WiFiSTIManager::WiFiEvent(WiFiEvent_t event)
 {
-    Serial.printf("[WiFi-event] event: %d\n", event);
-
+    DebugMessage debugMessageLocal = DebugMessage();
+    debugMessageLocal.debug("WiFiSTIManager - Got an Wifi event: " + String(event));
+    IPAddress ipAddress; 
     switch (event)
     {
         case SYSTEM_EVENT_WIFI_READY:
-            Serial.println("WiFi interface ready");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi interface ready");
             break;
         case SYSTEM_EVENT_SCAN_DONE:
-            Serial.println("Completed scan for access points");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Completed scan for access points");
             break;
         case SYSTEM_EVENT_STA_START:
-            Serial.println("WiFi client started");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi client started");
             break;
         case SYSTEM_EVENT_STA_STOP:
-            Serial.println("WiFi clients stopped");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi clients stopped");
             break;
         case SYSTEM_EVENT_STA_CONNECTED:
-            Serial.println("Connected to access point");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Connected to access point");
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
-            Serial.println("Disconnected from WiFi access point");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Disconnected from WiFi access point");
             break;
         case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-            Serial.println("Authentication mode of access point has changed");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Authentication mode of access point has changed");
             break;
         case SYSTEM_EVENT_STA_GOT_IP:
-            Serial.print("Obtained IP address: ");
-            Serial.println(WiFi.localIP());
+            ipAddress = IPAddress(WiFi.localIP());
+            debugMessageLocal.debug("WiFiSTIManager - Event - Obtained IP address: " + ipAddress.toString());
             break;
         case SYSTEM_EVENT_STA_LOST_IP:
-            Serial.println("Lost IP address and IP address is reset to 0");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Lost IP address and IP address is reset to 0");
             break;
         case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-            Serial.println("WiFi Protected Setup (WPS): succeeded in enrollee mode");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi Protected Setup (WPS): succeeded in enrollee mode");
             break;
         case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-            Serial.println("WiFi Protected Setup (WPS): failed in enrollee mode");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi Protected Setup (WPS): failed in enrollee mode");
             break;
         case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-            Serial.println("WiFi Protected Setup (WPS): timeout in enrollee mode");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi Protected Setup (WPS): timeout in enrollee mode");
             break;
         case SYSTEM_EVENT_STA_WPS_ER_PIN:
-            Serial.println("WiFi Protected Setup (WPS): pin code in enrollee mode");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi Protected Setup (WPS): pin code in enrollee mode");
             break;
         case SYSTEM_EVENT_AP_START:
-            Serial.println("WiFi access point started");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi access point started");
             break;
         case SYSTEM_EVENT_AP_STOP:
-            Serial.println("WiFi access point  stopped");
+            debugMessageLocal.debug("WiFiSTIManager - Event - WiFi access point  stopped");
             break;
         case SYSTEM_EVENT_AP_STACONNECTED:
-            Serial.println("Client connected");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Client connected");
             break;
         case SYSTEM_EVENT_AP_STADISCONNECTED:
-            Serial.println("Client disconnected");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Client disconnected");
             break;
         case SYSTEM_EVENT_AP_STAIPASSIGNED:
-            Serial.println("Assigned IP address to client");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Assigned IP address to client");
             break;
         case SYSTEM_EVENT_AP_PROBEREQRECVED:
-            Serial.println("Received probe request");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Received probe request");
             break;
         case SYSTEM_EVENT_GOT_IP6:
-            Serial.println("IPv6 is preferred");
+            debugMessageLocal.debug("WiFiSTIManager - Event - IPv6 is preferred");
             break;
         case SYSTEM_EVENT_ETH_START:
-            Serial.println("Ethernet started");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Ethernet started");
             break;
         case SYSTEM_EVENT_ETH_STOP:
-            Serial.println("Ethernet stopped");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Ethernet stopped");
             break;
         case SYSTEM_EVENT_ETH_CONNECTED:
-            Serial.println("Ethernet connected");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Ethernet connected");
             break;
         case SYSTEM_EVENT_ETH_DISCONNECTED:
-            Serial.println("Ethernet disconnected");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Ethernet disconnected");
             break;
         case SYSTEM_EVENT_ETH_GOT_IP:
-            Serial.println("Obtained IP address");
+            debugMessageLocal.debug("WiFiSTIManager - Event - Obtained IP address");
             break;
         case SYSTEM_EVENT_MAX:
-            Serial.println("SYSTEM_EVENT_MAX");
+            debugMessageLocal.debug("WiFiSTIManager - Event - SYSTEM_EVENT_MAX");
             break;
     }
   }

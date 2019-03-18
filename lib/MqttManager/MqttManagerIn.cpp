@@ -1,6 +1,6 @@
 #include "MqttManagerIn.h"
 
-MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal)
+MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage)
 {
     _espConfig = espConfig;
     _gpioManager = gpioManager;
@@ -16,7 +16,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *es
     _hostName = "iot-" + String(WifiGetChipId()) + "-in";
 }
 
-MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal)
+MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage)
 {
     _espConfig = espConfig;
     _gpioManager = gpioManager;
@@ -72,10 +72,7 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
   {
     mqttMsg += (char) payload[cont];
   }
-  Serial.println("Received an MQTT message.");
-  Serial.println("Testing -> " + String(configCallbackStr->_espConfig->getTotalGpio()));
-  Serial.println("Topic: " + String(topic));
-  Serial.println("Message: " + mqttMsg);
+  Serial.println("Received an MQTT message - Topic: " + String(topic) + "Message: " + mqttMsg);
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(mqttMsg);

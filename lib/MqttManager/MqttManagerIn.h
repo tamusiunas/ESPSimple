@@ -17,6 +17,7 @@
 #include "WiFiAliases.h"
 #include "JsonManager.h"
 #include "ArduinoJson.h"
+#include "DebugMessage.h"
 
 //#include "JsonManager.h"
 
@@ -34,7 +35,7 @@ public:
    * @param *espConfig Pointer to ESPConfig object
    * @param *gpioManager Pointer ro GpioManager object
    */
-  MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal);
+  MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage);
  
   /**
    * @brief Construct a new Mqtt Manager object
@@ -47,7 +48,7 @@ public:
    * @param *espConfig Pointer to ESPConfig object
    * @param *gpioManager Pointer ro GpioManager object
    */
-  MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal);
+  MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage);
 
   /**
    * @brief Destroy the Mqtt Manager In object
@@ -108,6 +109,7 @@ private:
     GpioManager *_gpioManager;
     volatile PwmAdcData *_pwmAdcDataLocal;
     MqttManagerIn *mqttManagerLocal;
+    DebugMessage *_debugMessage;
   };
 
 };

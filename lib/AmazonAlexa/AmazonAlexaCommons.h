@@ -5,5 +5,4 @@ struct AlexaStruct
 {
     ESPConfig *espConfig;
     GpioManager *gpioManager;
-    //volatile PwmAdcData *pwmAdcDataLocal;
 };

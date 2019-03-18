@@ -14,6 +14,7 @@
 #include <PubSubClient.h>
 #include "WiFiAliases.h"
 #include "JsonManager.h"
+#include "DebugMessage.h"
 
 class MqttManagerOut
 {
@@ -27,7 +28,7 @@ public:
    * @param mqttServer Server name or IP Address
    * @param mqttPort TCP port number
    */
-  MqttManagerOut(String mqttServer, uint16_t mqttPort);
+  MqttManagerOut(String mqttServer, uint16_t mqttPort, DebugMessage *debugMessage);
  
   /**
    * @brief Construct a new Mqtt Manager object
@@ -38,7 +39,7 @@ public:
    * @param mqttPort TCP port number
    * @param hostName Hostname
    */
-  MqttManagerOut(String mqttServer, uint16_t mqttPort, String hostName);
+  MqttManagerOut(String mqttServer, uint16_t mqttPort, String hostName, DebugMessage *debugMessage);
 
   /**
    * @brief Destroy the Mqtt Manager In object
@@ -91,5 +92,6 @@ private:
   uint16_t _mqttPort;
   String _hostName;
   unsigned long _connectTimeTry = 0;
+  DebugMessage *_debugMessage;
 };
 #endif

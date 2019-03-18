@@ -11,6 +11,7 @@
 #include "MqttManagerIn.h"
 #include "MqttManagerOut.h"
 #include "AmazonAlexa.h"
+#include "DebugMessage.h"
 #include <NTPClient.h>
 
 #define FORMAT_SPIFFS_IF_FAILED true
@@ -110,7 +111,7 @@ unsigned long lastTimeinMillisNtp = 0;
 volatile PwmAdcData *pwmAdcDataLocal;
 DoubleReset doubleReset = DoubleReset(5000);
 bool mustStartWebConfig = false;
-OTAHandler otaHandler = OTAHandler();
+OTAHandler *otaHandler;
 SyslogManager *syslogManager;
 ESPConfig *espConfig; // Config values passed through objects
 WiFiSTIManager *wiFiSTIManager; // To configure WiFi parameters
@@ -121,4 +122,5 @@ AmazonAlexa *amazonAlexa; // Send and receive Amazon Alexa Messages
 AlexaStruct *alexaStruct; // Struct to carry Alexa useful data
 bool isAlexaEnable = false;
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP,"pool.ntp.org",0,1800);
+NTPClient *timeClient;
+DebugMessage *debugMessage;

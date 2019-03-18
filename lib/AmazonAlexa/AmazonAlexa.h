@@ -3,12 +3,13 @@
 
 #include <fauxmoESP.h>
 #include "AmazonAlexaCommons.h"
+#include "DebugMessage.h"
 
 class AmazonAlexa
 {
 public:
-    AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, unsigned long tcpPort);
-    AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData);
+    AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, unsigned long tcpPort, DebugMessage *debugMessage);
+    AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, DebugMessage *debugMessage);
     ~AmazonAlexa();
     void handle();
     void enable();
@@ -20,6 +21,7 @@ private:
     
     AlexaStruct *_alexaStruct;
     volatile PwmAdcData *_pwmAdcData;
+    DebugMessage *_debugMessage;
 };
 
 #endif

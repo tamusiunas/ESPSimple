@@ -15,12 +15,13 @@
 #include "ESPConfig.h"
 #include <ArduinoOTA.h>
 #include "WiFiAliases.h"
+#include "DebugMessage.h"
 
 class OTAHandler
 {
   public:
-    OTAHandler();
-    OTAHandler(ESPConfig *espConfig, String hostName);
+    OTAHandler(DebugMessage *debugMessage);
+    OTAHandler(ESPConfig *espConfig, String hostName, DebugMessage *debugMessage);
     ~OTAHandler();
     void handle();
     void start();
@@ -30,6 +31,7 @@ class OTAHandler
   private:
     ESPConfig *_espConfig;
     String _hostName;
+    DebugMessage *_debugMessage;
 };
 
 

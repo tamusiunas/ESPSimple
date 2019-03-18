@@ -184,7 +184,7 @@ void GpioManager::configAdc(String gpioAdc)
         
         if (adc == 1)
         {
-            Serial.println("Configuring ADC1: Channel: " + String(adcChannel) + " - Attenuation: " + String(adcAtten));
+            _debugMessage->debug("Configuring ADC1: Channel: " + String(adcChannel) + " - Attenuation: " + String(adcAttenStr) + " db");
             adc1_config_width(ADC_WIDTH_BIT_10);
             adc1_config_channel_atten((adc1_channel_t) adcChannel, (adc_atten_t) adcAtten);
         }

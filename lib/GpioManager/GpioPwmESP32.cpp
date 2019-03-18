@@ -14,7 +14,6 @@
 
 void GpioManager::configGpioPwm(uint32_t gpio, int channel, int timer)
 {
-  Serial.println("\nconfigGpioPwm");
   ledc_channel_config_t led_config;
   led_config.gpio_num = (gpio_num_t) gpio; // GPIO
   led_config.speed_mode = LEDC_HIGH_SPEED_MODE; // LEDC high speed
@@ -22,27 +21,18 @@ void GpioManager::configGpioPwm(uint32_t gpio, int channel, int timer)
   led_config.timer_sel = (ledc_timer_t) timer; // timer (2-bit)
   led_config.duty = (1 << DUTY_BIT_DEPTH) - 1; // 0-1023 (config as 1023 since DUTY_BIT_DEPTH = 10-bit)
   led_config.intr_type = LEDC_INTR_DISABLE; // disable LECD interrupt
-  Serial.println("led_config.gpio_num: " + String(led_config.gpio_num));
-  Serial.println("led_config.speed_mode: " + String(led_config.speed_mode));
-  Serial.println("led_config.channel: " + String(led_config.channel));
-  Serial.println("led_config.timer_sel: " + String(led_config.timer_sel));
-  Serial.println("led_config.duty: " + String(led_config.duty));
-  Serial.println("led_config.intr_type: " + String(led_config.intr_type));
+  _debugMessage->debug("Configuring GPIO " + String(gpio) + " as PWM - Channel: " + String(channel) + " - Timer: " + String(timer));
   ledc_channel_config(&led_config);
 }
 
 void GpioManager::configGpioTimer(int timer, int frequency)
 {
-  Serial.println("\nconfigGpioTimer");
   ledc_timer_config_t timer_config;
   timer_config.speed_mode = LEDC_HIGH_SPEED_MODE; // LEDC high speed
   timer_config.duty_resolution = DUTY_BIT_DEPTH; // 0-1023 since DUTY_BIT_DEPTH = 10-bit (can be up to 20-bit)
   timer_config.timer_num = (ledc_timer_t) timer; // timer num (2-bit from 0 to 3)
   timer_config.freq_hz = frequency; // frequency (hz)
-  Serial.println("timer_config.speed_mode: " + String(timer_config.speed_mode));
-  Serial.println("timer_config.duty_resolution: " + String(timer_config.duty_resolution));
-  Serial.println("timer_config.timer_num: " + String(timer_config.timer_num));
-  Serial.println("timer_config.freq_hz: " + String(timer_config.freq_hz));
+  //_debugMessage->debug("Configuring Timer " + String(timer) + " as " + String(frequency) + "hz ");
   ledc_timer_config(&timer_config);
 }
 
@@ -88,13 +78,12 @@ void GpioManager::initializeTimers()
 
 void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal)
 {
-  Serial.println("Setting Pwm");
-  if (pwm < PWMSTEPS)
+  DebugMessage debugMessageLocal = DebugMessage();
+  if ((pwm >= 0) and (pwm < PWMSTEPS))
   {
     if ((gpio >= 0) and (gpio < pwmAdcDataLocal->totalGPIO ))
     {
-      Serial.println("");
-      Serial.println("Pwm: " + String(pwm));
+      debugMessageLocal.debug("Setting PWM - Gpio: " + String(gpio) + " - PWM: " + String(pwm));
       int channel = -1;
 
       for (int cont=0 ; cont < pwmAdcDataLocal->totalPwmHw ; cont++)
@@ -104,47 +93,38 @@ void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal
           channel = cont;
         }
       }
-
-      Serial.println("channel: " + String(channel));
+      
       int totalSteps = PWMSTEPS;
-      Serial.println("totalSteps: " + String(totalSteps));
       int dutyBitDec = 1 << DUTY_BIT_DEPTH;
-      Serial.println("dutyBitDec: " + String(dutyBitDec));
       int hpoint = (dutyBitDec - (pwm*(dutyBitDec/totalSteps)));
-      Serial.println("hpoint: " + String(hpoint));
       int duty = (pwm*(dutyBitDec/totalSteps));
-      Serial.println("duty: " + String(duty));
       duty -= (dutyBitDec - duty - hpoint);
-      Serial.println("duty: " + String(duty));
-      Serial.println("");
       ledc_set_duty_and_update(LEDC_HIGH_SPEED_MODE, (ledc_channel_t) channel, duty, hpoint);
       Serial.println("gpio " + String(gpio) + ": " + String(pwm));
       pwmAdcDataLocal->pinGpioPwmStatusChanged[gpio] = 1;
       pwmAdcDataLocal->pinGpioPwmStatus[gpio] = pwm;
+      debugMessageLocal.debug("Setting PWM - Channel: " + String(channel) + " - Total Steps: " + String(totalSteps) + " - DutyBitDec: " + 
+                           String(dutyBitDec) + " - Hpoint: " + String(hpoint) + " - Duty: " + String(duty));
  
-      //Serial.println("pwmAdcDataLocal->pinGpioPwmStatusChanged[" + String(gpio) + "]: " + String(pwmAdcDataLocal->pinGpioPwmStatusChanged[gpio]));
-      //Serial.println("_espConfig->getPinGpioPwmStatusChanged()[" + String(gpio) + "]: " + String(_espConfig->getPinGpioPwmStatusChanged()[gpio]));
-      //Serial.println("pwmAdcDataLocal->pinGpioPwmStatus[" + String(gpio) + "]: " + String(pwmAdcDataLocal->pinGpioPwmStatus[gpio]));
-      //Serial.println("_espConfig->getPinGpioPwmStatus()[" + String(gpio) + "]: " + String(_espConfig->getPinGpioPwmStatus()[gpio]));
     }
   }
   else
   {
-    Serial.println("PWM too high");
+    debugMessageLocal.debug("Setting PWM - PWM " + String(pwm) + " is too high");
   }
 }
 
 void GpioManager::addGpioPwmZeroCross(int gpio)
 {
   int pwmChannel = _espConfig->addGpioToPwmChanneHw(gpio);
-  Serial.println("Configuring ZeroCross PWM: " + String(gpio) + " - channel " + String(pwmChannel));
+  _debugMessage->debug("Configuring ZeroCross PWM: " + String(gpio) + " - Channel " + String(pwmChannel));
   configGpioPwm(gpio, pwmChannel, ZEROCROSSTIMER);
 }
 
 void GpioManager::addGpioPwmNonZeroCross(int gpio)
 {
   int pwmChannel = _espConfig->addGpioToPwmChanneHw(gpio);
-  Serial.println("Configuring NonZeroCross PWM: " + String(gpio) + " - channel " + String(pwmChannel));
+  _debugMessage->debug("Configuring NonZeroCross PWM: " + String(gpio) + " - Channel " + String(pwmChannel));
   configGpioPwm(gpio, pwmChannel, NONZEROCROSSTIMER);
 }
 

@@ -217,8 +217,8 @@ void DataStore::printParameters()
   {
     if (_parameters[parameterPos] != NULL)
     {
-      Serial.println("\nfield: " + String(_parameters[parameterPos]->_field) +
-                     "\nvalue: " + String(_parameters[parameterPos]->_value));
+      _debugMessage->debug("DataStore - Key: " + String(_parameters[parameterPos]->_field) +
+                     " - Value: " + String(_parameters[parameterPos]->_value));
     }
   }
 }

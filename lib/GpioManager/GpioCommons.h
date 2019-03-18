@@ -58,6 +58,7 @@ struct PwmAdcData
    volatile int totalGPIO;
    volatile int totalPwmSw; 
    volatile int totalPwmHw;
+
 };
 
 #endif

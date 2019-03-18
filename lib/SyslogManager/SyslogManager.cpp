@@ -16,7 +16,7 @@ SyslogManager::SyslogManager()
   _syslogPort = 554;
   _appName = "IOT-" + String(WifiGetChipId());
   _hostName = _appName;
-  _syslogFacility = LOG_DAEMON;
+  _syslogFacility = LOG_DEBUG;
 }
 
 SyslogManager::SyslogManager(String syslogServer, uint16_t syslogPort)
@@ -25,7 +25,7 @@ SyslogManager::SyslogManager(String syslogServer, uint16_t syslogPort)
   _syslogPort = syslogPort;
   _appName = "IOT-" + String(WifiGetChipId());
   _hostName = _appName;
-  _syslogFacility = LOG_DAEMON;
+  _syslogFacility = LOG_DEBUG;
 }
 
 SyslogManager::~SyslogManager()
