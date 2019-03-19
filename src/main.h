@@ -12,7 +12,6 @@
 #include "MqttManagerOut.h"
 #include "AmazonAlexa.h"
 #include "DebugMessage.h"
-#include <NTPClient.h>
 
 #define FORMAT_SPIFFS_IF_FAILED true
 
@@ -32,14 +31,15 @@ volatile int pinGpioDigitalStatusChanged[] =           { 0, 0, 0, 0, 0, 0, 0, 0,
 volatile int pinGpioDigitalStatus[] =                  {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Gpio Digital last status (low/high)
 volatile int pinGpioPwmStatusChanged[] =               { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Gpio Pwm last value changed (false/true)
 volatile int pinGpioPwmStatus[] =                      {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Gpio Pwm last value
+
 volatile int pinGpioAdcValue[] =                       {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Gpio Adc last value 
 volatile int pinGpioAdcPreviousValue[] =               {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Gpio Adc previous value 
 volatile int pinGpioAdcLastAction[] =                  {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Gpio Adc last Action (low/high)
-volatile unsigned long pinGpioAdcLastActionTime[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Gpio Adc last Action Time
+
 volatile int pinAnalogOnlyValue[] =                    {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Analog Only last value
 volatile int pinAnalogOnlyPreviousValue[] =            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Analog Only previous value
 volatile int pinAnalogOnlyLastAction[] =               {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; // Analog Only last Action (low/high) 
-volatile unsigned long pinAnalogOnlyLastActionTime[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Analog Only last Action Time
+
 volatile bool pinPwmEnable[] =                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Pin PWM enable (false/true)
 int pinGpioAdcChannelArray[] =                         {-1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int pinGpioAdcNumberArray[] =                          {-1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -78,16 +78,14 @@ volatile int pinGpioAdcPreviousValue[] =               {-1,-1,-1,-1,-1,-1,-1,-1,
                                                         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinGpioAdcLastAction[] =                  {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                                         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-volatile unsigned long pinGpioAdcLastActionTime[] =    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-volatile int pinAnalogOnlyValue[] =                    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+volatile int pinAnalogOnlyValue[] =                    {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+                                                        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinAnalogOnlyPreviousValue[] =            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                                         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 volatile int pinAnalogOnlyLastAction[] =               {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                                                         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-volatile unsigned long pinAnalogOnlyLastActionTime[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 volatile bool pinPwmEnable[] =                         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int pinGpioAdcChannelArray[] =                         {-1,-1, 2,-1, 2,-1,-1,-1,-1,-1,-1,-1,-1, 2, 2, 2,-1,-1,-1,-1,-1,-1,-1,-1,-1, 2, 2, 2,
@@ -123,5 +121,4 @@ AmazonAlexa *amazonAlexa; // Send and receive Amazon Alexa Messages
 AlexaStruct *alexaStruct; // Struct to carry Alexa useful data
 bool isAlexaEnable = false;
 WiFiUDP ntpUDP;
-NTPClient *timeClient;
 DebugMessage *debugMessage;

@@ -33,9 +33,9 @@ void setup(){
   wiFiSTIManager = new WiFiSTIManager(espConfig);
   wiFiSTIManager->start();
 
-  timeClient = new NTPClient(ntpUDP,"pool.ntp.org",0,1800);
+  /*timeClient = new NTPClient(ntpUDP,"pool.ntp.org",0,1800);
   timeClient->begin();
-  timeClient->update();
+  timeClient->update();*/
 
   int syslogPort = 514;
   if (strcmp(dataStore->getValue("syslog_port"),"") != 0)
@@ -67,12 +67,19 @@ void setup(){
   pwmAdcDataLocal->pinAnalogOnlyValue = pinAnalogOnlyValue;
   pwmAdcDataLocal->pinAnalogOnlyPreviousValue = pinAnalogOnlyPreviousValue;
   pwmAdcDataLocal->pinGpioAdcLastAction = pinGpioAdcLastAction;
-  pwmAdcDataLocal->pinGpioAdcLastActionTime = pinGpioAdcLastActionTime;
   pwmAdcDataLocal->pinAnalogOnlyLastAction = pinAnalogOnlyLastAction;
-  pwmAdcDataLocal->pinAnalogOnlyLastActionTime = pinAnalogOnlyLastActionTime;
   pwmAdcDataLocal->totalGPIO = TOTALGPIO;
   pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
   pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
+
+  int actionAdcTotal = String(dataStore->getValue("action_adc_total")).toInt();
+  pwmAdcDataLocal->adcActionIndexLastTimeInMillis = (volatile unsigned long *)malloc(sizeof(volatile unsigned long) * actionAdcTotal);
+  pwmAdcDataLocal->adcActionWhenReverseInMillis = (volatile unsigned long *)malloc(sizeof(volatile unsigned long) * actionAdcTotal);
+  for (int cont = 0 ; cont < actionAdcTotal ; cont ++)
+  {
+    pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont] = 0;
+    pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] = 0;
+  }
 
   debugMessage->debug("Configuring MQTT");
   String mqttServerStr = dataStore->getValue("mqtt_ip_address");
@@ -127,12 +134,12 @@ void loop()
   }
 
   // check for ntp reset each second
-  if ((millis() - lastTimeinMillisNtp) > 1000)
+  /*if ((millis() - lastTimeinMillisNtp) > 1000)
   {
     timeClient->update();
     // zqdebugMessage->debug(" <-- Now");
     lastTimeinMillisNtp = millis();
-  }
+  }*/
 
   // check for double reset each second
   if ((millis() - lastTimeinMillisDoubleReset) > 1000)
@@ -150,6 +157,7 @@ void loop()
 
   if ((millis() - lastTimeinMillisAdc) > 500)
   {
+    gpioManager->checkAdcReverse(pwmAdcDataLocal);
     gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
     lastTimeinMillisAdc = millis();
   }

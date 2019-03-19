@@ -144,10 +144,13 @@ void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile P
     }
   }
 
-  bool runAction = false;
+  
   for (int cont = 0 ; cont < actionAdcTotal ; cont++)
   {
+    bool runAction = false;
     bool analogOnly = false;
+    bool triggerArmed = false;
+
     int adcGpioOriginInt = -1;
     String adcGpioOriginStr = "action_adc_gpio_origin_r_" + String(cont);
     String adcGpioOriginValueStr = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str()));
@@ -165,64 +168,121 @@ void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile P
     String actionAdcTriggerAnalisisTypeValueStr = String(_espConfig->getDataStore()->getValue(actionAdcTriggerAnalisisTypeStr.c_str()));
     String actionAdcTriggerValueStr = "action_adc_trigger_value_r_" + String(cont);
     int actionAdcTriggerValueValueInt = String(_espConfig->getDataStore()->getValue(actionAdcTriggerValueStr.c_str())).toInt();
+    String actionAdcWaitingTimeRearmStr = "action_adc_waiting_time_rearm_r_"+ String(cont);
+    int actionAdcWaitingTimeRearmValueInt = String(_espConfig->getDataStore()->getValue(actionAdcWaitingTimeRearmStr.c_str())).toInt();
 
-    if (analogOnly)
+    if ((millis() - pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont]) > (unsigned long) actionAdcWaitingTimeRearmValueInt)
     {
-      int adcValue = adcValueAnalogOnlyArray[adcGpioOriginInt];
-      if (actionAdcTriggerAnalisisTypeValueStr == "variation")
-      {
-        if (((adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) >= actionAdcTriggerValueValueInt) or
-            ((adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
-        {
-          runAction = true;
-          _debugMessage->debug("It's an analog only variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
-        }
-      }
-      else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
-      {
-        if ((adcValue > actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
-        {
-          runAction = true;
-          _debugMessage->debug("It's an analog only greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
-        }
-      }
-      else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
-      {
-        if ((adcValue < actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
-        {
-          runAction = true;
-          _debugMessage->debug("It's an analog only lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
-        }
-      }
+      triggerArmed = true;      
+      //_debugMessage->debug("Trigger " + String(cont) + " armed - adcActionIndexLastTimeInMillis: " + String(pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont]));
     }
     else
     {
-      int adcValue = adcValueGpipAdcArray[adcGpioOriginInt];
-      if (actionAdcTriggerAnalisisTypeValueStr == "variation")
+      //_debugMessage->debug("Trigger " + String(cont) + " not armed - adcActionIndexLastTimeInMillis: " + String(pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont]));
+    }
+
+    if (triggerArmed)
+    {
+      if ((analogOnly) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] > -1))
       {
-        if (((adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) >= actionAdcTriggerValueValueInt) or
-            ((adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
+        int adcValue = adcValueAnalogOnlyArray[adcGpioOriginInt];
+        if (actionAdcTriggerAnalisisTypeValueStr == "variation")
         {
-          runAction = true;
-          _debugMessage->debug("It's an ADC GPIO variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+          if (((adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) >= actionAdcTriggerValueValueInt) or
+              ((adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
+          {
+            runAction = true;
+            _debugMessage->debug("It's an analog only variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+          }
+        }
+        else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
+        {
+          if ((adcValue > actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
+          {
+            runAction = true;
+            _debugMessage->debug("It's an analog only greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+          }
+        }
+        else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
+        {
+          if ((adcValue < actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
+          {
+            runAction = true;
+            _debugMessage->debug("It's an analog only lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+          }
         }
       }
-      else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
+      else if (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] > -1)
       {
-        if ((adcValue > actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
+        int adcValue = adcValueGpipAdcArray[adcGpioOriginInt];
+        if (actionAdcTriggerAnalisisTypeValueStr == "variation")
         {
-          runAction = true;
-          _debugMessage->debug("It's an ADC GPIO greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+          if (((adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) >= actionAdcTriggerValueValueInt) or
+              ((adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
+          {
+            runAction = true;
+            _debugMessage->debug("It's an ADC GPIO variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+          }
         }
+        else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
+        {
+          if ((adcValue > actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
+          {
+            runAction = true;
+            _debugMessage->debug("It's an ADC GPIO greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+          }
+        }
+        else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
+        {
+          if ((adcValue < actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
+          {
+            runAction = true;
+            _debugMessage->debug("It's an ADC GPIO lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+          }
+        }  
       }
-      else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
+    }
+    
+    if (runAction)
+    {
+      String actionAdcActionStr = "action_adc_action_r_" + String(cont);
+      String actionAdcActionValueStr = String(_espConfig->getDataStore()->getValue(actionAdcActionStr.c_str()));
+      String actionAdcGpioTargetStr = "action_adc_gpio_target_r_" + String(cont);
+      int actionAdcGpioTargetValueInt = String(_espConfig->getDataStore()->getValue(actionAdcGpioTargetStr.c_str())).toInt();
+      String actionAdcTimeBeforeActionReversal = "action_adc_time_before_action_reversal_r_" + String(cont);
+      //_debugMessage->debug(actionAdcTimeBeforeActionReversal + ": " + String(_espConfig->getDataStore()->getValue(actionAdcTimeBeforeActionReversal.c_str())));
+      int actionAdcTimeBeforeActionReversalValueInt = String(_espConfig->getDataStore()->getValue(actionAdcTimeBeforeActionReversal.c_str())).toInt();
+      if (actionAdcActionValueStr == "reverse")
       {
-        if ((adcValue < actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
-        {
-          runAction = true;
-          _debugMessage->debug("It's an ADC GPIO lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
-        }
-      }  
+        //pwmAdcDataLocal->adc
+        _debugMessage->debug("Reversing GPIO " + String(actionAdcGpioTargetValueInt));
+        int gpioStatus = getDigitalOutput(actionAdcGpioTargetValueInt);
+        setDigitalOutput(actionAdcGpioTargetValueInt, !gpioStatus);
+        _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
+        _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,!gpioStatus);
+      }
+      else if (actionAdcActionValueStr == "on")
+      {
+        _debugMessage->debug("Setting " + String(actionAdcGpioTargetValueInt) + " to HIGH");
+        setDigitalOutput(actionAdcGpioTargetValueInt, HIGH);
+        _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
+        _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,HIGH);
+      }
+      else if (actionAdcActionValueStr == "off")
+      {
+        _debugMessage->debug("Setting " + String(actionAdcGpioTargetValueInt) + " to LOW");
+        setDigitalOutput(actionAdcGpioTargetValueInt, LOW);
+        _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
+        _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,LOW);
+      }
+      //_debugMessage->debug("Adc index: " + String(cont) + " - actionAdcTimeBeforeActionReversalValueInt: " + String(actionAdcTimeBeforeActionReversalValueInt));
+      if (actionAdcTimeBeforeActionReversalValueInt > 0)
+      {
+        //_debugMessage->debug("Configuring adcActionWhenReverseInMillis[" + String(cont) + "] to " + String((millis() + actionAdcTimeBeforeActionReversalValueInt)));
+        pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] = (millis() + actionAdcTimeBeforeActionReversalValueInt);
+      }
+
+      pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont] = millis();
     }
   } 
 
@@ -234,11 +294,6 @@ void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile P
     pwmAdcDataLocal->pinAnalogOnlyPreviousValue[cont] = pwmAdcDataLocal->pinAnalogOnlyValue[cont];
     pwmAdcDataLocal->pinAnalogOnlyValue[cont] = adcValueAnalogOnlyArray[cont];
   }
-  if (runAction)
-  {
-    //run the actions
-  }
-
   
 }
 
@@ -329,12 +384,54 @@ void GpioManager::checkSendAdcAnalogOnlyValue(MqttManagerOut *mqttManagerOut, vo
     }
 }
 
-void GpioManager::executeDigitalAction(uint32_t gpio, int gpioStatus)
+void GpioManager::checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal)
+{
+  int adcTotalInt = String(_espConfig->getDataStore()->getValue("action_adc_total")).toInt();
+  for (int cont = 0 ; cont < adcTotalInt; cont++)
+  {
+    if ((pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] > 0) and (millis() > pwmAdcDataLocal->adcActionWhenReverseInMillis[cont]))
+    {
+      _debugMessage->debug("Reversing ADC Action " + String(cont));
+      pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] = 0;
+
+      String actionAdcActionStr = "action_adc_action_r_" + String(cont);
+      String actionAdcActionValueStr = String(_espConfig->getDataStore()->getValue(actionAdcActionStr.c_str()));
+      String actionAdcGpioTargetStr = "action_adc_gpio_target_r_" + String(cont);
+      int actionAdcGpioTargetValueInt = String(_espConfig->getDataStore()->getValue(actionAdcGpioTargetStr.c_str())).toInt();
+
+      if (actionAdcActionValueStr == "reverse")
+      {
+        _debugMessage->debug("Reversing GPIO" + String(actionAdcGpioTargetValueInt));
+        int gpioStatus = getDigitalOutput(actionAdcGpioTargetValueInt);
+        setDigitalOutput(actionAdcGpioTargetValueInt, !gpioStatus);
+        _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
+        _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,!gpioStatus);
+      }
+      else if (actionAdcActionValueStr == "on")
+      {
+        _debugMessage->debug("Setting " + String(actionAdcGpioTargetValueInt) + " to LOW");
+        setDigitalOutput(actionAdcGpioTargetValueInt, LOW);
+        _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
+        _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,LOW);
+      }
+      else if (actionAdcActionValueStr == "off")
+      {
+        _debugMessage->debug("Setting " + String(actionAdcGpioTargetValueInt) + " to HIGH");
+        setDigitalOutput(actionAdcGpioTargetValueInt, HIGH);
+        _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
+        _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,HIGH);
+      }
+
+    }
+  }
+}
+
+/*void GpioManager::executeDigitalAction(uint32_t gpio, int gpioStatus)
 {
   DebugMessage debugMessageLocal = DebugMessage();
   int digitalActionTotalInt = String(_espConfig->getDataStore()->getValue("action_digital_total")).toInt();
   debugMessageLocal.debug("Total of digital actions: " + String(digitalActionTotalInt) );
-}
+}*/
 
 uint32_t GpioManager::getDigitalOutput(uint32_t gpio)
 {
@@ -344,7 +441,7 @@ uint32_t GpioManager::getDigitalOutput(uint32_t gpio)
 void GpioManager::setDigitalOutput(uint32_t gpio, uint32_t status)
 {
   digitalWrite(gpio,status);
-  String mqttKey[1];
+  /*String mqttKey[1];
   String mqttValue[1];
   mqttKey[0] = "gpio";
   if (status == HIGH)
@@ -354,5 +451,5 @@ void GpioManager::setDigitalOutput(uint32_t gpio, uint32_t status)
   else
   {
     mqttValue[0] = "low";
-  }
+  }*/
 }

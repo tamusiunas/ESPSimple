@@ -95,6 +95,8 @@ public:
 
   int getAdcValue(String gpioAdc);
 
+  void checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal);
+
 private:
 
   void checkGpioDigitalStatusChanged(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
@@ -224,7 +226,7 @@ private:
    * @return true Sucess
    * @return false False
    */
-  void executeDigitalAction(uint32_t gpio, int gpioStatus);
+  //void executeDigitalAction(uint32_t gpio, int gpioStatus);
 
   ESPConfig *_espConfig;
   //MqttManagerOut *_mqttManagerOut;
