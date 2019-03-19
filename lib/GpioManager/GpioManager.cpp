@@ -99,11 +99,147 @@ ESPConfig *GpioManager::getESPConfig()
 
 void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
 {
+  int adcValueGpipAdcArray[pwmAdcDataLocal->totalGPIO];
+  int adcValueAnalogOnlyArray[pwmAdcDataLocal->totalGPIO];
+  for (int cont = 0 ; cont < pwmAdcDataLocal->totalGPIO ; cont++)
+  {
+    adcValueGpipAdcArray[cont] = -1;
+    adcValueAnalogOnlyArray[cont] = -1;
+  }
+
   int actionAdcTotal = String(_espConfig->getDataStore()->getValue("action_adc_total")).toInt();
   for (int cont = 0 ; cont < actionAdcTotal ; cont++)
   {
-    
+    String adcGpioOriginStr = "action_adc_gpio_origin_r_" + String(cont);
+    String adcGpioOriginValueStr = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str()));
+    if (adcGpioOriginValueStr.startsWith("a"))
+    {
+      int adcAnalogOnlyOriginInt = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str())).substring(1).toInt();
+      if (adcValueAnalogOnlyArray[adcAnalogOnlyOriginInt] == -1 )
+      {
+        int adcValue = 0;
+        for (int adcCont = 0 ; adcCont < 16 ; adcCont++)
+        {
+          adcValue += getAdcValue(adcGpioOriginValueStr);
+        }
+        adcValue = adcValue/16;
+        adcValueAnalogOnlyArray[adcAnalogOnlyOriginInt] = adcValue;
+        //_debugMessage->debug("adcValueGpipAnalogOnlyArray[" + String(adcAnalogOnlyOriginInt) + "] = " + String(adcValue));
+      }
+    }
+    else
+    {
+      int adcGpioOriginInt = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str())).toInt();
+      if (adcValueGpipAdcArray[adcGpioOriginInt] == -1 )
+      {
+        int adcValue = 0;
+        for (int adcCont = 0 ; adcCont < 16 ; adcCont++)
+        {
+          adcValue += getAdcValue(adcGpioOriginValueStr);
+        }
+        adcValue = adcValue/16;
+        adcValueGpipAdcArray[adcGpioOriginInt] = adcValue;
+        //_debugMessage->debug("adcValueGpipAdcArray[" + String(adcGpioOriginInt) + "] = " + String(adcValue));
+      }
+    }
   }
+
+  bool runAction = false;
+  for (int cont = 0 ; cont < actionAdcTotal ; cont++)
+  {
+    bool analogOnly = false;
+    int adcGpioOriginInt = -1;
+    String adcGpioOriginStr = "action_adc_gpio_origin_r_" + String(cont);
+    String adcGpioOriginValueStr = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str()));
+    if (adcGpioOriginValueStr.startsWith("a"))
+    {
+      analogOnly = true;
+      adcGpioOriginInt = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str())).substring(1).toInt();
+    }
+    else
+    {
+      adcGpioOriginInt = String(_espConfig->getDataStore()->getValue(adcGpioOriginStr.c_str())).toInt();
+    }
+    
+    String actionAdcTriggerAnalisisTypeStr = "action_adc_trigger_analisis_type_r_" + String(cont);
+    String actionAdcTriggerAnalisisTypeValueStr = String(_espConfig->getDataStore()->getValue(actionAdcTriggerAnalisisTypeStr.c_str()));
+    String actionAdcTriggerValueStr = "action_adc_trigger_value_r_" + String(cont);
+    int actionAdcTriggerValueValueInt = String(_espConfig->getDataStore()->getValue(actionAdcTriggerValueStr.c_str())).toInt();
+
+    if (analogOnly)
+    {
+      int adcValue = adcValueAnalogOnlyArray[adcGpioOriginInt];
+      if (actionAdcTriggerAnalisisTypeValueStr == "variation")
+      {
+        if (((adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) >= actionAdcTriggerValueValueInt) or
+            ((adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
+        {
+          runAction = true;
+          _debugMessage->debug("It's an analog only variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+        }
+      }
+      else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
+      {
+        if ((adcValue > actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
+        {
+          runAction = true;
+          _debugMessage->debug("It's an analog only greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+        }
+      }
+      else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
+      {
+        if ((adcValue < actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
+        {
+          runAction = true;
+          _debugMessage->debug("It's an analog only lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+        }
+      }
+    }
+    else
+    {
+      int adcValue = adcValueGpipAdcArray[adcGpioOriginInt];
+      if (actionAdcTriggerAnalisisTypeValueStr == "variation")
+      {
+        if (((adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) >= actionAdcTriggerValueValueInt) or
+            ((adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
+        {
+          runAction = true;
+          _debugMessage->debug("It's an ADC GPIO variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+        }
+      }
+      else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
+      {
+        if ((adcValue > actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
+        {
+          runAction = true;
+          _debugMessage->debug("It's an ADC GPIO greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+        }
+      }
+      else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
+      {
+        if ((adcValue < actionAdcTriggerValueValueInt) and (pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
+        {
+          runAction = true;
+          _debugMessage->debug("It's an ADC GPIO lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+        }
+      }  
+    }
+  } 
+
+  // set the previous values arrays
+  for (int cont = 0 ; cont < pwmAdcDataLocal->totalGPIO ; cont++)
+  {
+    pwmAdcDataLocal->pinGpioAdcPreviousValue[cont] = pwmAdcDataLocal->pinGpioAdcValue[cont];
+    pwmAdcDataLocal->pinGpioAdcValue[cont] = adcValueGpipAdcArray[cont];
+    pwmAdcDataLocal->pinAnalogOnlyPreviousValue[cont] = pwmAdcDataLocal->pinAnalogOnlyValue[cont];
+    pwmAdcDataLocal->pinAnalogOnlyValue[cont] = adcValueAnalogOnlyArray[cont];
+  }
+  if (runAction)
+  {
+    //run the actions
+  }
+
+  
 }
 
 void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)

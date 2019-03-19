@@ -44,7 +44,8 @@ String DebugMessage::formatString(String message)
         (message.charAt(cont) == ' ') or (message.charAt(cont) == '-') or
         (message.charAt(cont) == ':') or (message.charAt(cont) == '_') or
         (message.charAt(cont) == '(') or (message.charAt(cont) == ')') or
-        (message.charAt(cont) == '.'))
+        (message.charAt(cont) == '[') or (message.charAt(cont) == ']') or
+        (message.charAt(cont) == '.') or (message.charAt(cont) == ':'))
     {
       newMessage += message.charAt(cont);
     }

@@ -148,6 +148,12 @@ void loop()
     lastTimeinMillisOta = millis();
   }
 
+  if ((millis() - lastTimeinMillisAdc) > 500)
+  {
+    gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
+    lastTimeinMillisAdc = millis();
+  }
+
   // Check for messages to MQTT Out
   if (mqttManagerOut != NULL)
   {
@@ -158,7 +164,6 @@ void loop()
       lastTimeinMillisMqtt = millis();
     }
     gpioManager->checkGpioChange(mqttManagerOut, pwmAdcDataLocal);
-    gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
   }
   //delay(1000);
   yield();
