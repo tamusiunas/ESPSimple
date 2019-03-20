@@ -64,3 +64,10 @@ void DoubleReset::handle()
     }
   }
 }
+
+void DoubleReset::setResetValue(int value)
+{
+  EEPROM.begin(sizeof(value));
+  EEPROM.write(0, value);
+  EEPROM.commit();
+}

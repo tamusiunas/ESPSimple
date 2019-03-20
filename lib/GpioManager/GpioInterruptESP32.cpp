@@ -31,9 +31,25 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   iparameters->gpioInterruptPin = gpioInterruptPin;
   iparameters->gpioInterruptPinStatus = 1;
   iparameters->gpioInterruptPinLastStatus = 1;
-  iparameters->interruptLastTimeInMillis = 0;
+  // iparameters->interruptLastTimeInMillis = 0;
   iparameters->espConfig = _espConfig;
   iparameters->gpioManager = this;
+
+  #ifdef ENABLEGPIOWEBCONFIG
+  String webConfigGpioStr = String(_espConfig->getDataStore()->getValue("web_config_gpio"));
+  if (webConfigGpioStr != "none")
+  {
+    int webConfigGpio = String(_espConfig->getDataStore()->getValue("web_config_gpio")).toInt();
+    if (webConfigGpio == (int) gpioInterruptPin)
+    {
+      iparameters->isReconfigGpio = true;
+    }
+  }
+  else
+  {
+    //_debugMessage->debug("web_config_gpio is configured as none");
+  }
+  #endif
   
   int digitalActionTotalInt = String(iparameters->espConfig->getDataStore()->getValue("action_digital_total")).toInt();
   iparameters->interruptLastTimeinMillisParameters = (DataParameter**)malloc(digitalActionTotalInt * sizeof(DataParameter*));
@@ -50,9 +66,19 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 
 void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
 {  
+
   interruptParameters *iparameters = (interruptParameters *) arg;
 
   int gpioInterruptStatus = digitalRead(iparameters->gpioInterruptPin);
+
+  #ifdef ENABLEGPIOWEBCONFIG
+  if ((iparameters->isReconfigGpio) and (gpioInterruptStatus == LOW))
+  {
+    DoubleReset doubleReset = DoubleReset();
+    doubleReset.setResetValue(2);
+    ESP.restart();
+  }
+  #endif 
 
   iparameters->gpioInterruptPinStatus = gpioInterruptStatus;
 

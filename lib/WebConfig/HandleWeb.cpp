@@ -435,7 +435,7 @@ void WebConfig::handleManagement()
   String syslogIpAddressStr = getStringFormatted(_espConfig->getDataStore()->getValue("syslog_ip_address"));
   String syslogPortStr = getStringFormatted(_espConfig->getDataStore()->getValue("syslog_port"));
   String otaPasswordStr = getStringFormatted(_espConfig->getDataStore()->getValue("ota_password"));
-  String webConfigWaitingTimeStr = getStringFormatted(_espConfig->getDataStore()->getValue("web_config_waiting_time"));
+  //String webConfigWaitingTimeStr = getStringFormatted(_espConfig->getDataStore()->getValue("web_config_waiting_time"));
 
   int mqttIpAddressLength = mqttIpAddressStr.length();
   int mqttPortLength = mqttPortStr.length();
@@ -443,18 +443,18 @@ void WebConfig::handleManagement()
   int syslogPortLength = syslogPortStr.length();
   int enableOtaLength = getYesNoOptions("enable_ota").length();
   int otaPasswordLength = otaPasswordStr.length();
-  int webConfigWaitingTimeLength = webConfigWaitingTimeStr.length();
+  //int webConfigWaitingTimeLength = webConfigWaitingTimeStr.length();
 
   _webServer->setContentLength(strlen_P(HEADER_EN_US)+strlen_P(MANAGEMENT_EN_US_P1)+mqttIpAddressLength+
                                strlen_P(MANAGEMENT_EN_US_P2)+mqttPortLength+strlen_P(MANAGEMENT_EN_US_P3)+
                                syslogIpAddressLength+strlen_P(MANAGEMENT_EN_US_P4)+syslogPortLength+
                                strlen_P(MANAGEMENT_EN_US_P5)+enableOtaLength+strlen_P(MANAGEMENT_EN_US_P6)+otaPasswordLength+strlen_P(MANAGEMENT_EN_US_P7)+
-                               getGpioInputOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")).length()+
-                               strlen_P(MANAGEMENT_EN_US_P8)+webConfigWaitingTimeLength+
+                               getGpioInputNoneOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")).length()+
+                               strlen_P(MANAGEMENT_EN_US_P8)+
                                strlen_P(MANAGEMENT_EN_US_P9)+
                                getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue("web_config_indicating")).length()+
                                strlen_P(MANAGEMENT_EN_US_P10)+
-                               getOnOffReverseOption(_espConfig->getDataStore()->getValue("web_config_indicating_status")).length()
+                               getOnOffOption(_espConfig->getDataStore()->getValue("web_config_indicating_status")).length()
                                +strlen_P(MANAGEMENT_EN_US_P11)+strlen_P(FOOTER_EN_US_P1)+strlen_P(FOOTER_EN_US_P2));
   _webServer->send(200, FPSTR(HTTP_HEAD_CT_HTML),"");
   _webServer->sendContent_P(HEADER_EN_US);
@@ -471,13 +471,12 @@ void WebConfig::handleManagement()
   _webServer->sendContent_P(MANAGEMENT_EN_US_P6);
   _webServer->sendContent(otaPasswordStr);
   _webServer->sendContent_P(MANAGEMENT_EN_US_P7);
-  _webServer->sendContent(getGpioInputOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")));
+  _webServer->sendContent(getGpioInputNoneOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")));
   _webServer->sendContent_P(MANAGEMENT_EN_US_P8);
-  _webServer->sendContent(webConfigWaitingTimeStr);
   _webServer->sendContent_P(MANAGEMENT_EN_US_P9);
   _webServer->sendContent(getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue("web_config_indicating")));
   _webServer->sendContent_P(MANAGEMENT_EN_US_P10);
-  _webServer->sendContent(getOnOffReverseOption(_espConfig->getDataStore()->getValue("web_config_indicating_status")));
+  _webServer->sendContent(getOnOffOption(_espConfig->getDataStore()->getValue("web_config_indicating_status")));
   _webServer->sendContent_P(MANAGEMENT_EN_US_P11);
   _webServer->sendContent_P(FOOTER_EN_US_P1);
   _webServer->sendContent_P(FOOTER_EN_US_P2);

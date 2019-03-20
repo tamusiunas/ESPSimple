@@ -66,13 +66,14 @@ bool MqttManagerIn::connect()
 
 void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, void *argLocal)
 {
+  DebugMessage debugMessageLocal = DebugMessage();
   volatile configLocalStruct *configCallbackStr = (configLocalStruct*) argLocal;
   String mqttMsg = "";
   for(int cont = 0; cont < (int) length; cont++) 
   {
     mqttMsg += (char) payload[cont];
   }
-  Serial.println("Received an MQTT message - Topic: " + String(topic) + "Message: " + mqttMsg);
+  debugMessageLocal.debug("Received an MQTT message - Topic: " + String(topic) + "Message: " + mqttMsg);
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(mqttMsg);
@@ -82,6 +83,7 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
   {
     configCallbackStr->mqttManagerLocal->processSetDigitalGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
                                                                statusGpio);
+    debugMessageLocal.debug("Received a SetDigitalGpio object");                                                           
   }
   else
   {
@@ -90,16 +92,15 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
     {
       configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
                                                              configCallbackStr->_pwmAdcDataLocal, statusGpio);
-      Serial.println("It's a SetPwmGpio");
+      debugMessageLocal.debug("Received a SetPwmGpio object");
     }
     else
     {
       JsonArray& statusGpio = root["GetAdcGpio"];
       if (statusGpio.size() > 0)
       {
-        //configCallbackStr->mqttManagerLocal->
         configCallbackStr->mqttManagerLocal->processGetAdcGpio(configCallbackStr->_pwmAdcDataLocal, statusGpio);
-        Serial.println("It's a GetAdcGpio");
+        debugMessageLocal.debug("Received a GetAdcGpio object");
       }
     }
   }
@@ -112,7 +113,6 @@ void MqttManagerIn::processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, Json
     bool isAnalogOnly = false;
     int gpio = -1;
     String gpioString = elem["gpio"].as<String>();
-    Serial.println("GPIO: " + gpioString);
     if (gpioString.indexOf("a") == 0)
     {
       gpio = gpioString.substring(1).toInt();
@@ -126,12 +126,10 @@ void MqttManagerIn::processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, Json
     {
       if (isAnalogOnly)
       {
-        Serial.println("It's Analog Only pin");
         pwmAdcDataLocal->sendAdcAnalogOnlyValue[gpio] = 1;
       }
       else
       {
-        Serial.println("It's GPIO pin");
         pwmAdcDataLocal->sendAdcGpioValue[gpio] = 1;
       }
     }
@@ -154,21 +152,13 @@ void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioMan
   {
     int gpioInt = elem["gpio"].as<int>();
     String valueStr = elem["value"].as<String>();
-    Serial.println("GPIO: " + String(gpioInt));
-    Serial.println("Value: " + valueStr);
     if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
     {
       if (_espConfig->getPinPwmEnable()[gpioInt] == true)
       {
-        Serial.println("GPIO " + String(gpioInt) + " is configured as Pwm");
         int pwmValue = valueStr.toInt();
         gpioManager->setPwm(gpioInt,pwmValue, pwmAdcDataLocal);
       }
-      else
-      {
-        Serial.println("GPIO " + String(gpioInt) + " is not configured as pwm");
-      }
-      
     }
   }
 }
@@ -179,15 +169,12 @@ void MqttManagerIn::processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpi
   {
     int gpioInt = elem["gpio"].as<int>();
     String valueStr = elem["value"].as<String>();
-    Serial.println("GPIO: " + String(gpioInt));
-    Serial.println("Value: " + valueStr);
     if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
     {
       if (_espConfig->getPinPwmEnable()[gpioInt] == false)
       {
         if (espConfig->getPinGpioMode()[gpioInt] == OUTPUT)
         {
-          Serial.println("GPIO " + String(gpioInt) + " is configured as output");
           uint32_t gpioMode = -1;
           if (valueStr == "high")
           {
@@ -204,14 +191,6 @@ void MqttManagerIn::processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpi
             espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
           }
         }
-        else
-        {
-          Serial.println("GPIO " + String(gpioInt) + " is not configured as output");
-        } 
-      }
-      else
-      {
-        Serial.println("GPIO " + String(gpioInt) + " is configured as pwm");
       }
     }
   }

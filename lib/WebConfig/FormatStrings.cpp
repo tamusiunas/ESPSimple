@@ -451,6 +451,29 @@ String WebConfig::getGpioInputOptions(int ignoreGpioInt, String configuredParame
  return (gpioInputOptionsStr);
 }
 
+String WebConfig::getGpioInputNoneOptions(int ignoreGpioInt, String configuredParameterStr)
+{
+  String gpioInputOptionsStr = "<option value=\"none\">none</option>";
+  for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
+  {
+    String gpioSelected = "";
+    if (configuredParameterStr == String(cont))
+    {
+      gpioSelected = "selected";
+    }
+    if (ignoreGpioInt != cont)
+    {
+      if ((_espConfig->getPinGpioAvaliable()[cont] == 1) and ((_espConfig->getPinGpioInOut()[cont] == 0) or
+          (_espConfig->getPinGpioInOut()[cont] == 2)))
+      {
+        gpioInputOptionsStr += "<option value=\"" + String(cont) +"\" " + gpioSelected + ">" + String(cont) + " (" +
+                                _espConfig->getPinGpioDesc()[cont] + ")</option>";
+      }
+    }
+  }
+ return (gpioInputOptionsStr);
+}
+
 
 String WebConfig::getGpioOutputOptions(int ignoreGpioInt, String configuredParameterStr)
 {
@@ -478,7 +501,7 @@ String WebConfig::getGpioOutputOptions(int ignoreGpioInt, String configuredParam
 String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
 {
   String gpioSelectStr = "";
-  Serial.println("getPinAnalogOnly()[" + String(gpioNumber) + "]: " + String(_espConfig->getPinAnalogOnly()[gpioNumber]));
+  // Serial.println("getPinAnalogOnly()[" + String(gpioNumber) + "]: " + String(_espConfig->getPinAnalogOnly()[gpioNumber]));
   if (_espConfig->getPinAnalogOnly()[gpioNumber] == 1)
   {
     String gpioAdcAttenStr = "gpio_adc_analog_only_" + String(gpioNumber);

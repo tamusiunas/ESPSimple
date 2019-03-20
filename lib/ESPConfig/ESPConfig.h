@@ -13,6 +13,8 @@
 #define ESPConfig_h
 
 #include "DataStore.h"
+#include "DoubleReset.h"
+
 
 class ESPConfig
 {

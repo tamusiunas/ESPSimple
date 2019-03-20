@@ -14,15 +14,17 @@
 
 #include "ESPConfig.h"
 
+// Parameters sent to each ISR
 struct interruptParameters 
 {
-   uint32_t gpioInterruptPin = -1;
-   int gpioInterruptPinStatus = -1;
-   int gpioInterruptPinLastStatus = -1;
-   unsigned long interruptLastTimeInMillis = 0;
-   ESPConfig *espConfig = NULL;
+   uint32_t gpioInterruptPin = -1; // GPIO pin
+   int gpioInterruptPinStatus = -1; // GPIO Status (LOW/HIGH)
+   int gpioInterruptPinLastStatus = -1; // GPIO Last (previous) Status (LOW/HIGH)
+   bool isReconfigGpio = false;
+   //unsigned long interruptLastTimeInMillis = 0; // Last ISR Time in millis
+   ESPConfig *espConfig = NULL; // ESP Object
    void *gpioManager; //it's an workaround because it's not able to create an GpioManager object. I will check soon (probably) if it's a Platformio issue.
-   DataParameter **interruptLastTimeinMillisParameters = NULL;
+   DataParameter **interruptLastTimeinMillisParameters = NULL; // Array for last ISR event time in millis
 };
 
 struct mqttOutputQueueInterrupts

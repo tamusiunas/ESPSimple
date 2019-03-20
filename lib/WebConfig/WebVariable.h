@@ -235,20 +235,15 @@ static const char MANAGEMENT_EN_US_P7[] PROGMEM = ""
 "<label>Web Config Trigger GPIO</label> <select class=\"form-control h-25\" id=\"web_config_gpio\" "
 "name=\"web_config_gpio\">";
 
-static const char MANAGEMENT_EN_US_P8[] PROGMEM = "</select><label><br />GPIO Waiting Time Pressed(ms)</label> "
-"<input name=\"web_config_waiting_time\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"5\" "
-"id=\"web_config_waiting_time\"  type=\"number\" value=\"";
+static const char MANAGEMENT_EN_US_P8[] PROGMEM = "</select>";
 
-
-static const char MANAGEMENT_EN_US_P9[] PROGMEM = "\"><label><br />GPIO Indicating Configuration</label> "
+static const char MANAGEMENT_EN_US_P9[] PROGMEM = "<label><br />GPIO Indicating Configuration</label> "
 "<select class=\"form-control h-25\" id=\"web_config_indicating\" "
 "name=\"web_config_indicating\">";
-
 
 static const char MANAGEMENT_EN_US_P10[] PROGMEM = "</select><label><br />GPIO Indicating Configuration Status</label> "
 "<select class=\"form-control h-25\" id=\"web_config_indicating_status\" "
 "name=\"web_config_indicating_status\">";
-
 
 static const char MANAGEMENT_EN_US_P11[] PROGMEM = "</select></td></tr></tbody> </table> <button type=\"submit\" "
 "class=\"btn btn-primary my-2\">Submit</button> </div> </form> </div> </div> </div> </div>";

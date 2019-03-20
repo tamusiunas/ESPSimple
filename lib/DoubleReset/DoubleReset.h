@@ -72,6 +72,8 @@ public:
    */
   void setTimeout(unsigned int timeout);
 
+  void setResetValue(int value);
+
 private:
   unsigned int  _timeout;
   int _resetValue;

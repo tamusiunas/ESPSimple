@@ -59,6 +59,20 @@ void WebConfig::scanWifi()
 
 bool WebConfig::startSsid(uint16_t httpPort, const char *ipAddress, const char *ssid, const char *password)
 {
+  // This must be migrated to GpioManager
+  int gpio = String(_espConfig->getDataStore()->getValue("web_config_indicating")).toInt();
+  String gpioStatus = String(_espConfig->getDataStore()->getValue("web_config_indicating_status"));
+  pinMode(gpio, OUTPUT);
+  if (gpioStatus == "on")
+  {
+    digitalWrite(gpio,HIGH);
+  }
+  else
+  {
+    digitalWrite(gpio,LOW);
+  }
+  // end of the block to be migrated
+  
   _ipAddress.fromString(ipAddress);
 
   WiFi.mode(WIFI_AP);

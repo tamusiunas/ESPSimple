@@ -72,7 +72,7 @@ bool GpioActionInterrupts::processDigitalAction()
     {
     }
   }
-  _iparameters->interruptLastTimeInMillis = millis();
+  //_iparameters->interruptLastTimeInMillis = millis();
   _iparameters->gpioInterruptPinLastStatus = _iparameters->gpioInterruptPinStatus;
   if (actionFound)
   {

@@ -241,6 +241,7 @@ private:
 
   String getGpioInOutAdcRowSelect(int gpioNumber);
   String getGpioInputOptions(int ignoreGpioInt, String configParameterStr);
+  String getGpioInputNoneOptions(int ignoreGpioInt, String configParameterStr);
   String getGpioInputOutputOptions(int ignoreGpioInt, String configParameterStr);
   String getGpioOutputOptions(int ignoreGpioInt, String configParameterStr);
   String getGpioActionRow(int gpioNumber);
