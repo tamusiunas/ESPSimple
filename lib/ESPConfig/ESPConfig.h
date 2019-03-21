@@ -40,7 +40,8 @@ public:
             int *pinGpioInOut, const char **pinGpioDesc, int *pinPwmValue, int totalGpio, volatile int *pwmChannelGpioHw,
             volatile int pwmChannelTotalHw, volatile int *pwmChannelGpioSw, int pwmChannelTotalSw, int *pinGpioMode, volatile int *pinGpioDigitalStatusChanged, 
             volatile int *pinGpioDigitalStatus, volatile int *pinGpioAdcValue, volatile int *pinGpioAdcPreviousValue, 
-            volatile bool *pinPwmEnable, volatile int *pinGpioPwmStatusChanged, volatile int *pinGpioPwmStatus, int *pinAnalogOnly, DataStore *dataStore);
+            volatile bool *pinPwmEnable, volatile int *pinGpioPwmStatusChanged, volatile int *pinGpioPwmStatus, int *pinAnalogOnly, 
+            volatile unsigned long *gpioDigitalActionIndexWhenReverseInMillis, DataStore *dataStore);
   ~ESPConfig();
 
   /**
@@ -62,6 +63,7 @@ public:
   volatile int *getPinGpioAdcPreviousValue();
   volatile int *getPinGpioPwmStatusChanged();
   volatile int *getPinGpioPwmStatus();
+  volatile unsigned long *getGpioDigitalActionIndexWhenReverseInMillis();
   volatile bool *getPinPwmEnable();
   const char **getPinGpioDesc();
   int *getPinPwmValue();
@@ -88,6 +90,7 @@ private:
                *_pinGpioAdcPreviousValue, *_pwmChannelGpioHw, _pwmChannelTotalHw, *_pinGpioPwmStatusChanged, 
                *_pinGpioPwmStatus;
   volatile bool *_pinPwmEnable;
+  volatile unsigned long *_gpioDigitalActionIndexWhenReverseInMillis;
   const char **_pinGpioDesc;
   DataStore *_dataStore;
 };

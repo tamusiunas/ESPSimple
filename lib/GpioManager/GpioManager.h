@@ -97,6 +97,8 @@ public:
 
   void checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal);
 
+  void checkGpioDigitalReverse();
+
 private:
 
   void checkGpioDigitalStatusChanged(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
@@ -108,6 +110,7 @@ private:
   void checkSendAdcAnalogOnlyValue(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, int position);
 
   void configAdc(String gpioAdc);
+
 
   /**
    * @brief Configure the GPIO as an interrupt (EDGE in)

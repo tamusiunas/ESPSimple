@@ -60,6 +60,11 @@ struct PwmAdcData
    volatile int totalGPIO;
    volatile int totalPwmSw; 
    volatile int totalPwmHw;
+   volatile int totalDht;
+
+   volatile bool *sendDhtCelsius ;
+   volatile bool *sendDhtFahrenheit;
+   volatile bool *sendDhtHumidity;
 
 };
 

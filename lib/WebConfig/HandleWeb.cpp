@@ -195,7 +195,9 @@ void WebConfig::handleComponents()
       {
         ++totalDht;
         String dhtStr = parameterLocal.substring(19);
-        dhtLength += getComponentDht(dhtStr).length();
+        String dhtTypeStr = "component_dht_type_" + dhtStr;
+        String dhtTypeValueStr = String(_espConfig->getDataStore()->getValue(dhtTypeStr.c_str()));
+        dhtLength += getComponentDht(dhtStr,dhtTypeValueStr).length();
       }
       else
       if (parameterLocal.indexOf("component_bmp180_sda_") == 0)
@@ -257,7 +259,9 @@ void WebConfig::handleComponents()
       if (parameterLocal.indexOf("component_dht_gpio_") == 0)
       {
         String dhtStr = parameterLocal.substring(19);
-        _webServer->sendContent(getComponentDht(dhtStr));
+        String dhtTypeStr = "component_dht_type_" + dhtStr;
+        String dhtTypeValueStr = String(_espConfig->getDataStore()->getValue(dhtTypeStr.c_str()));
+        _webServer->sendContent(getComponentDht(dhtStr, dhtTypeValueStr));
       }
     }
   }
@@ -449,7 +453,7 @@ void WebConfig::handleManagement()
                                strlen_P(MANAGEMENT_EN_US_P2)+mqttPortLength+strlen_P(MANAGEMENT_EN_US_P3)+
                                syslogIpAddressLength+strlen_P(MANAGEMENT_EN_US_P4)+syslogPortLength+
                                strlen_P(MANAGEMENT_EN_US_P5)+enableOtaLength+strlen_P(MANAGEMENT_EN_US_P6)+otaPasswordLength+strlen_P(MANAGEMENT_EN_US_P7)+
-                               getGpioInputNoneOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")).length()+
+                               getNoneOption().length() + getGpioInputOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")).length()+
                                strlen_P(MANAGEMENT_EN_US_P8)+
                                strlen_P(MANAGEMENT_EN_US_P9)+
                                getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue("web_config_indicating")).length()+
@@ -471,7 +475,8 @@ void WebConfig::handleManagement()
   _webServer->sendContent_P(MANAGEMENT_EN_US_P6);
   _webServer->sendContent(otaPasswordStr);
   _webServer->sendContent_P(MANAGEMENT_EN_US_P7);
-  _webServer->sendContent(getGpioInputNoneOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")));
+  _webServer->sendContent(getNoneOption());
+  _webServer->sendContent(getGpioInputOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")));
   _webServer->sendContent_P(MANAGEMENT_EN_US_P8);
   _webServer->sendContent_P(MANAGEMENT_EN_US_P9);
   _webServer->sendContent(getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue("web_config_indicating")));
@@ -597,6 +602,7 @@ void WebConfig::handleActionsConfig()
       String actionDigitalGpioOriginStr = _webServer->arg("action_digital_gpio_origin_r_" + actionDigitalIndexStr);
       String actionDigitalTriggerAnalisisTypeStr = _webServer->arg("action_digital_trigger_analisis_type_r_" + actionDigitalIndexStr);
       String actionDigitalActionStr = _webServer->arg("action_digital_action_r_" + actionDigitalIndexStr);
+      String actionDigitalTimeBeforeActionReversalStr = _webServer->arg("action_digital_time_before_action_reversal_r_" + actionDigitalIndexStr);
       String actionDigitalGpioTargetStr = _webServer->arg("action_digital_gpio_target_r_" + actionDigitalIndexStr);
       String actionDigitalTelegramMessageStr = _webServer->arg("action_digital_telegram_message_r_" + actionDigitalIndexStr);
       String actionDigitalWaitingTimeRearmStr = _webServer->arg("action_digital_waiting_time_rearm_r_" + actionDigitalIndexStr);
@@ -605,6 +611,7 @@ void WebConfig::handleActionsConfig()
       String actionDigitalGpioOriginNameStr = "action_digital_gpio_origin_r_" + indexRealDigitalStr;
       String actionDigitalTriggerAnalisisTypeNameStr = "action_digital_trigger_analisis_type_r_" + indexRealDigitalStr;
       String actionDigitalActionNameStr = "action_digital_action_r_" + indexRealDigitalStr;
+      String actionDigitalTimeBeforeActionReversalNameStr = "action_digital_time_before_action_reversal_r_" + indexRealDigitalStr;
       String actionDigitalGpioTargetNameStr = "action_digital_gpio_target_r_" + indexRealDigitalStr;
       String actionDigitalTelegramMessageNameStr = "action_digital_telegram_message_r_" + indexRealDigitalStr;
       String actionDigitalWaitingTimeRearmNameStr = "action_digital_waiting_time_rearm_r_" + indexRealDigitalStr;
@@ -613,6 +620,7 @@ void WebConfig::handleActionsConfig()
       _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalGpioOriginNameStr.c_str(),actionDigitalGpioOriginStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalTriggerAnalisisTypeNameStr.c_str(),actionDigitalTriggerAnalisisTypeStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalActionNameStr.c_str(),actionDigitalActionStr.c_str()));
+      _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalTimeBeforeActionReversalNameStr.c_str(),actionDigitalTimeBeforeActionReversalStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalGpioTargetNameStr.c_str(),actionDigitalGpioTargetStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalTelegramMessageNameStr.c_str(),actionDigitalTelegramMessageStr.c_str()));
       _espConfig->getDataStore()->addParameter(new DataParameter(actionDigitalWaitingTimeRearmNameStr.c_str(),actionDigitalWaitingTimeRearmStr.c_str()));
@@ -688,6 +696,8 @@ void WebConfig::handleTelegramConfig()
       ++indexRealTelegram;
     }
   }
+  String telegramActionTotal = String(indexRealTelegram);
+  _espConfig->getDataStore()->addParameter(new DataParameter("telegram_gpio_action_total",telegramActionTotal.c_str()));
   _spiffsManager->saveFile();
   sendResponseOk("Telegram");
 }
@@ -741,11 +751,14 @@ void WebConfig::handleComponentsConfig()
     {
       String dhtMessageIndexStr = argNameStr.substring(19);
       String dhtMessageStr = _webServer->arg("component_dht_gpio_" + dhtMessageIndexStr);
+      String dhtTypeStr = _webServer->arg("component_dht_type_" + dhtMessageIndexStr);
 
       String indexRealDhtStr = String(indexRealDht);
       String dhtMessageNameStr = "component_dht_gpio_" + indexRealDhtStr;
+      String dhtTypeNameStr = "component_dht_type_" + indexRealDhtStr;
 
       _espConfig->getDataStore()->addParameter(new DataParameter(dhtMessageNameStr.c_str(),dhtMessageStr.c_str()));
+      _espConfig->getDataStore()->addParameter(new DataParameter(dhtTypeNameStr.c_str(),dhtTypeStr.c_str()));
       ++indexRealDht;
     }
     else
@@ -817,6 +830,11 @@ void WebConfig::handleComponentsConfig()
       ++indexRealSsd160Frame;
     }
   }
+  _espConfig->getDataStore()->addParameter(new DataParameter("component_dht_total",String(indexRealDht)));
+  _espConfig->getDataStore()->addParameter(new DataParameter("component_bmp180_total",String(indexRealBmp180)));
+  _espConfig->getDataStore()->addParameter(new DataParameter("component_mcp3008_total",String(indexRealMcp3008)));
+  _espConfig->getDataStore()->addParameter(new DataParameter("component_ssd160_total",String(indexRealSsd160)));
+  _espConfig->getDataStore()->addParameter(new DataParameter("component_ssd160_frame_total",String(indexRealSsd160Frame)));
   _spiffsManager->saveFile();
   sendResponseOk("Components");
 }

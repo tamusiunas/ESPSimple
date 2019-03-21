@@ -17,11 +17,22 @@ void setup(){
   spiffsManager->readFile();
   dataStore->printParameters(); // print Parameters read from spiffsManager
 
+  // When to reverse an Action Digital
+  volatile unsigned long *gpioDigitalActionIndexWhenReverseInMillis;
+  int totalDigitalAction = String(dataStore->getValue("action_digital_total")).toInt();
+  gpioDigitalActionIndexWhenReverseInMillis = (volatile unsigned long*)malloc(sizeof(volatile unsigned long) * totalDigitalAction);
+  for (int cont = 0 ; cont < totalDigitalAction ; cont++)
+  {
+    gpioDigitalActionIndexWhenReverseInMillis[cont] = 0;
+  }
+
+
   // Initialize espConfig with predefined parameters
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
             TOTALPWMSW, pinGpioMode, pinGpioDigitalStatusChanged, pinGpioDigitalStatus, pinGpioAdcValue, 
-            pinGpioAdcPreviousValue, pinPwmEnable, pinGpioPwmStatusChanged, pinGpioPwmStatus, pinAnalogOnly, dataStore);
+            pinGpioAdcPreviousValue, pinPwmEnable, pinGpioPwmStatusChanged, pinGpioPwmStatus, pinAnalogOnly, 
+            gpioDigitalActionIndexWhenReverseInMillis, dataStore);
 
   WebConfig webConfig(espConfig,spiffsManager);
   if (mustStartWebConfig)
@@ -71,6 +82,38 @@ void setup(){
   pwmAdcDataLocal->totalGPIO = TOTALGPIO;
   pwmAdcDataLocal->totalPwmHw = TOTALPWMHW;
   pwmAdcDataLocal->totalPwmSw = TOTALPWMSW;
+  pwmAdcDataLocal->totalDht = 0;
+
+  int componentDhtTotalInt = String(dataStore->getValue("component_dht_total")).toInt();
+  if (componentDhtTotalInt > 0)
+  {
+    pwmAdcDataLocal->totalDht = componentDhtTotalInt;
+    dhtManagerArray = (DhtManager**)malloc(sizeof(DhtManager*) * componentDhtTotalInt);
+    pwmAdcDataLocal->sendDhtCelsius = (bool *)malloc(sizeof(bool *) * componentDhtTotalInt);
+    pwmAdcDataLocal->sendDhtFahrenheit = (bool *)malloc(sizeof(bool *) * componentDhtTotalInt);
+    pwmAdcDataLocal->sendDhtHumidity = (bool *)malloc(sizeof(bool *) * componentDhtTotalInt);
+    for (int cont = 0; cont < componentDhtTotalInt ; cont++)
+    {
+      String componentDhtGpioStr = "component_dht_gpio_" + String(cont);
+      int componentDhtGpioInt = String(dataStore->getValue(componentDhtGpioStr.c_str())).toInt();
+      String componentDhtTypeStr = "component_dht_type_" + String(cont);
+      String componentDhtTypeValueStr = String(dataStore->getValue(componentDhtTypeStr.c_str()));
+      int dhtTypeInt = DHT11;
+      if (componentDhtTypeValueStr == "dht22")
+      {
+        dhtTypeInt = DHT22;
+      }
+      pwmAdcDataLocal->sendDhtCelsius[cont] = false;
+      pwmAdcDataLocal->sendDhtFahrenheit[cont] = false;
+      pwmAdcDataLocal->sendDhtHumidity[cont] = false;
+      dhtManagerArray[cont] = new DhtManager(componentDhtGpioInt, dhtTypeInt, debugMessage);
+    }
+  }
+  else
+  {
+    debugMessage->debug("There are no DHT configured");
+  }
+
 
   int actionAdcTotal = String(dataStore->getValue("action_adc_total")).toInt();
   pwmAdcDataLocal->adcActionIndexLastTimeInMillis = (volatile unsigned long *)malloc(sizeof(volatile unsigned long) * actionAdcTotal);
@@ -119,6 +162,8 @@ void setup(){
     isAlexaEnable = true;
   }
 
+  checkMqtt = new CheckMqtt(mqttManagerOut, pwmAdcDataLocal, debugMessage);
+
   debugMessage->debug("WifiGetChipId(): " + String(WifiGetChipId()));
   debugMessage->debug("Free size: " + String(ESP.getFreeSketchSpace()));
   debugMessage->debug("Free Heap: " + String(ESP.getFreeHeap()));
@@ -155,9 +200,19 @@ void loop()
     lastTimeinMillisOta = millis();
   }
 
+  if ((millis() - lastTimeinMillisDht) > 5000)
+  {
+    for (int cont = 0; cont < pwmAdcDataLocal->totalDht ; cont++)
+    {
+      dhtManagerArray[cont]->update();
+    }
+    lastTimeinMillisDht = millis();
+  }
+
   if ((millis() - lastTimeinMillisAdc) > 500)
   {
     gpioManager->checkAdcReverse(pwmAdcDataLocal);
+    gpioManager->checkGpioDigitalReverse();
     gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
     lastTimeinMillisAdc = millis();
   }
@@ -170,8 +225,10 @@ void loop()
       mqttManagerIn->handleMqtt();
       mqttManagerOut->handleMqtt();
       lastTimeinMillisMqtt = millis();
+      checkMqtt->checkDht(dhtManagerArray);
     }
     gpioManager->checkGpioChange(mqttManagerOut, pwmAdcDataLocal);
+
   }
   //delay(1000);
   yield();

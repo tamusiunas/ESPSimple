@@ -5,7 +5,15 @@
 int GpioManager::getAdcValue(String gpioAdc)
 {
     int gpioPin = gpioAdc.substring(1).toInt();
-    return analogRead(gpioPin);
+
+    int adcValue = 0;
+    for (int adcCont = 0 ; adcCont < 32 ; adcCont++)
+    {
+        adcValue += analogRead(gpioPin);
+    }
+    adcValue = adcValue/32;
+
+    return adcValue;
 }
 
 void GpioManager::configAdc(String gpioAdc)

@@ -102,6 +102,36 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
         configCallbackStr->mqttManagerLocal->processGetAdcGpio(configCallbackStr->_pwmAdcDataLocal, statusGpio);
         debugMessageLocal.debug("Received a GetAdcGpio object");
       }
+      else
+      {
+        JsonArray& statusGpio = root["GetDHT"];
+        if (statusGpio.size() > 0)
+        {
+          configCallbackStr->mqttManagerLocal->processGetDHT(configCallbackStr->_pwmAdcDataLocal, statusGpio);
+          debugMessageLocal.debug("Received a GetDHT object");
+        }
+      }
+    }
+  }
+}
+
+void MqttManagerIn::processGetDHT(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio)
+{
+  for (JsonObject& elem : statusGpio)
+  {
+    int dhtId = elem["dhtId"].as<int>();
+    String gpioString = elem["key"].as<String>();
+    if (gpioString == "humidity")
+    {
+      pwmAdcDataLocal->sendDhtHumidity[dhtId] = true;
+    }
+    else if (gpioString == "celsius")
+    {
+      pwmAdcDataLocal->sendDhtCelsius[dhtId] = true;
+    }
+    else if (gpioString == "fahrenheit")
+    {
+      pwmAdcDataLocal->sendDhtFahrenheit[dhtId] = true;
     }
   }
 }

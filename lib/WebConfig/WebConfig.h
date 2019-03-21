@@ -241,7 +241,7 @@ private:
 
   String getGpioInOutAdcRowSelect(int gpioNumber);
   String getGpioInputOptions(int ignoreGpioInt, String configParameterStr);
-  String getGpioInputNoneOptions(int ignoreGpioInt, String configParameterStr);
+  String getNoneOption();
   String getGpioInputOutputOptions(int ignoreGpioInt, String configParameterStr);
   String getGpioOutputOptions(int ignoreGpioInt, String configParameterStr);
   String getGpioActionRow(int gpioNumber);
@@ -262,7 +262,8 @@ private:
   String getYesNoOptions(String configuredParameter);
   String getTelegramBody(String);
   String getAlexaBody(String);
-  String getComponentDht(String indexDht);
+  String getComponentDht(String indexDht, String dhtTypeValueStr);
+  String getComponentDhtType(String dhtTypeValueStr);
   String getComponentBmp180(String indexBmp180);
   String getComponentMcp3008(String indexMcp3008);
   String getComponentSsd160(String indexSsd160);

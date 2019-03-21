@@ -258,17 +258,31 @@ String WebConfig::getAlexaBody(String indexAlexa)
   return alexaBody;
 }
 
-String WebConfig::getComponentDht(String indexDht)
+String WebConfig::getComponentDht(String indexDht, String dhtTypeValueStr)
 {
-  String indexDhtStr = String(indexDht);
-  String componentDhtGpioStr = "component_dht_gpio_" + indexDhtStr; //input
+  String componentDhtGpioStr = "component_dht_gpio_" + indexDht; //input
+  String componentDhtTypeStr = "component_dht_type_" + indexDht;
   String dhtStr = "<tr> <th scope=\"row\" class=\"align-middle\" style=\"\">DHT (11/22)</th> "
-  "<td class=\"align-middle\"> <label>DHT GPIO</label> <select class=\"form-control h-25\" id=\"" +
+  "<td class=\"align-middle\">";
+  dhtStr += "<label>DHT Type</label><select class=\"form-control h-25\" id=\"" +
+  componentDhtTypeStr + "\" name=\"" + componentDhtTypeStr + "\">" + getComponentDhtType(dhtTypeValueStr) + "</select>";
+  dhtStr += "<label><br />DHT GPIO</label> <select class=\"form-control h-25\" id=\"" +
   componentDhtGpioStr + "\" name=\"" + componentDhtGpioStr + "\">";
   dhtStr += getGpioInputOptions(-1,_espConfig->getDataStore()->getValue(componentDhtGpioStr.c_str()));
   dhtStr += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-dht btn btn-primary "
   "my-2\" value=\"Delete\"></td> </tr>";
   return dhtStr;
+}
+
+String WebConfig::getComponentDhtType(String dhtTypeValueStr)
+{
+  String dht22Str = "";
+  if (dhtTypeValueStr == "dht22")
+  {
+    dht22Str = "selected";
+  }
+  String dhtTypeStr = "<option value=\"dht11\">DHT11</option><option value=\"dht22\" " + dht22Str + ">DHT22</option>";
+  return dhtTypeStr;
 }
 
 String WebConfig::getComponentBmp180(String indexBmp180)
@@ -359,6 +373,7 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   String actionDigitalGpioOrigin = "action_digital_gpio_origin_r_" + indexDigitalStr;
   String actionDigitalTriggerAnalisisType = "action_digital_trigger_analisis_type_r_" + indexDigitalStr;
   String actionDigitalAction = "action_digital_action_r_" + indexDigitalStr;
+  String actionDigitalTimeBeforeActionReversal = "action_digital_time_before_action_reversal_r_" + indexDigitalStr;
   String actionDigitalGpioTarget = "action_digital_gpio_target_r_" + indexDigitalStr;
   String actionDigitalTelegramMessage = "action_digital_telegram_message_r_" + indexDigitalStr;
   String actionDigitalWaitingTimeRearm = "action_digital_waiting_time_rearm_r_" + indexDigitalStr;
@@ -373,7 +388,11 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   digitalBody += "</select> <label><br>Action</label> <select class=\"form-control h-25\" id=\"" + actionDigitalAction +
   "\" name=\"" + actionDigitalAction + "\">";
   digitalBody += getActionOptions(_espConfig->getDataStore()->getValue(actionDigitalAction.c_str()));
-  digitalBody += "</select> <label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
+  digitalBody += "</select>"; 
+  digitalBody += "<label><br>Time Before Action Reversal</label><input name=\"" + actionDigitalTimeBeforeActionReversal +
+  "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"" +  actionDigitalTimeBeforeActionReversal +
+  "\" value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalTimeBeforeActionReversal.c_str())) + "\">"; 
+  digitalBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
   actionDigitalGpioTarget + "\" name=\"" + actionDigitalGpioTarget + "\">";
   digitalBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionDigitalGpioTarget.c_str()));
   digitalBody += "</select> <label><br>Telegram message (output)</label><input name=\"" + actionDigitalTelegramMessage +
@@ -451,27 +470,10 @@ String WebConfig::getGpioInputOptions(int ignoreGpioInt, String configuredParame
  return (gpioInputOptionsStr);
 }
 
-String WebConfig::getGpioInputNoneOptions(int ignoreGpioInt, String configuredParameterStr)
+String WebConfig::getNoneOption()
 {
   String gpioInputOptionsStr = "<option value=\"none\">none</option>";
-  for (int cont = 0; cont < _espConfig->getTotalGpio(); cont++)
-  {
-    String gpioSelected = "";
-    if (configuredParameterStr == String(cont))
-    {
-      gpioSelected = "selected";
-    }
-    if (ignoreGpioInt != cont)
-    {
-      if ((_espConfig->getPinGpioAvaliable()[cont] == 1) and ((_espConfig->getPinGpioInOut()[cont] == 0) or
-          (_espConfig->getPinGpioInOut()[cont] == 2)))
-      {
-        gpioInputOptionsStr += "<option value=\"" + String(cont) +"\" " + gpioSelected + ">" + String(cont) + " (" +
-                                _espConfig->getPinGpioDesc()[cont] + ")</option>";
-      }
-    }
-  }
- return (gpioInputOptionsStr);
+  return (gpioInputOptionsStr);
 }
 
 

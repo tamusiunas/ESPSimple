@@ -76,7 +76,13 @@ int GpioManager::getAdcValue(String gpioAdc)
         }
         if (adc == 1)
         {
-            return adc1_get_raw((adc1_channel_t) adcChannel);
+            int adcValue = 0;
+            for (int adcCont = 0 ; adcCont < 32 ; adcCont++)
+            {
+                adcValue += adc1_get_raw((adc1_channel_t) adcChannel);
+            }
+            adcValue = adcValue/32;
+            return adcValue;
         }
         else if (adc == 2)
         {

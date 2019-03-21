@@ -12,6 +12,8 @@
 #include "MqttManagerOut.h"
 #include "AmazonAlexa.h"
 #include "DebugMessage.h"
+#include "DhtManager.h"
+#include "CheckMqtt.h"
 
 #define FORMAT_SPIFFS_IF_FAILED true
 
@@ -107,6 +109,8 @@ unsigned long lastTimeinMillisOta = 0;
 unsigned long lastTimeinMillisMqtt = 0;
 unsigned long lastTimeinMillisNtp = 0;
 unsigned long lastTimeinMillisAdc = 0;
+unsigned long lastTimeinMillisDht = 0;
+
 volatile PwmAdcData *pwmAdcDataLocal;
 DoubleReset doubleReset = DoubleReset(5000);
 bool mustStartWebConfig = false;
@@ -122,3 +126,5 @@ AlexaStruct *alexaStruct; // Struct to carry Alexa useful data
 bool isAlexaEnable = false;
 WiFiUDP ntpUDP;
 DebugMessage *debugMessage;
+DhtManager **dhtManagerArray;
+CheckMqtt *checkMqtt;

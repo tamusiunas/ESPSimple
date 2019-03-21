@@ -95,6 +95,8 @@ private:
 
   void processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
 
+  void processGetDHT(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
+
   WiFiClient _wifiClient;
   PubSubClient *_client;
   String _mqttServer;

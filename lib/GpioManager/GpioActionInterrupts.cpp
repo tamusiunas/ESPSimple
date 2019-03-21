@@ -51,10 +51,18 @@ bool GpioActionInterrupts::processDigitalAction()
           {
             executeDigitalAction(digitalAction, digitalGpioTarget.toInt(), digitalTelegramMessage);
             _iparameters->interruptLastTimeinMillisParameters[cont]->setValue(String(millisNow).c_str());
+            String actionDigitalTimeBeforeActionReversalStr = "action_digital_time_before_action_reversal_r_" + String(cont);
+            int actionDigitalTimeBeforeActionReversalValueInt = String(_iparameters->espConfig->getDataStore()->getValue(actionDigitalTimeBeforeActionReversalStr.c_str())).toInt();
+            if (actionDigitalTimeBeforeActionReversalValueInt > 0)
+            {
+              //Serial.println("Configuring getGpioDigitalActionIndexWhenReverseInMillis()[" + String(cont) + "] to " + 
+              //  String(millis() + actionDigitalTimeBeforeActionReversalValueInt));
+              _iparameters->espConfig->getGpioDigitalActionIndexWhenReverseInMillis()[cont] = millis() + actionDigitalTimeBeforeActionReversalValueInt;
+            }
           }
           else
           {
-            Serial.println("GPIO " + digitalGpioTarget + " is set as Pwm not Output");
+            //Serial.println("GPIO " + digitalGpioTarget + " is set as Pwm not Output");
           }
           
         }
@@ -90,21 +98,21 @@ bool GpioActionInterrupts::executeDigitalAction(String action, int gpioPinTarget
 
   if (action == "reverse")
   {
-    Serial.println("Reversing GPIO: " + String(gpioPinTarget));
+    //Serial.println("Reversing GPIO: " + String(gpioPinTarget));
     _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
     _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,!gpioManagerLocal->getDigitalOutput(gpioPinTarget));
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, !gpioManagerLocal->getDigitalOutput(gpioPinTarget));
   }
   else if (action == "on")
   {
-    Serial.println("Turning on GPIO: " + String(gpioPinTarget));
+    //Serial.println("Turning on GPIO: " + String(gpioPinTarget));
     _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
     _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,HIGH);
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, HIGH);
   }
   else if (action == "off")
   {
-    Serial.println("Turning off GPIO: " + String(gpioPinTarget));
+    //Serial.println("Turning off GPIO: " + String(gpioPinTarget));
     _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
     _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,LOW);
     gpioManagerLocal->setDigitalOutput(gpioPinTarget, LOW);

@@ -35,7 +35,7 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   iparameters->espConfig = _espConfig;
   iparameters->gpioManager = this;
 
-  #ifdef ENABLEGPIOWEBCONFIG
+  #ifdef ENABLE_GPIO_WEB_CONFIG
   String webConfigGpioStr = String(_espConfig->getDataStore()->getValue("web_config_gpio"));
   if (webConfigGpioStr != "none")
   {
@@ -47,7 +47,8 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   }
   else
   {
-    //_debugMessage->debug("web_config_gpio is configured as none");
+    iparameters->isReconfigGpio = false;
+    _debugMessage->debug("web_config_gpio is configured as none");
   }
   #endif
   
@@ -71,7 +72,7 @@ void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
 
   int gpioInterruptStatus = digitalRead(iparameters->gpioInterruptPin);
 
-  #ifdef ENABLEGPIOWEBCONFIG
+  #ifdef ENABLE_GPIO_WEB_CONFIG
   if ((iparameters->isReconfigGpio) and (gpioInterruptStatus == LOW))
   {
     DoubleReset doubleReset = DoubleReset();
@@ -81,6 +82,8 @@ void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
   #endif 
 
   iparameters->gpioInterruptPinStatus = gpioInterruptStatus;
+
+  Serial.println("Receiving an interruption for " + String(iparameters->gpioInterruptPin) + " - status: " + String(gpioInterruptStatus));
 
   GpioActionInterrupts gpioActionInterrupts = GpioActionInterrupts(iparameters);
 
