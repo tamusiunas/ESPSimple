@@ -97,7 +97,7 @@ ESPConfig *GpioManager::getESPConfig()
   return _espConfig;
 }
 
-void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
+/*void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
 {
   int adcValueGpioAdcArray[pwmAdcDataLocal->totalGPIO];
   int adcValueAnalogOnlyArray[pwmAdcDataLocal->totalGPIO];
@@ -134,7 +134,6 @@ void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile P
     }
   }
 
-  
   for (int cont = 0 ; cont < actionAdcTotal ; cont++)
   {
     bool runAction = false;
@@ -285,7 +284,7 @@ void GpioManager::checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile P
     pwmAdcDataLocal->pinAnalogOnlyValue[cont] = adcValueAnalogOnlyArray[cont];
   }
   
-}
+}*/
 
 void GpioManager::checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal)
 {
@@ -374,7 +373,7 @@ void GpioManager::checkSendAdcAnalogOnlyValue(MqttManagerOut *mqttManagerOut, vo
     }
 }
 
-void GpioManager::checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal)
+/*void GpioManager::checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal)
 {
   int adcTotalInt = String(_espConfig->getDataStore()->getValue("action_adc_total")).toInt();
   for (int cont = 0 ; cont < adcTotalInt; cont++)
@@ -414,9 +413,9 @@ void GpioManager::checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal)
 
     }
   }
-}
+}*/
 
-void GpioManager::checkGpioDigitalReverse()
+/*void GpioManager::checkGpioDigitalReverse()
 {
   int gpioDigitalTotalInt = String(_espConfig->getDataStore()->getValue("action_digital_total")).toInt();
   for (int cont = 0 ; cont < gpioDigitalTotalInt; cont++)
@@ -456,7 +455,7 @@ void GpioManager::checkGpioDigitalReverse()
 
     }
   }
-}
+}*/
 
 /*void GpioManager::executeDigitalAction(uint32_t gpio, int gpioStatus)
 {

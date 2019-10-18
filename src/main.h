@@ -13,7 +13,8 @@
 #include "AmazonAlexa.h"
 #include "DebugMessage.h"
 #include "DhtManager.h"
-#include "CheckMqtt.h"
+#include "CheckActionMqtt.h"
+//#include <RH_ASK.h>
 
 #define FORMAT_SPIFFS_IF_FAILED true
 
@@ -127,4 +128,6 @@ bool isAlexaEnable = false;
 WiFiUDP ntpUDP;
 DebugMessage *debugMessage;
 DhtManager **dhtManagerArray;
-CheckMqtt *checkMqtt;
+CheckActionMqtt *checkActionMqtt;
+
+//RH_ASK rf_driver();

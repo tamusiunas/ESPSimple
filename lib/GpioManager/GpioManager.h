@@ -83,7 +83,7 @@ public:
 
   void checkGpioChange(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal);
 
-  void checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal);
+  //void checkAdcGpioActions(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal);
 
   /**
    * @brief Set Gpio output
@@ -95,9 +95,9 @@ public:
 
   int getAdcValue(String gpioAdc);
 
-  void checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal);
+  // void checkAdcReverse(volatile PwmAdcData *pwmAdcDataLocal);
 
-  void checkGpioDigitalReverse();
+  // void checkGpioDigitalReverse();
 
 private:
 

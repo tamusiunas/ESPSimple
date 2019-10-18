@@ -1,0 +1,24 @@
+244c244
+< 				_setCallback(id, _devices[id].name, _devices[id].state, _devices[id].value);
+---
+> 				_setCallback(id, _devices[id].name, _devices[id].state, _devices[id].value, _arg1, _arg2);
+493c493
+< void fauxmoESP::enable(bool enable) {
+---
+> void fauxmoESP::enable(bool enable, void *arg1, volatile void *arg2) {
+502c502,503
+< 
+---
+> 	_arg1 = arg1;
+> 	_arg2 = arg2;
+526a528,537
+> 
+> /*fauxmoESP::fauxmoESP(void *arg)
+> {
+> 	//_arg = arg;
+> }
+> 
+> fauxmoESP::fauxmoESP()
+> {
+> 
+> }*/

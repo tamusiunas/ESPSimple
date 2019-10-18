@@ -162,12 +162,14 @@ void setup(){
     isAlexaEnable = true;
   }
 
-  checkMqtt = new CheckMqtt(mqttManagerOut, pwmAdcDataLocal, debugMessage);
+  checkActionMqtt = new CheckActionMqtt(mqttManagerOut, pwmAdcDataLocal, debugMessage, gpioManager, espConfig);
 
   debugMessage->debug("WifiGetChipId(): " + String(WifiGetChipId()));
   debugMessage->debug("Free size: " + String(ESP.getFreeSketchSpace()));
   debugMessage->debug("Free Heap: " + String(ESP.getFreeHeap()));
 
+  //rf_driver.init();
+ 
 }
 
 void loop()
@@ -211,9 +213,12 @@ void loop()
 
   if ((millis() - lastTimeinMillisAdc) > 500)
   {
-    gpioManager->checkAdcReverse(pwmAdcDataLocal);
-    gpioManager->checkGpioDigitalReverse();
-    gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
+    //gpioManager->checkAdcReverse(pwmAdcDataLocal);
+    checkActionMqtt->checkAdcReverse();
+    //gpioManager->checkGpioDigitalReverse();
+    checkActionMqtt->checkGpioDigitalReverse();
+    //gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
+    checkActionMqtt->checkAdcGpioActions();
     lastTimeinMillisAdc = millis();
   }
 
@@ -224,8 +229,8 @@ void loop()
     {
       mqttManagerIn->handleMqtt();
       mqttManagerOut->handleMqtt();
+      checkActionMqtt->checkDht(dhtManagerArray);
       lastTimeinMillisMqtt = millis();
-      checkMqtt->checkDht(dhtManagerArray);
     }
     gpioManager->checkGpioChange(mqttManagerOut, pwmAdcDataLocal);
 
