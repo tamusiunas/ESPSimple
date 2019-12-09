@@ -1,6 +1,6 @@
 # Development Status
 --
-Resource	|Status | Observações
+Resource|Status | Observações
 -------|-------|------------
 GPIO Config|OK	
 WiFi Config|OK	
@@ -19,4 +19,4 @@ Sensor MCP3800	|
 Display SSD160	|
 PWM Zero Cross|OK|ESP32 only
 PWM Config|OK
-Amazon Alexa|
+Amazon Alexa | OK
