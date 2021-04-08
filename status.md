@@ -7,8 +7,8 @@ WiFi Config|OK
 Actions (Digiral)|
 Actions (ADC)|
 ADC (GPIO VREF)|
-MQTT|
-Syslog|
+MQTT| OK
+Syslog| OK
 OTA|OK
 WebConfig GPIO	|
 Telegram Config|
