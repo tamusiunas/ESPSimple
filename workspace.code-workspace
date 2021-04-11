@@ -2,10 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"name": "espsimpletest",
-			"path": "../../Documents/PlatformIO/Projects/espsimpletest"
 		}
 	],
 	"settings": {}
