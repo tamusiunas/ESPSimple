@@ -5,3 +5,4 @@
 .gcc-flags.json
 .vscode
 .DS_Store
+.patching-done
