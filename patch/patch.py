@@ -7,13 +7,13 @@
     Copyright (c) 2008-2016 anatoly techtonik
     Available under the terms of MIT license
 
-    https://github.com/techtonik/python-patch/
-
 """
 from __future__ import print_function
 
 __author__ = "anatoly techtonik <techtonik@gmail.com>"
 __version__ = "1.16"
+__license__ = "MIT"
+__url__ = "https://github.com/techtonik/python-patch"
 
 import copy
 import logging
@@ -337,7 +337,7 @@ class PatchSet(object):
     hunkparsed = False # state after successfully parsed hunk
 
     # regexp to match start of hunk, used groups - 1,3,4,6
-    re_hunk_start = re.compile(b"^@@ -(\d+)(,(\d+))? \+(\d+)(,(\d+))? @@")
+    re_hunk_start = re.compile(br"^@@ -(\d+)(,(\d+))? \+(\d+)(,(\d+))? @@")
     
     self.errors = 0
     # temp buffers for header and filenames info
@@ -516,7 +516,7 @@ class PatchSet(object):
             filenames = False
             headscan = True
           else:
-            re_filename = b"^\+\+\+ ([^\t]+)"
+            re_filename = br"^\+\+\+ ([^\t]+)"
             match = re.match(re_filename, line)
             if not match:
               warning("skipping invalid patch - no target filename at line %d" % (lineno+1))
@@ -542,7 +542,7 @@ class PatchSet(object):
               continue
 
       if hunkhead:
-        match = re.match(b"^@@ -(\d+)(,(\d+))? \+(\d+)(,(\d+))? @@(.*)", line)
+        match = re.match(br"^@@ -(\d+)(,(\d+))? \+(\d+)(,(\d+))? @@(.*)", line)
         if not match:
           if not p.hunks:
             warning("skipping invalid patch with no hunks for file %s" % p.source)
