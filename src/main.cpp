@@ -111,7 +111,7 @@ void setup(){
   }
   else
   {
-    debugMessage->debug("There are no DHT configured");
+    debugMessage->debug("There's no DHT configured");
   }
 
 
@@ -235,7 +235,6 @@ void loop()
     gpioManager->checkGpioChange(mqttManagerOut, pwmAdcDataLocal);
 
   }
-  //delay(1000);
   yield();
 
 }
