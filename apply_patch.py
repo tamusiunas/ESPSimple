@@ -1,4 +1,5 @@
 from os.path import join, isfile
+
 Import ("env")
 Import("projenv")
 
@@ -9,15 +10,18 @@ def _touch(path):
 def applyPatch(originalFile, patchFile):
     print("originalFile: " + originalFile)
     print("patchFile: " + patchFile)
-    env.Execute("patch %s %s" % (originalFile, patchFile))
+    env.Execute("bash -c \"patches/patch.bash '%s %s'\"" % (originalFile, patchFile))
 
 libDepsDir = projenv["PROJECT_LIBDEPS_DIR"]
 pioName = projenv ["PIOENV"]
-patchDir = join(projenv ["PROJECT_DIR"],"patch")
+patchDir = join(projenv ["PROJECT_DIR"],"patches")
 libDepsPath = join(libDepsDir,pioName)
 patchDoneFile = join(libDepsPath, ".patching-done")
+hostOs = projenv ["HOST_OS"]
 print("libDepsPath: " + libDepsPath)
+print("patchDoneFile: " + patchDoneFile)
 
+# print(env.Dump())
 # print(projenv.Dump())
 
 if not isfile(patchDoneFile):
@@ -36,16 +40,6 @@ if not isfile(patchDoneFile):
     applyPatch(originalFile,patchFile)
 
     env.Execute(lambda *args, **kwargs: _touch(patchDoneFile))
-
-#
-#    assert isfile(original_file) and isfile(patched_file)
-
-#    #env.Execute("patch %s %s" % (original_file, patched_file))
-#    # env.Execute("touch " + patchflag_path)
-
-
+else:
+    print("Files were already patched")
     
-
-    
-
-
