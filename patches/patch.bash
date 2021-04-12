@@ -1,21 +1,21 @@
 VERSION=0.1
 if [ $# -eq 0 -o $# -gt 1 ]
-  then
-    echo ""
-    echo "patch.bash version $VERSION"
-    echo "It's an universal patch script that runs using Unix-like OS and Windows (with git-scm or WSL)"
-    echo "It uses GNU patch distributed with Unix-like OS or bash provided by git-scm and WSL"
-    echo "For Window it requires git-scm <https://git-scm.com> or Windows WSL installed"
-    echo "Usage: "
-    echo "           \$ $0 \"<patch parameters>\""
-    echo "Important: \"<patch parameters>\" $(tput bold)MUST$(tput sgr0) have double quotes."
-    echo "           Without double quotes Windows can't interprept Windows-style PATH"
-    echo "Usage example: "
-    echo "           \$ $0 \"'c:\Users\User 1\file.cpp.diff' c:\devel\prog1\file.cpp\""
-    echo "For more information about patch parametes: "
-    echo "           \$ man patch # or <https://man7.org/linux/man-pages/man1/patch.1.html>"
-    echo ""
-    exit 1
+then
+  echo ""
+  echo "patch.bash version $VERSION"
+  echo "It's an universal patch script that runs using Unix-like OS and Windows (with git-scm or WSL)"
+  echo "It uses GNU patch distributed with Unix-like OS or bash provided by git-scm and WSL"
+  echo "For Window it requires git-scm <https://git-scm.com> or Windows WSL installed"
+  echo "Usage: "
+  echo "           \$ $0 \"<patch parameters>\""
+  echo "Important: \"<patch parameters>\" $(tput bold)MUST$(tput sgr0) have double quotes."
+  echo "           Without double quotes Windows can't interprept Windows-style PATH"
+  echo "Usage example: "
+  echo "           \$ $0 \"'c:\Users\User 1\file.cpp.diff' c:\devel\prog1\file.cpp\""
+  echo "For more information about patch parametes: "
+  echo "           \$ man patch # or <https://man7.org/linux/man-pages/man1/patch.1.html>"
+  echo ""
+  exit 1
 fi
 
 parameters=$1 # parametes
