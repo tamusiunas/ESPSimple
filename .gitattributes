@@ -2,27 +2,10 @@
 # and leave all files detected as binary untouched.
 * text=auto
 
-# Never modify line endings of our bash scripts
-*.sh -crlf
-*.bash -crlf
+# Unix Scripts
+*.sh text eol=lf
+*.bash text eol=lf
 
-#
-# The above will handle all files NOT found below
-#
-# These files are text and should be normalized (Convert crlf => lf)
-*.css           text
-*.html          text
-*.java          text
-*.js            text
-*.json          text
-*.properties    text
-*.txt           text
-*.xml           text
-
-# These files are binary and should be left untouched
-# (binary is macro for -text -diff)
-*.class         binary
-*.jar           binary
-*.gif           binary
-*.jpg           binary
-*.png           binary
+# Windows Scripts
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
