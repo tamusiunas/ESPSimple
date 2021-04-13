@@ -1,22 +1,18 @@
 # Development Status
---
-Resource|Status | Observações
--------|-------|------------
-GPIO Config|OK	
-WiFi Config|OK	
-Actions (Digiral)|
-Actions (ADC)|
-ADC (GPIO VREF)|
-MQTT| OK
-Syslog| OK
-OTA|OK
-WebConfig GPIO	|
-Telegram Config|
-Telegram Actions|
-Sensor DHT|
-Sensor BMP180|
-Sensor MCP3800	|
-Display SSD160	|
-PWM Zero Cross|OK|ESP32 only
-PWM Config|OK
-Amazon Alexa | OK
+- [X] GPIO Config
+- [X] WiFi Config
+- [ ] Actions (Digital)
+- [ ] Actions (ADC)
+- [ ] ADC (GPIO VREF)
+- [X] MQTT
+- [X] Syslog
+- [X] OTA
+- [ ] WwebConfig GPIO
+- [ ] Telegram Config
+- [ ] Telegram Actions
+- [ ] Sensor DHT
+- [ ] Sendor BMP180
+- [ ] Display SSD160
+- [X] PWM Zero Cross (ESP32 only)
+- [X] PWM Config
+- [X] Amazon Alexa
