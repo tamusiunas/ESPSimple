@@ -41,5 +41,5 @@ if not isfile(patchDoneFile):
 
     env.Execute(lambda *args, **kwargs: _touch(patchDoneFile))
 else:
-    print("Files were already patched")
+    print("Files already patched")
     
