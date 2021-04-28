@@ -67,9 +67,7 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 
 void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
 {  
-
   interruptParameters *iparameters = (interruptParameters *) arg;
-
   int gpioInterruptStatus = digitalRead(iparameters->gpioInterruptPin);
 
   #ifdef ENABLE_GPIO_WEB_CONFIG
@@ -80,11 +78,8 @@ void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
     ESP.restart();
   }
   #endif 
-
   iparameters->gpioInterruptPinStatus = gpioInterruptStatus;
-
   Serial.println("Receiving an interruption for " + String(iparameters->gpioInterruptPin) + " - status: " + String(gpioInterruptStatus));
-
   GpioActionInterrupts gpioActionInterrupts = GpioActionInterrupts(iparameters);
 
   bool digitalActionStatus = gpioActionInterrupts.processDigitalAction();

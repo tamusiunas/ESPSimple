@@ -1,4 +1,6 @@
-20a21,28
+19a20
+>     this->_localArg = NULL;
+29a31,42
 >     this->_localArg = NULL;
 > }
 > 
@@ -6,12 +8,16 @@
 >     this->_state = MQTT_DISCONNECTED;
 >     setClient(client);
 >     this->stream = NULL;
+>     this->bufferSize = 0;
+>     setBufferSize(MQTT_MAX_PACKET_SIZE);
+>     setKeepAlive(MQTT_KEEPALIVE);
+>     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 >     this->_localArg = localArg;
-337c345
+405c418
 <                             callback(topic,payload,len-llen-3-tl-2);
 ---
->                             callback(topic,payload,len-llen-3-tl-2,this->_localArg);
-348c356
+>                             callback(topic,payload,len-llen-3-tl-2, this->_localArg);
+416c429
 <                             callback(topic,payload,len-llen-3-tl);
 ---
 >                             callback(topic,payload,len-llen-3-tl,this->_localArg);

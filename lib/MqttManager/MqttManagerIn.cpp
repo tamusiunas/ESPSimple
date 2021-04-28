@@ -68,107 +68,118 @@ void MqttManagerIn::callback(char *topic, byte *payload, unsigned int length, vo
 {
   DebugMessage debugMessageLocal = DebugMessage();
   volatile configLocalStruct *configCallbackStr = (configLocalStruct*) argLocal;
-  String mqttMsg = "";
-  for(int cont = 0; cont < (int) length; cont++) 
-  {
-    mqttMsg += (char) payload[cont];
-  }
+  String mqttMsg = (char *)payload;
   debugMessageLocal.debug("Received an MQTT message - Topic: " + String(topic) + "Message: " + mqttMsg);
 
   DynamicJsonBuffer jsonBuffer;
+
   JsonObject& root = jsonBuffer.parseObject(mqttMsg);
 
-  JsonArray& statusGpio = root["SetDigitalGpio"];
-  if (statusGpio.size() > 0)
+ for (JsonPair& jp1 : root) {
+    debugMessageLocal.debug("key: " + String(jp1.key));
+    JsonVariant jv =  jp1.value;
+
+    if (!strcmp(jp1.key,"SetDigitalGpio"))
+    {
+      configCallbackStr->mqttManagerLocal->processSetDigitalGpio(configCallbackStr->_espConfig, 
+                                                                 configCallbackStr->_gpioManager, jv);
+    }
+    else if (!strcmp(jp1.key,"SetPwmGpio"))
+    {
+        configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
+                                                               configCallbackStr->_pwmAdcDataLocal, jv);
+    }
+    else if (!strcmp(jp1.key,"GetAdcGpio"))
+    {
+        configCallbackStr->mqttManagerLocal->processGetAdcGpio(configCallbackStr->_pwmAdcDataLocal, jv);
+    }
+    else if (!strcmp(jp1.key,"GetDHT"))
+    {
+        configCallbackStr->mqttManagerLocal->processGetDHT(configCallbackStr->_pwmAdcDataLocal, jv);
+    }
+  } 
+  
+}
+
+void MqttManagerIn::processGetDHT(volatile PwmAdcData *pwmAdcDataLocal, JsonVariant& jv)
+{
+
+  DebugMessage debugMessageLocal = DebugMessage();
+  int dhtId = -1;
+  String dhtKey = "";
+  for (const auto& kv : jv.as<JsonObject>())
   {
-    configCallbackStr->mqttManagerLocal->processSetDigitalGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
-                                                               statusGpio);
-    debugMessageLocal.debug("Received a SetDigitalGpio object");                                                           
+    debugMessageLocal.debug("key: " + String(kv.key));
+    debugMessageLocal.debug("value: " + String(kv.value.as<int>()));
+    if (!strcmp(kv.key, "dhtId"))
+    {
+      dhtId = kv.value.as<int>();
+    }
+    if (!strcmp(kv.key, "key"))
+    {
+      dhtKey = kv.value.as<const char *>();
+    }
+  }
+  
+  if (dhtKey == "humidity")
+  {
+    pwmAdcDataLocal->sendDhtHumidity[dhtId] = true;
+  }
+  else if (dhtKey == "celsius")
+  {
+    pwmAdcDataLocal->sendDhtCelsius[dhtId] = true;
+  }
+  else if (dhtKey == "fahrenheit")
+  {
+    pwmAdcDataLocal->sendDhtFahrenheit[dhtId] = true;
+  }
+  
+}
+
+void MqttManagerIn::processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonVariant& jv)
+{
+  DebugMessage debugMessageLocal = DebugMessage();
+  String gpioIdString = "";
+  for (const auto& kv : jv.as<JsonObject>())
+  {
+    debugMessageLocal.debug("key: " + String(kv.key));
+    debugMessageLocal.debug("value: " + String(kv.value.as<int>()));
+    if (!strcmp(kv.key, "gpio"))
+    {
+      gpioIdString = kv.value.as<const char *>();
+    }
+  }
+  
+  bool isAnalogOnly = false;
+  int gpioInt = -1;
+  // It's fot ESP8266 which there are analog GPIO (A0, A1, etc.)
+  if (gpioIdString.indexOf("a") == 0)
+  {
+    gpioInt = gpioIdString.substring(1).toInt();
+    isAnalogOnly = true;
   }
   else
   {
-    JsonArray& statusGpio = root["SetPwmGpio"];
-    if (statusGpio.size() > 0)
+    gpioInt = gpioIdString.toInt();
+  }
+  if ((gpioInt >= 0) and (gpioInt < pwmAdcDataLocal->totalGPIO))
+  {
+    // Check if it's ESP8266
+    if (isAnalogOnly)
     {
-      configCallbackStr->mqttManagerLocal->processSetPwmGpio(configCallbackStr->_espConfig, configCallbackStr->_gpioManager, 
-                                                             configCallbackStr->_pwmAdcDataLocal, statusGpio);
-      debugMessageLocal.debug("Received a SetPwmGpio object");
+      //Exclusive for ESP8266 (for this project)
+      pwmAdcDataLocal->sendAdcAnalogOnlyValue[gpioInt] = 1;
     }
     else
     {
-      JsonArray& statusGpio = root["GetAdcGpio"];
-      if (statusGpio.size() > 0)
-      {
-        configCallbackStr->mqttManagerLocal->processGetAdcGpio(configCallbackStr->_pwmAdcDataLocal, statusGpio);
-        debugMessageLocal.debug("Received a GetAdcGpio object");
-      }
-      else
-      {
-        JsonArray& statusGpio = root["GetDHT"];
-        if (statusGpio.size() > 0)
-        {
-          configCallbackStr->mqttManagerLocal->processGetDHT(configCallbackStr->_pwmAdcDataLocal, statusGpio);
-          debugMessageLocal.debug("Received a GetDHT object");
-        }
-      }
+      pwmAdcDataLocal->sendAdcGpioValue[gpioInt] = 1;
     }
   }
-}
-
-void MqttManagerIn::processGetDHT(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio)
-{
-  for (JsonObject& elem : statusGpio)
+  else
   {
-    int dhtId = elem["dhtId"].as<int>();
-    String gpioString = elem["key"].as<String>();
-    if (gpioString == "humidity")
-    {
-      pwmAdcDataLocal->sendDhtHumidity[dhtId] = true;
-    }
-    else if (gpioString == "celsius")
-    {
-      pwmAdcDataLocal->sendDhtCelsius[dhtId] = true;
-    }
-    else if (gpioString == "fahrenheit")
-    {
-      pwmAdcDataLocal->sendDhtFahrenheit[dhtId] = true;
-    }
+    // send message Out of Range
   }
-}
-
-void MqttManagerIn::processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio)
-{
-  for (JsonObject& elem : statusGpio)
-  {
-    bool isAnalogOnly = false;
-    int gpio = -1;
-    String gpioString = elem["gpio"].as<String>();
-    if (gpioString.indexOf("a") == 0)
-    {
-      gpio = gpioString.substring(1).toInt();
-      isAnalogOnly = true;
-    }
-    else
-    {
-      gpio = gpioString.toInt();
-    }
-    if ((gpio >= 0) and (gpio < pwmAdcDataLocal->totalGPIO))
-    {
-      if (isAnalogOnly)
-      {
-        pwmAdcDataLocal->sendAdcAnalogOnlyValue[gpio] = 1;
-      }
-      else
-      {
-        pwmAdcDataLocal->sendAdcGpioValue[gpio] = 1;
-      }
-    }
-    else
-    {
-      // send message Out of Range
-    }
     
-  }
 }
 
 bool MqttManagerIn::status()
@@ -176,52 +187,82 @@ bool MqttManagerIn::status()
   return _client->connected();
 }
 
-void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio)
+void MqttManagerIn::processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonVariant& jv)
 {
-  for (JsonObject& elem : statusGpio)
+  DebugMessage debugMessageLocal = DebugMessage();
+  int gpioNumber = -1;
+  int gpioPwmValue = -1;
+  for (const auto& kv : jv.as<JsonObject>())
   {
-    int gpioInt = elem["gpio"].as<int>();
-    String valueStr = elem["value"].as<String>();
-    if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
+    debugMessageLocal.debug("key: " + String(kv.key));
+    debugMessageLocal.debug("value: " + String(kv.value.as<int>()));
+    if (!strcmp(kv.key, "gpio"))
     {
-      if (_espConfig->getPinPwmEnable()[gpioInt] == true)
-      {
-        int pwmValue = valueStr.toInt();
-        gpioManager->setPwm(gpioInt,pwmValue, pwmAdcDataLocal);
-      }
+      gpioNumber = kv.value.as<int>();
+    }
+    else if (!strcmp(kv.key, "value"))
+    {
+      gpioPwmValue = kv.value.as<int>();
+    }
+  }
+  if ((gpioNumber >= 0) and (gpioNumber < espConfig->getTotalGpio()))
+  {
+    if (_espConfig->getPinPwmEnable()[gpioNumber] == true)
+    {
+      gpioManager->setPwm(gpioNumber,gpioPwmValue, pwmAdcDataLocal);
     }
   }
 }
 
-void MqttManagerIn::processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio)
+void MqttManagerIn::processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonVariant& jv)
 {
-  for (JsonObject& elem : statusGpio)
+  DebugMessage debugMessageLocal = DebugMessage();
+  int gpioNumber = -1;
+  String gpioStatusValue = "";
+  for (const auto& kv : jv.as<JsonObject>())
   {
-    int gpioInt = elem["gpio"].as<int>();
-    String valueStr = elem["value"].as<String>();
-    if ((gpioInt >= 0) and (gpioInt < espConfig->getTotalGpio()))
+    debugMessageLocal.debug("key: " + String(kv.key));
+    debugMessageLocal.debug("value: " + String(kv.value.as<char*>()));
+    if (!strcmp(kv.key, "gpio"))
     {
-      if (_espConfig->getPinPwmEnable()[gpioInt] == false)
+      gpioNumber = kv.value.as<int>();
+    }
+    else if (!strcmp(kv.key, "value"))
+    {
+      gpioStatusValue = kv.value.as<char*>();
+    }
+  }
+
+  if ((gpioNumber >= 0) and (gpioNumber < espConfig->getTotalGpio()))
+  {
+    if (_espConfig->getPinPwmEnable()[gpioNumber] == false)
+    {
+      if (espConfig->getPinGpioMode()[gpioNumber] == OUTPUT)
       {
-        if (espConfig->getPinGpioMode()[gpioInt] == OUTPUT)
+        uint32_t gpioMode = -1;
+        if (gpioStatusValue == "high")
         {
-          uint32_t gpioMode = -1;
-          if (valueStr == "high")
-          {
-            gpioMode = HIGH;
-          }
-          else if (valueStr == "low")
-          {
-            gpioMode = LOW;
-          }
-          if (gpioMode >= 0)
-          {
-            gpioManager->setDigitalOutput(gpioInt,gpioMode);
-            espConfig->setPinGpioDigitalStatusChanged(gpioInt,1);
-            espConfig->setPinGpioDigitalStatus(gpioInt,gpioMode);
-          }
+          gpioMode = HIGH;
+        }
+        else if (gpioStatusValue == "low")
+        {
+          gpioMode = LOW;
+        }
+        if (gpioMode >= 0)
+        {
+          gpioManager->setDigitalOutput(gpioNumber,gpioMode);
+          espConfig->setPinGpioDigitalStatusChanged(gpioNumber,1);
+          espConfig->setPinGpioDigitalStatus(gpioNumber,gpioMode);
         }
       }
+      else
+      {
+        debugMessageLocal.debug("GPIO " + String(gpioNumber) + " is not configured as OUTPUT");
+      }
+    }
+    else
+    {
+      debugMessageLocal.debug("GPIO " + String(gpioNumber) + " is configured as PWM");
     }
   }
 }

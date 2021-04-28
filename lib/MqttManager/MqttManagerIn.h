@@ -89,13 +89,13 @@ private:
    */
   static void callback(char *topic, byte *payload, unsigned int length, void *argLocal);
 
-  void processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonArray& statusGpio);
+  void processSetDigitalGpio(ESPConfig *espConfig, GpioManager *gpioManager, JsonVariant& jv);
 
-  void processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
+  void processSetPwmGpio(ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, JsonVariant& jv);
 
-  void processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
+  void processGetAdcGpio(volatile PwmAdcData *pwmAdcDataLocal, JsonVariant& jv);
 
-  void processGetDHT(volatile PwmAdcData *pwmAdcDataLocal, JsonArray& statusGpio);
+  void processGetDHT(volatile PwmAdcData *pwmAdcDataLocal, JsonVariant& jv);
 
   WiFiClient _wifiClient;
   PubSubClient *_client;

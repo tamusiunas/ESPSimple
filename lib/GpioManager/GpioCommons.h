@@ -14,7 +14,7 @@
 
 #include "ESPConfig.h"
 
-// Parameters sent to each ISR
+// Parameters send to each ISR
 struct interruptParameters 
 {
    uint32_t gpioInterruptPin = -1; // GPIO pin
@@ -23,7 +23,7 @@ struct interruptParameters
    bool isReconfigGpio = false;
    //unsigned long interruptLastTimeInMillis = 0; // Last ISR Time in millis
    ESPConfig *espConfig = NULL; // ESP Object
-   void *gpioManager; //it's an workaround because it's not able to create an GpioManager object. I will check soon (probably) if it's a Platformio issue.
+   void *gpioManager; //it's an workaround because it's not able to create a GpioManager object. I will check soon (probably) if it's a Platformio issue.
    DataParameter **interruptLastTimeinMillisParameters = NULL; // Array for last ISR event time in millis
 };
 
