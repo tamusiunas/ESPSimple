@@ -1,15 +1,11 @@
-73c73
+75c75
 < typedef std::function<void(unsigned char, const char *, bool, unsigned char)> TSetStateCallback;
 ---
 > typedef std::function<void(unsigned char, const char *, bool, unsigned char, void *, volatile void *)> TSetStateCallback;
-84a85,87
->         /*fauxmoESP(void *arg);
->         fauxmoESP();*/
-> 
-98c101
+102c102
 <         void enable(bool enable);
 ---
 >         void enable(bool enable, void *arg1, volatile void *arg2);
-115a119,120
+119a120,121
 >         void *_arg1 = NULL;
 >         volatile void *_arg2 = NULL;

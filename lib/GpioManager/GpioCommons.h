@@ -20,7 +20,7 @@ struct interruptParameters
    uint32_t gpioInterruptPin = -1; // GPIO pin
    int gpioInterruptPinStatus = -1; // GPIO Status (LOW/HIGH)
    int gpioInterruptPinLastStatus = -1; // GPIO Last (previous) Status (LOW/HIGH)
-   bool isReconfigGpio = false;
+   bool isReconfigGpio = false; // check if it's a reconfig request (to access WEB Interface)
    //unsigned long interruptLastTimeInMillis = 0; // Last ISR Time in millis
    ESPConfig *espConfig = NULL; // ESP Object
    void *gpioManager; //it's an workaround because it's not able to create a GpioManager object. I will check soon (probably) if it's a Platformio issue.

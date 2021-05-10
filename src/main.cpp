@@ -49,15 +49,24 @@ void setup(){
   timeClient->update();*/
 
   int syslogPort = 514;
-  if (strcmp(dataStore->getValue("syslog_port"),"") != 0)
+  if (strcmp(dataStore->getValue("syslog_port"),""))
   {
     syslogPort = String(dataStore->getValue("syslog_port")).toInt();
   }
-  syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
-  syslogManager->sendMessage("main","Initializing Syslog");
-
-  debugMessage = new DebugMessage(syslogManager);
-  debugMessage->debug("DEBUG started");
+  const char* syslogIpAddress = dataStore->getValue("syslog_ip_address");
+  //Check if syslog IP Address is blank
+  if (strcmp(syslogIpAddress,""))
+  {
+    syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
+    syslogManager->sendMessage("main","Initializing Syslog");
+    debugMessage = new DebugMessage(syslogManager);
+    debugMessage->debug("DEBUG started");
+  }
+  else
+  {
+    debugMessage = new DebugMessage(NULL);
+  }
+  
 
   otaHandler = new OTAHandler(debugMessage);
   otaHandler->setEspConfig(espConfig);

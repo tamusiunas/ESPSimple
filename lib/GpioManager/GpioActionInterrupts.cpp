@@ -20,32 +20,43 @@ bool GpioActionInterrupts::processDigitalAction()
   {
     String digitalGpioOrigin = "action_digital_gpio_origin_r_" + String(cont);
     int gpioInterruptPinLocal = String(_iparameters->espConfig->getDataStore()->getValue(digitalGpioOrigin.c_str())).toInt();
-    if (gpioInterruptPinLocal == (int) _iparameters->gpioInterruptPin)
+    int gpioInterruptPinEvent = (int)_iparameters->gpioInterruptPin;
+    
+    Serial.println("gpioInterruptPinEvent: " + String(gpioInterruptPinEvent));
+    Serial.println("gpioInterruptPinLocal: " + String(gpioInterruptPinLocal));
+
+    if (gpioInterruptPinLocal == gpioInterruptPinEvent)
     {
       actionFound = true;
       long int interruptLastTimeinMillisParametersLongInt = atol(_iparameters->interruptLastTimeinMillisParameters[cont]->getValue());
       String actionDigitalWaitingTimeRearm = "action_digital_waiting_time_rearm_r_" + String(cont);
-      int digitalWaitingTimeRearm = String(_iparameters->espConfig->getDataStore()->getValue(actionDigitalWaitingTimeRearm.c_str())).toInt();
-
+      int digitalWaitingTimeRearm =  atoi(_iparameters->espConfig->getDataStore()->getValue(actionDigitalWaitingTimeRearm.c_str()));
+      Serial.println("digitalWaitingTimeRearm: " + String(digitalWaitingTimeRearm));
       String actionDigitalTriggerType = "action_digital_trigger_analisis_type_r_" + String(cont);
       String digitalTriggerType = String(_iparameters->espConfig->getDataStore()->getValue(actionDigitalTriggerType.c_str()));
+      Serial.println("digitalTriggerType: " + String(digitalTriggerType));
       String actionDigitalAction = "action_digital_action_r_" + String(cont);
       String digitalAction = String(_iparameters->espConfig->getDataStore()->getValue(actionDigitalAction.c_str()));
+      Serial.println("digitalAction: " + String(digitalAction));
       String actionDigitalGpioTarget = "action_digital_gpio_target_r_" + String(cont);
       String digitalGpioTarget = String(_iparameters->espConfig->getDataStore()->getValue(actionDigitalGpioTarget.c_str()));
+      Serial.println("digitalGpioTarget: " + String(digitalGpioTarget));
       String actionDigitalTelegramMessage = "action_digital_telegram_message_r_" + String(cont);
       String digitalTelegramMessage = String(_iparameters->espConfig->getDataStore()->getValue(actionDigitalTelegramMessage.c_str()));
+      Serial.println("digitalTelegramMessage: " + String(digitalTelegramMessage));
       unsigned long timeSinceLastAction = ((millis() - interruptLastTimeinMillisParametersLongInt));
-      bool triggerArmed = false;
+      // Check for trigger armed
       if (timeSinceLastAction > (unsigned long) digitalWaitingTimeRearm)
-      {
-        triggerArmed = true;
-      }
-      if (triggerArmed)
-      {
-        if (((digitalTriggerType == "on") and (_iparameters->gpioInterruptPinStatus == 0)) or
-            ((digitalTriggerType == "off") and (_iparameters->gpioInterruptPinStatus == 1)) or
-            ((digitalTriggerType == "reversed") and (_iparameters->gpioInterruptPinStatus != _iparameters->gpioInterruptPinLastStatus)))
+      {       
+        int gpioInterruptPinStatus = (int) _iparameters->gpioInterruptPinStatus;
+        int gpioInterruptPinLastStatus = (int) _iparameters->gpioInterruptPinLastStatus;
+
+        Serial.println("gpioInterruptPinStatus: " + String(gpioInterruptPinStatus));
+        Serial.println("gpioInterruptPinLastStatus: " + String(gpioInterruptPinLastStatus));
+
+        if (((digitalTriggerType == "on") and (gpioInterruptPinStatus == LOW)) or
+            ((digitalTriggerType == "off") and (gpioInterruptPinStatus == HIGH)) or
+            (digitalTriggerType == "reversed"))
         {
           if (_iparameters->espConfig->getPinPwmEnable()[digitalGpioTarget.toInt()] == false)
           {
@@ -68,7 +79,7 @@ bool GpioActionInterrupts::processDigitalAction()
         }
         else
         {
-          // Serial.println("Action " + String(cont) + " is not usable here");
+          Serial.println("Interrupt " + digitalTriggerType + " is not usable here");
         }
       }
       else
@@ -95,27 +106,24 @@ bool GpioActionInterrupts::processDigitalAction()
 bool GpioActionInterrupts::executeDigitalAction(String action, int gpioPinTarget, String telegramMessage)
 {
   GpioManager *gpioManagerLocal = (GpioManager *)_iparameters->gpioManager;
-
+  Serial.println("executeDigitalAction:action: " + String(action));
+  boolean configureGpio = false;
+  uint32_t gpioValue = gpioManagerLocal->getDigitalOutput(gpioPinTarget);
+  uint32_t gpioNewValue = 0;
   if (action == "reverse")
   {
-    //Serial.println("Reversing GPIO: " + String(gpioPinTarget));
-    _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
-    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,!gpioManagerLocal->getDigitalOutput(gpioPinTarget));
-    gpioManagerLocal->setDigitalOutput(gpioPinTarget, !gpioManagerLocal->getDigitalOutput(gpioPinTarget));
+    gpioNewValue = !gpioValue;
+    configureGpio = true;
   }
   else if (action == "on")
   {
-    //Serial.println("Turning on GPIO: " + String(gpioPinTarget));
-    _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
-    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,HIGH);
-    gpioManagerLocal->setDigitalOutput(gpioPinTarget, HIGH);
+    gpioNewValue = HIGH;
+    configureGpio = true;
   }
   else if (action == "off")
   {
-    //Serial.println("Turning off GPIO: " + String(gpioPinTarget));
-    _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
-    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,LOW);
-    gpioManagerLocal->setDigitalOutput(gpioPinTarget, LOW);
+    gpioNewValue = LOW;
+    configureGpio = true;
   }
   else if (action == "sendmessagetelegram")
   {
@@ -123,8 +131,16 @@ bool GpioActionInterrupts::executeDigitalAction(String action, int gpioPinTarget
   }
   else
   {
-    return 0;
+    return false;
   }
-  return 1;
+  if (configureGpio)
+  {
+    Serial.println("executeDigitalAction:gpioValue: " + String(gpioValue));
+    Serial.println("executeDigitalAction:gpioNewValue: " + String(gpioNewValue));
+    _iparameters->espConfig->setPinGpioDigitalStatusChanged(gpioPinTarget,1);
+    _iparameters->espConfig->setPinGpioDigitalStatus(gpioPinTarget,gpioNewValue);
+    gpioManagerLocal->setDigitalOutput(gpioPinTarget, gpioNewValue);
+  }
+  return true;
 }
 
