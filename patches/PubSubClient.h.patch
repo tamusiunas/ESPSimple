@@ -1,12 +1,8 @@
-81c81,82
+81c81
 < #define MQTT_CALLBACK_SIGNATURE std::function<void(char*, uint8_t*, unsigned int)> callback
 ---
-> //#define MQTT_CALLBACK_SIGNATURE std::function<void(char*, uint8_t*, unsigned int)> callback
 > #define MQTT_CALLBACK_SIGNATURE std::function<void(char*, uint8_t*, unsigned int, void*)> callback
-117a119
+117a118
 >    PubSubClient(Client& client, void *localArg);
-156a159,162
-> 
->    // Local changes
+156a158
 >    void *_localArg;
-> 

@@ -6,6 +6,9 @@
 *.sh text eol=lf
 *.bash text eol=lf
 
+# Patch
+*patch text eol=lf
+
 # Windows Scripts
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf

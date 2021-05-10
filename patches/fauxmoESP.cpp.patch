@@ -1,23 +1,10 @@
-75c75
-< typedef std::function<void(unsigned char, const char *, bool, unsigned char)> TSetStateCallback;
----
-> typedef std::function<void(unsigned char, const char *, bool, unsigned char, void *, volatile void *)> TSetStateCallback;
-102c102
-<         void enable(bool enable);
----
->         void enable(bool enable, void *arg1, volatile void *arg2);
-119a120,121
->         void *_arg1 = NULL;
->         volatile void *_arg2 = NULL;
-fabricio@Fabricios-MBP esp32doit-devkit-v1 % diff FauxmoESP.orig/src/fauxmoESP.cpp FauxmoESP/src/fauxmoESP.cpp 
 282c282
-<                               _setCallback(id, _devices[id].name, _devices[id].state, _devices[id].value);
+< 				_setCallback(id, _devices[id].name, _devices[id].state, _devices[id].value);
 ---
->                               _setCallback(id, _devices[id].name, _devices[id].state, _devices[id].value, _arg1, _arg2);
-545,546c545,547
+> 				_setCallback(id, _devices[id].name, _devices[id].state, _devices[id].value, _arg1, _arg2);
+545c545,547
 < void fauxmoESP::enable(bool enable) {
-< 
 ---
 > void fauxmoESP::enable(bool enable, void *arg1, volatile void *arg2) {
->         _arg1 = arg1;
->       _arg2 = arg2;
+>     _arg1 = arg1;
+>     _arg2 = arg2;
