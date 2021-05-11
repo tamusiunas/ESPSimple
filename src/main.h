@@ -114,7 +114,6 @@ volatile PwmAdcData *pwmAdcDataLocal;
 DoubleReset doubleReset = DoubleReset(5000);
 bool mustStartWebConfig = false;
 OTAHandler *otaHandler;
-SyslogManager *syslogManager;
 ESPConfig *espConfig; // Config values passed through objects
 WiFiSTIManager *wiFiSTIManager; // To configure WiFi parameters
 MqttManagerIn *mqttManagerIn; // Receive MQTT Messages
@@ -124,8 +123,11 @@ AmazonAlexa *amazonAlexa; // Send and receive Amazon Alexa Messages
 AlexaStruct *alexaStruct; // Struct to carry Alexa useful data
 bool isAlexaEnable = false;
 WiFiUDP ntpUDP;
-DebugMessage *debugMessage;
 DhtManager **dhtManagerArray;
 CheckActionMqtt *checkActionMqtt;
+
+DebugMessage *debugMessage;
+SyslogManager *syslogManager;
+SyslogManager *DebugMessage::syslogManager;
 
 //RH_ASK rf_driver();

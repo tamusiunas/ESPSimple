@@ -1,12 +1,20 @@
 #include "CheckActionMqtt.h"
 
-CheckActionMqtt::CheckActionMqtt(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage, GpioManager *gpioManager, ESPConfig *espConfig)
+CheckActionMqtt::CheckActionMqtt(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, GpioManager *gpioManager, ESPConfig *espConfig)
 {
     _mqttManagerOut = mqttManagerOut;
     _pwmAdcDataLocal = pwmAdcDataLocal;
-    _debugMessage = debugMessage;
+    _debugMessage = DebugMessage();
     _gpioManager = gpioManager;
     _espConfig = espConfig;
+}
+
+CheckActionMqtt::~CheckActionMqtt()
+{
+  delete _mqttManagerOut;
+  delete _pwmAdcDataLocal;
+  delete _gpioManager;
+  delete _espConfig;
 }
 
 void CheckActionMqtt::checkDht(DhtManager **dhtManagerArray)
@@ -25,7 +33,7 @@ void CheckActionMqtt::checkDht(DhtManager **dhtManagerArray)
       mqttValue[2] = String(dhtManagerArray[cont]->getHumidity());
       _pwmAdcDataLocal->sendDhtHumidity[cont] = false;
       _mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 3, "InfoDht");
-      _debugMessage->debug("Sent " + mqttValue[1] + " for DHT ID " + String(cont));
+      _debugMessage.debug("Sent " + mqttValue[1] + " for DHT ID " + String(cont));
     }
     if (_pwmAdcDataLocal->sendDhtCelsius[cont])
     {
@@ -33,7 +41,7 @@ void CheckActionMqtt::checkDht(DhtManager **dhtManagerArray)
       mqttValue[2] = String(dhtManagerArray[cont]->getTemperatureCelsius());
       _pwmAdcDataLocal->sendDhtCelsius[cont] = false;
       _mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 3, "InfoDht");
-      _debugMessage->debug("Sent " + mqttValue[1] + " for DHT ID " + String(cont));
+      _debugMessage.debug("Sent " + mqttValue[1] + " for DHT ID " + String(cont));
     }
     if (_pwmAdcDataLocal->sendDhtFahrenheit[cont])
     {
@@ -41,7 +49,7 @@ void CheckActionMqtt::checkDht(DhtManager **dhtManagerArray)
       mqttValue[2] = String(dhtManagerArray[cont]->getTemperatureFahrenheit());
       _pwmAdcDataLocal->sendDhtFahrenheit[cont] = false;
       _mqttManagerOut->publishMessageJson(mqttKey, mqttValue, 3, "InfoDht");
-      _debugMessage->debug("Sent " + mqttValue[1] + " for DHT ID " + String(cont));
+      _debugMessage.debug("Sent " + mqttValue[1] + " for DHT ID " + String(cont));
     }
   }
 }
@@ -53,7 +61,7 @@ void CheckActionMqtt::checkAdcReverse()
   {
     if ((_pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] > 0) and (millis() > _pwmAdcDataLocal->adcActionWhenReverseInMillis[cont]))
     {
-      _debugMessage->debug("Reversing ADC Action " + String(cont));
+      _debugMessage.debug("Reversing ADC Action " + String(cont));
       _pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] = 0;
 
       String actionAdcActionStr = "action_adc_action_r_" + String(cont);
@@ -63,7 +71,7 @@ void CheckActionMqtt::checkAdcReverse()
 
       if (actionAdcActionValueStr == "reverse")
       {
-        _debugMessage->debug("Reversing GPIO " + String(actionAdcGpioTargetValueInt));
+        _debugMessage.debug("Reversing GPIO " + String(actionAdcGpioTargetValueInt));
         int gpioStatus = _gpioManager->getDigitalOutput(actionAdcGpioTargetValueInt);
         _gpioManager->setDigitalOutput(actionAdcGpioTargetValueInt, !gpioStatus);
         _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
@@ -71,14 +79,14 @@ void CheckActionMqtt::checkAdcReverse()
       }
       else if (actionAdcActionValueStr == "on")
       {
-        _debugMessage->debug("Setting GPIO " + String(actionAdcGpioTargetValueInt) + " to LOW");
+        _debugMessage.debug("Setting GPIO " + String(actionAdcGpioTargetValueInt) + " to LOW");
         _gpioManager->setDigitalOutput(actionAdcGpioTargetValueInt, LOW);
         _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
         _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,LOW);
       }
       else if (actionAdcActionValueStr == "off")
       {
-        _debugMessage->debug("Setting GPIO " + String(actionAdcGpioTargetValueInt) + " to HIGH");
+        _debugMessage.debug("Setting GPIO " + String(actionAdcGpioTargetValueInt) + " to HIGH");
         _gpioManager->setDigitalOutput(actionAdcGpioTargetValueInt, HIGH);
         _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
         _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,HIGH);
@@ -95,7 +103,7 @@ void CheckActionMqtt::checkGpioDigitalReverse()
   {
     if ((_espConfig->getGpioDigitalActionIndexWhenReverseInMillis()[cont] > 0) and (millis() > _espConfig->getGpioDigitalActionIndexWhenReverseInMillis()[cont]))
     {
-      _debugMessage->debug("Reversing Gpio Digital Action " + String(cont));
+      _debugMessage.debug("Reversing Gpio Digital Action " + String(cont));
       _espConfig->getGpioDigitalActionIndexWhenReverseInMillis()[cont] = 0;
 
       String actionGpioDigitalActionStr = "action_digital_action_r_" + String(cont);
@@ -105,7 +113,7 @@ void CheckActionMqtt::checkGpioDigitalReverse()
 
       if (actionGpioDigitalActionValueStr == "reverse")
       {
-        _debugMessage->debug("Reversing GPIO " + String(actionGpioDigitalGpioTargetValueInt));
+        _debugMessage.debug("Reversing GPIO " + String(actionGpioDigitalGpioTargetValueInt));
         int gpioStatus = _gpioManager->getDigitalOutput(actionGpioDigitalGpioTargetValueInt);
         _gpioManager->setDigitalOutput(actionGpioDigitalGpioTargetValueInt, !gpioStatus);
         _espConfig->setPinGpioDigitalStatusChanged(actionGpioDigitalGpioTargetValueInt,1);
@@ -113,14 +121,14 @@ void CheckActionMqtt::checkGpioDigitalReverse()
       }
       else if (actionGpioDigitalActionValueStr == "on")
       {
-        _debugMessage->debug("Setting GPIO " + String(actionGpioDigitalGpioTargetValueInt) + " to LOW");
+        _debugMessage.debug("Setting GPIO " + String(actionGpioDigitalGpioTargetValueInt) + " to LOW");
         _gpioManager->setDigitalOutput(actionGpioDigitalGpioTargetValueInt, LOW);
         _espConfig->setPinGpioDigitalStatusChanged(actionGpioDigitalGpioTargetValueInt,1);
         _espConfig->setPinGpioDigitalStatus(actionGpioDigitalGpioTargetValueInt,LOW);
       }
       else if (actionGpioDigitalActionValueStr == "off")
       {
-        _debugMessage->debug("Setting GPIO " + String(actionGpioDigitalGpioTargetValueInt) + " to HIGH");
+        _debugMessage.debug("Setting GPIO " + String(actionGpioDigitalGpioTargetValueInt) + " to HIGH");
         _gpioManager->setDigitalOutput(actionGpioDigitalGpioTargetValueInt, HIGH);
         _espConfig->setPinGpioDigitalStatusChanged(actionGpioDigitalGpioTargetValueInt,1);
         _espConfig->setPinGpioDigitalStatus(actionGpioDigitalGpioTargetValueInt,HIGH);
@@ -152,7 +160,6 @@ void CheckActionMqtt::checkAdcGpioActions()
       {
         int adcValue = _gpioManager->getAdcValue(adcGpioOriginValueStr);
         adcValueAnalogOnlyArray[adcAnalogOnlyOriginInt] = adcValue;
-        //_debugMessage->debug("adcValueGpipAnalogOnlyArray[" + String(adcAnalogOnlyOriginInt) + "] = " + String(adcValue));
       }
     }
     else
@@ -162,7 +169,6 @@ void CheckActionMqtt::checkAdcGpioActions()
       {
         int adcValue = _gpioManager->getAdcValue(adcGpioOriginValueStr);
         adcValueGpioAdcArray[adcGpioOriginInt] = adcValue;
-        //_debugMessage->debug("adcValueGpioAdcArray[" + String(adcGpioOriginInt) + "] = " + String(adcValue));
       }
     }
   }
@@ -195,11 +201,6 @@ void CheckActionMqtt::checkAdcGpioActions()
     if ((millis() - _pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont]) > (unsigned long) actionAdcWaitingTimeRearmValueInt)
     {
       triggerArmed = true;      
-      //_debugMessage->debug("Trigger " + String(cont) + " armed - adcActionIndexLastTimeInMillis: " + String(pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont]));
-    }
-    else
-    {
-      //_debugMessage->debug("Trigger " + String(cont) + " not armed - adcActionIndexLastTimeInMillis: " + String(pwmAdcDataLocal->adcActionIndexLastTimeInMillis[cont]));
     }
 
     if (triggerArmed)
@@ -213,7 +214,7 @@ void CheckActionMqtt::checkAdcGpioActions()
               ((adcValue - _pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
           {
             runAction = true;
-            _debugMessage->debug("It's an analog only variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - _pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+            _debugMessage.debug("It's an analog only variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - _pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
           }
         }
         else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
@@ -221,7 +222,7 @@ void CheckActionMqtt::checkAdcGpioActions()
           if ((adcValue > actionAdcTriggerValueValueInt) and (_pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
           {
             runAction = true;
-            _debugMessage->debug("It's an analog only greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+            _debugMessage.debug("It's an analog only greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
           }
         }
         else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
@@ -229,7 +230,7 @@ void CheckActionMqtt::checkAdcGpioActions()
           if ((adcValue < actionAdcTriggerValueValueInt) and (_pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
           {
             runAction = true;
-            _debugMessage->debug("It's an analog only lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
+            _debugMessage.debug("It's an analog only lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinAnalogOnlyValue[adcGpioOriginInt]));
           }
         }
       }
@@ -242,7 +243,7 @@ void CheckActionMqtt::checkAdcGpioActions()
               ((adcValue - _pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]) <= (actionAdcTriggerValueValueInt - (actionAdcTriggerValueValueInt * 2))))
           {
             runAction = true;
-            _debugMessage->debug("It's an ADC GPIO variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - _pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+            _debugMessage.debug("It's an ADC GPIO variation action - Value: " + String(adcValue) + " - Diff: " + String(adcValue - _pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
           }
         }
         else if (actionAdcTriggerAnalisisTypeValueStr == "greaterthan")
@@ -250,7 +251,7 @@ void CheckActionMqtt::checkAdcGpioActions()
           if ((adcValue > actionAdcTriggerValueValueInt) and (_pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] <= actionAdcTriggerValueValueInt))
           {
             runAction = true;
-            _debugMessage->debug("It's an ADC GPIO greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+            _debugMessage.debug("It's an ADC GPIO greaterthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
           }
         }
         else if (actionAdcTriggerAnalisisTypeValueStr == "lowerthan")
@@ -258,7 +259,7 @@ void CheckActionMqtt::checkAdcGpioActions()
           if ((adcValue < actionAdcTriggerValueValueInt) and (_pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt] >= actionAdcTriggerValueValueInt))
           {
             runAction = true;
-            _debugMessage->debug("It's an ADC GPIO lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
+            _debugMessage.debug("It's an ADC GPIO lowerthan action - Value: " + String(adcValue) + " - Previous Value: " + String(_pwmAdcDataLocal->pinGpioAdcValue[adcGpioOriginInt]));
           }
         }  
       }
@@ -287,12 +288,10 @@ void CheckActionMqtt::runDigitalActions(int position)
     String actionAdcGpioTargetStr = "action_adc_gpio_target_r_" + String(position);
     int actionAdcGpioTargetValueInt = String(_espConfig->getDataStore()->getValue(actionAdcGpioTargetStr.c_str())).toInt();
     String actionAdcTimeBeforeActionReversal = "action_adc_time_before_action_reversal_r_" + String(position);
-    //_debugMessage->debug(actionAdcTimeBeforeActionReversal + ": " + String(_espConfig->getDataStore()->getValue(actionAdcTimeBeforeActionReversal.c_str())));
     int actionAdcTimeBeforeActionReversalValueInt = String(_espConfig->getDataStore()->getValue(actionAdcTimeBeforeActionReversal.c_str())).toInt();
     if (actionAdcActionValueStr == "reverse")
     {
-    //pwmAdcDataLocal->adc
-    _debugMessage->debug("Reversing GPIO " + String(actionAdcGpioTargetValueInt));
+    _debugMessage.debug("Reversing GPIO " + String(actionAdcGpioTargetValueInt));
     int gpioStatus = _gpioManager->getDigitalOutput(actionAdcGpioTargetValueInt);
     _gpioManager->setDigitalOutput(actionAdcGpioTargetValueInt, !gpioStatus);
     _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
@@ -300,22 +299,20 @@ void CheckActionMqtt::runDigitalActions(int position)
     }
     else if (actionAdcActionValueStr == "on")
     {
-    _debugMessage->debug("Setting " + String(actionAdcGpioTargetValueInt) + " to HIGH");
+    _debugMessage.debug("Setting " + String(actionAdcGpioTargetValueInt) + " to HIGH");
     _gpioManager->setDigitalOutput(actionAdcGpioTargetValueInt, HIGH);
     _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
     _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,HIGH);
     }
     else if (actionAdcActionValueStr == "off")
     {
-    _debugMessage->debug("Setting " + String(actionAdcGpioTargetValueInt) + " to LOW");
+    _debugMessage.debug("Setting " + String(actionAdcGpioTargetValueInt) + " to LOW");
     _gpioManager->setDigitalOutput(actionAdcGpioTargetValueInt, LOW);
     _espConfig->setPinGpioDigitalStatusChanged(actionAdcGpioTargetValueInt,1);
     _espConfig->setPinGpioDigitalStatus(actionAdcGpioTargetValueInt,LOW);
     }
-    //_debugMessage->debug("Adc index: " + String(cont) + " - actionAdcTimeBeforeActionReversalValueInt: " + String(actionAdcTimeBeforeActionReversalValueInt));
     if (actionAdcTimeBeforeActionReversalValueInt > 0)
     {
-    //_debugMessage->debug("Configuring adcActionWhenReverseInMillis[" + String(cont) + "] to " + String((millis() + actionAdcTimeBeforeActionReversalValueInt)));
     _pwmAdcDataLocal->adcActionWhenReverseInMillis[position] = (millis() + actionAdcTimeBeforeActionReversalValueInt);
     }
 

@@ -21,13 +21,13 @@ void DebugMessage::debug(String debugMessage)
     #endif
     #endif
     #ifdef SYSLOGDEBUG
-    if (_syslogManager != NULL)
+    if (syslogManager != NULL)
     {
         #ifdef ESP8266
-        _syslogManager->sendMessage("Log ESP8266 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
+        this->syslogManager->sendMessage("Log ESP8266 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
         #endif
         #ifdef ESP32
-        _syslogManager->sendMessage("Log ESP32 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
+        this->syslogManager->sendMessage("Log ESP32 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
         #endif
     }
     #endif

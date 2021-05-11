@@ -4,14 +4,15 @@
 
 class DebugMessage
 {
-public:
-    DebugMessage();
-    DebugMessage(SyslogManager *syslogManager);
-    void debug(String debugMessage);
+    public:
+        DebugMessage();
+        DebugMessage(SyslogManager *syslogManager);
+        void debug(String debugMessage);
+        static SyslogManager *syslogManager;
 
-private:
-    SyslogManager *_syslogManager = NULL;
-    String formatString(String message);
+    private:
+        SyslogManager *_syslogManager = NULL;
+        String formatString(String message);
 };
 
 #endif

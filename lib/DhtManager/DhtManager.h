@@ -9,7 +9,7 @@ class DhtManager
 {
 public:
     DhtManager();
-    DhtManager(int gpio, int dhtType, DebugMessage *debugMessage);
+    DhtManager(int gpio, int dhtType);
     ~DhtManager();
     float getHumidity();
     float getTemperatureCelsius();
@@ -18,7 +18,7 @@ public:
 
 private:
     DHT *_dht;
-    DebugMessage *_debugMessage;
+    DebugMessage _debugMessage;
     float _humidity=0, _celsius=0, _fahrenheit=0;
 };
 #endif

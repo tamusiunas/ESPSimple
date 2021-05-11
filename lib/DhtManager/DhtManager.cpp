@@ -1,11 +1,16 @@
 #include "DhtManager.h"
 
-DhtManager::DhtManager(int gpio, int dhtType, DebugMessage *debugMessage)
+DhtManager::DhtManager(int gpio, int dhtType)
 {
     _dht = new DHT(gpio, dhtType);
-    _debugMessage = debugMessage;
+    _debugMessage = DebugMessage();
     _dht->begin();
-    debugMessage->debug("Configuring DHT - GPIO: " + String(gpio) + " - Type: " + String(dhtType));
+    _debugMessage.debug("Configuring DHT - GPIO: " + String(gpio) + " - Type: " + String(dhtType));
+}
+
+DhtManager::~DhtManager()
+{
+    delete _dht;
 }
 
 float DhtManager::getHumidity()

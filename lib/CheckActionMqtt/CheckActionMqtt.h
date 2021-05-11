@@ -11,7 +11,7 @@
 class CheckActionMqtt
 {
 public:
-    CheckActionMqtt(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage, GpioManager *gpioManager, ESPConfig *espConfig);
+    CheckActionMqtt(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, GpioManager *gpioManager, ESPConfig *espConfig);
     ~CheckActionMqtt();
     void checkDht(DhtManager **dhtManagerArray);
     void checkAdcReverse();
@@ -20,7 +20,7 @@ public:
 private:
     MqttManagerOut *_mqttManagerOut;
     volatile PwmAdcData *_pwmAdcDataLocal;
-    DebugMessage *_debugMessage;
+    DebugMessage _debugMessage;
     GpioManager *_gpioManager;
     ESPConfig *_espConfig;
     void runDigitalActions(int position);

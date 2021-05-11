@@ -26,7 +26,6 @@ void setup(){
     gpioDigitalActionIndexWhenReverseInMillis[cont] = 0;
   }
 
-
   // Initialize espConfig with predefined parameters
   espConfig = new ESPConfig(pinGpioArray, pinGpioAvaliable, pinGpioAdcChannelArray, pinGpioAdcNumberArray,
             pinGpioInOut, pinGpioDesc, pinPwmValue, TOTALGPIO, pwmChannelGpioHw, TOTALPWMHW, pwmChannelGpioSw,
@@ -57,16 +56,15 @@ void setup(){
   //Check if syslog IP Address is blank
   if (strcmp(syslogIpAddress,""))
   {
-    syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
-    syslogManager->sendMessage("main","Initializing Syslog");
-    debugMessage = new DebugMessage(syslogManager);
+    Serial.println("Configuring Syslog");
+    DebugMessage::syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
+    debugMessage = new DebugMessage();
     debugMessage->debug("DEBUG started");
   }
   else
   {
-    debugMessage = new DebugMessage(NULL);
+    debugMessage = new DebugMessage();
   }
-  
 
   otaHandler = new OTAHandler(debugMessage);
   otaHandler->setEspConfig(espConfig);
@@ -115,7 +113,7 @@ void setup(){
       pwmAdcDataLocal->sendDhtCelsius[cont] = false;
       pwmAdcDataLocal->sendDhtFahrenheit[cont] = false;
       pwmAdcDataLocal->sendDhtHumidity[cont] = false;
-      dhtManagerArray[cont] = new DhtManager(componentDhtGpioInt, dhtTypeInt, debugMessage);
+      dhtManagerArray[cont] = new DhtManager(componentDhtGpioInt, dhtTypeInt);
     }
   }
   else
@@ -165,13 +163,13 @@ void setup(){
     alexaStruct = (AlexaStruct *)malloc(sizeof(AlexaStruct));
     alexaStruct->espConfig = espConfig;
     alexaStruct->gpioManager = gpioManager;
-    amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal, debugMessage);
+    amazonAlexa = new AmazonAlexa(alexaStruct, pwmAdcDataLocal);
     amazonAlexa->enable();
     amazonAlexa->addConfiguredDevices();
     isAlexaEnable = true;
   }
 
-  checkActionMqtt = new CheckActionMqtt(mqttManagerOut, pwmAdcDataLocal, debugMessage, gpioManager, espConfig);
+  checkActionMqtt = new CheckActionMqtt(mqttManagerOut, pwmAdcDataLocal, gpioManager, espConfig);
 
   debugMessage->debug("WifiGetChipId(): " + String(WifiGetChipId()));
   debugMessage->debug("Free size: " + String(ESP.getFreeSketchSpace()));

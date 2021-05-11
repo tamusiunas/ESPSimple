@@ -1,28 +1,28 @@
 #include "AmazonAlexa.h"
 
-AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, unsigned long tcpPort, DebugMessage *debugMessage)
+AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, unsigned long tcpPort)
 {
     _fauxmo = new fauxmoESP();
     _fauxmo->createServer(true);
     _fauxmo->setPort(tcpPort);
     _alexaStruct = alexaStruct;
     _pwmAdcData = pwmAdcData;
-    _debugMessage = debugMessage;
+    _debugMessage = DebugMessage();
 }
 
-AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, DebugMessage *debugMessage)
+AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData)
 {
     _fauxmo = new fauxmoESP();
     _fauxmo->createServer(true);
     _fauxmo->setPort(80);
     _alexaStruct = alexaStruct;
     _pwmAdcData = pwmAdcData;
-    _debugMessage = debugMessage;
+    _debugMessage = DebugMessage();
 }
 
 AmazonAlexa::~AmazonAlexa()
 {
-
+    delete _fauxmo;
 }
 
 void AmazonAlexa::handle()
@@ -32,9 +32,9 @@ void AmazonAlexa::handle()
 
 void AmazonAlexa::addDevice(const char *deviceName)
 {
-    _debugMessage->debug("Adding Alexa device: " + String(deviceName));
+    _debugMessage.debug("Adding Alexa device: " + String(deviceName));
     _fauxmo->addDevice(deviceName);
-    _debugMessage->debug("Free Heap: " + String(ESP.getFreeHeap()));
+    _debugMessage.debug("Free Heap: " + String(ESP.getFreeHeap()));
 }
 
 void AmazonAlexa::addConfiguredDevices()
@@ -45,7 +45,7 @@ void AmazonAlexa::addConfiguredDevices()
         String keyLocal = String(_alexaStruct->espConfig->getDataStore()->getParameters()[cont]->getField());
         if (keyLocal.indexOf("alexa_device_name_r_") == 0)
         {
-            _debugMessage->debug("Found Alexa device config: " + keyLocal);
+            _debugMessage.debug("Found Alexa device config: " + keyLocal);
             addDevice(_alexaStruct->espConfig->getDataStore()->getParameters()[cont]->getValue());
         }
     }
@@ -98,12 +98,12 @@ void AmazonAlexa::enable()
                 {
                     if (state)
                     {   
-                        Serial.println("Alexa - Setting " + String(gpioTarget) + " to high");
+                        debugMessageLocal.debug("Alexa - Setting " + String(gpioTarget) + " to high");
                         alexaStructLocal->gpioManager->setDigitalOutput(gpioTarget,HIGH);
                     }
                     else
                     {
-                        Serial.println("Alexa - Setting " + String(gpioTarget) + " to low");
+                        debugMessageLocal.debug("Alexa - Setting " + String(gpioTarget) + " to low");
                         alexaStructLocal->gpioManager->setDigitalOutput(gpioTarget,LOW);
                     }
                 }
