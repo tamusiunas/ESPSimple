@@ -1,6 +1,6 @@
-#include "MqttManagerIn.h"
+#include <MqttManagerIn.h>
 
-MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage)
+MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal)
 {
     _espConfig = espConfig;
     _gpioManager = gpioManager;
@@ -16,7 +16,7 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, ESPConfig *es
     _hostName = "iot-" + String(WifiGetChipId()) + "-in";
 }
 
-MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal, DebugMessage *debugMessage)
+MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostName, ESPConfig *espConfig, GpioManager *gpioManager, volatile PwmAdcData *pwmAdcDataLocal)
 {
     _espConfig = espConfig;
     _gpioManager = gpioManager;
@@ -34,7 +34,9 @@ MqttManagerIn::MqttManagerIn(String mqttServer, uint16_t mqttPort, String hostNa
 
 MqttManagerIn::~MqttManagerIn()
 {
-  
+  delete _client;
+  delete _espConfig;
+  delete _gpioManager;
 }
 
 void MqttManagerIn::handleMqtt()

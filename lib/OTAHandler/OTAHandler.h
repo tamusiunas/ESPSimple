@@ -20,8 +20,8 @@
 class OTAHandler
 {
   public:
-    OTAHandler(DebugMessage *debugMessage);
-    OTAHandler(ESPConfig *espConfig, String hostName, DebugMessage *debugMessage);
+    OTAHandler();
+    OTAHandler(ESPConfig *espConfig, String hostName);
     ~OTAHandler();
     void handle();
     void start();
@@ -31,7 +31,7 @@ class OTAHandler
   private:
     ESPConfig *_espConfig;
     String _hostName;
-    DebugMessage *_debugMessage;
+    DebugMessage _debugMessage;
 };
 
 

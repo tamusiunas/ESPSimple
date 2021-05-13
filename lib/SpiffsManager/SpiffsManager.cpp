@@ -32,7 +32,7 @@ int SpiffsManager::saveFile()
       SPIFFS.format();
       if(!SPIFFS.begin())
       {
-        Serial.println("SPIFFS Mount Failed");
+        _debugMessage.debug("SPIFFS Mount Failed");
         return -1;
       }
     }
@@ -73,16 +73,16 @@ int SpiffsManager::saveFile()
 
 int SpiffsManager::readFile()
 {
-  _debugMessage->debug("SpiffsManager - Reading config File");
+  _debugMessage.debug("SpiffsManager - Reading config File");
   if(!SPIFFS.begin())
   {
     if (_formatIfError)
     {
-      _debugMessage->debug("SpiffsManager - Formating SPIFFS");
+      _debugMessage.debug("SpiffsManager - Formating SPIFFS");
       SPIFFS.format();
       if(!SPIFFS.begin())
       {
-        _debugMessage->debug("SpiffsManager - SPIFFS Mount Failed");
+        _debugMessage.debug("SpiffsManager - SPIFFS Mount Failed");
         return -1;
       }
     }
@@ -108,7 +108,7 @@ int SpiffsManager::readFile()
   int jsonCont = 0;
   if (configFile)
   {
-    _debugMessage->debug("SpiffsManager - Config file used: " + String(spiffFileName));
+    _debugMessage.debug("SpiffsManager - Config file used: " + String(spiffFileName));
     while(configFile.available()){
       char jsonChar = configFile.read();
       if (jsonChar == ',')
@@ -147,7 +147,7 @@ int SpiffsManager::removeFile()
       SPIFFS.format();
       if(!SPIFFS.begin())
       {
-        _debugMessage->debug("SpiffsManager - SPIFFS Mount Failed");
+        _debugMessage.debug("SpiffsManager - SPIFFS Mount Failed");
         return -1;
       }
     }

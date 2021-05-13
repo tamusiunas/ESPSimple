@@ -5,6 +5,10 @@
 #include "AmazonAlexaCommons.h"
 #include "DebugMessage.h"
 
+/**
+ * @brief Uses FauxmoESP to integrate project with Amazon Alexa
+ * 
+ */
 class AmazonAlexa
 {
 public:

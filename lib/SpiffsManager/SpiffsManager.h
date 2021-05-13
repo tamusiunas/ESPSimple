@@ -62,7 +62,7 @@ private:
   const char *_fileName;
   bool _formatIfError;
   DataStore *_dataStore;
-  DebugMessage *_debugMessage = new DebugMessage();
+  DebugMessage _debugMessage = DebugMessage();
 };
 
 #endif

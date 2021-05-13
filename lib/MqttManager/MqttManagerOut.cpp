@@ -1,19 +1,19 @@
 #include "MqttManagerOut.h"
 
-MqttManagerOut::MqttManagerOut(String mqttServer, uint16_t mqttPort, DebugMessage *debugMessage)
+MqttManagerOut::MqttManagerOut(String mqttServer, uint16_t mqttPort)
 {
   _mqttServer = mqttServer;
   _mqttPort = mqttPort;
-  _debugMessage = debugMessage;
+  _debugMessage = DebugMessage();
   _hostName = "iot-" + String(WifiGetChipId()) + "-out";
 }
 
-MqttManagerOut::MqttManagerOut(String mqttServer, uint16_t mqttPort, String hostName, DebugMessage *debugMessage)
+MqttManagerOut::MqttManagerOut(String mqttServer, uint16_t mqttPort, String hostName)
 {
   _mqttServer = mqttServer;
   _mqttPort = mqttPort;
   _hostName = hostName + "-out";
-  _debugMessage = debugMessage;
+  _debugMessage = DebugMessage();
 }
 
 MqttManagerOut::~MqttManagerOut()
@@ -26,7 +26,7 @@ bool MqttManagerOut::connect()
   _client.setServer(_mqttServer.c_str(), _mqttPort);
   if (_client.connect(_hostName.c_str()))
   {
-    _debugMessage->debug("Connected to Mqtt Server " + _mqttServer + " - Port: " + String(_mqttPort) + " - Hostname: " + _hostName);
+    _debugMessage.debug("Connected to Mqtt Server " + _mqttServer + " - Port: " + String(_mqttPort) + " - Hostname: " + _hostName);
   }
   return _client.connected();
 }
@@ -51,7 +51,7 @@ bool MqttManagerOut::publishMessage(String mqttMessage)
 bool MqttManagerOut::publishMessageJson(String mqttKey[], String mqttValue[], int arraySize, String title)
 {
   JsonManager *jsonManager = new JsonManager();
-  _debugMessage->debug(jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
+  _debugMessage.debug(jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
   return publishMessage(jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
 }
 

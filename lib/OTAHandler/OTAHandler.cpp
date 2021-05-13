@@ -12,16 +12,16 @@
 
 #include "OTAHandler.h"
 
-OTAHandler::OTAHandler(DebugMessage *debugMessage)
+OTAHandler::OTAHandler()
 {
-  _debugMessage = debugMessage;
+  _debugMessage = DebugMessage();
 }
 
-OTAHandler::OTAHandler(ESPConfig *espConfig, String hostName, DebugMessage *debugMessage)
+OTAHandler::OTAHandler(ESPConfig *espConfig, String hostName)
 {
   _espConfig = espConfig;
   _hostName = hostName;
-  _debugMessage = debugMessage;
+  _debugMessage = DebugMessage();
 }
 
 OTAHandler::~OTAHandler()
@@ -36,11 +36,11 @@ void OTAHandler::start()
     ArduinoOTA.setHostname(_hostName.c_str());
     ArduinoOTA.setPassword(_espConfig->getDataStore()->getValue("ota_password"));
     ArduinoOTA.begin();
-    _debugMessage->debug("OTA is enabled");
+    _debugMessage.debug("OTA is enabled");
   }
   else
   {
-    _debugMessage->debug("OTA is disabled");
+    _debugMessage.debug("OTA is disabled");
   }
 }
 

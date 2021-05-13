@@ -66,7 +66,7 @@ void setup(){
     debugMessage = new DebugMessage();
   }
 
-  otaHandler = new OTAHandler(debugMessage);
+  otaHandler = new OTAHandler();
   otaHandler->setEspConfig(espConfig);
   otaHandler->start(); 
 
@@ -146,9 +146,9 @@ void setup(){
     }
     debugMessage->debug("mqttServerStr: " + mqttServerStr);
     debugMessage->debug("mqttPort: " + String(mqttPort));
-    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager, pwmAdcDataLocal, debugMessage);
+    mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager, pwmAdcDataLocal);
     mqttManagerIn->connect();
-    mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort, debugMessage);
+    mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort);
     mqttManagerOut->connect();
   }
 

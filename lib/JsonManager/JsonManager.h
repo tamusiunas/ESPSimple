@@ -14,6 +14,10 @@
 
 #include <ArduinoJson.h>
 
+/**
+ * @brief Interacts with Json Objects
+ * 
+ */
 class JsonManager
 {
 public:
