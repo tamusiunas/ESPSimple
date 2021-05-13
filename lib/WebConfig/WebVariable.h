@@ -19,7 +19,7 @@ static const char HEADER_EN_US[] PROGMEM = "<!DOCTYPE html><html><head> <meta ch
 "<button class=\"navbar-toggler navbar-toggler-right border-0\" type=\"button\" data-toggle=\"collapse\" "
 "data-target=\"#navbar17\"> <span class=\"navbar-toggler-icon\"></span> </button> <div class=\"collapse "
 "navbar-collapse\" id=\"navbar17\"> <ul class=\"navbar-nav mr-auto\"> <li class=\"nav-item\"> <a class=\"nav-link\" "
-"href=\"#\">Home</a> </li> <li class=\"nav-item\" style=\"\"><a class=\"nav-link\" href=\"/wifi.html\">Wi-Fi</a></li> "
+"href=\"/\">Home</a> </li> <li class=\"nav-item\" style=\"\"><a class=\"nav-link\" href=\"/wifi.html\">Wi-Fi</a></li> "
 "<li class=\"nav-item\"> <a class=\"nav-link\" href=\"/gpio.html\">GPIO</a> </li> <li class=\"nav-item\"> <a class=\"nav-link\""
 " href=\"/actions.html\">Actions<br></a> </li> "
 #ifdef ESP32
@@ -29,7 +29,7 @@ static const char HEADER_EN_US[] PROGMEM = "<!DOCTYPE html><html><head> <meta ch
 " href=\"telegram.html\">Telegram<br></a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"components.html\">Components</a></li> "
 "<li class=\"nav-item\"><a class=\"nav-link\" href=\"pwm.html\">PWM</a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"alexa.html\">Alexa</a></li>"
 "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/exit.html\">Exit</a></li> </ul> <a class=\"btn btn-outline-light "
-"navbar-btn ml-md-2\" target=\"_blank\" href=\"https://tamusiunas.com\" id=\"tamusiunas.com\">Project Page</a> "
+"navbar-btn ml-md-2\" target=\"_blank\" href=\"https://github.com/tamusiunas/ESPSimple\" id=\"github.com\">Project Page</a> "
 "</div> </div> </nav>";
 
 static const char FOOTER_EN_US_P1[] PROGMEM = "<script src=\"jquery-3.3.1.slim.min.js\"></script> "
