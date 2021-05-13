@@ -302,12 +302,12 @@ static const char COMPONENTS_EN_US_P4[] PROGMEM = ""
 "</tbody> "
 "<tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> <input type=\"button\" class=\"btn btn-primary my-2 \" "
 "id=\"addrow-bmp180\" value=\"Add BMP180\"> </td> </tr> <tr> </tr> </tfoot> </table> </div> "
-"<div class=\"col-md-12 p-3\" style=\"\"> <table id=\"table-mcp3800\" class=\"table table-mcp3800 table-hover "
+"<div class=\"col-md-12 p-3\" style=\"\"> <table id=\"table-mcp3008\" class=\"table table-mcp3008 table-hover "
 "table-striped table-bordered\"> <tbody>";
 
 static const char COMPONENTS_EN_US_P5[] PROGMEM = ""
 "</tbody> <tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> "
-"<input type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow-mcp3800\" value=\"Add MCP3800\"> </td> </tr> ";
+"<input type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow-mcp3008\" value=\"Add MCP3008\"> </td> </tr> ";
 
 static const char COMPONENTS_EN_US_P6[] PROGMEM = ""
 "<tr> </tr> </tfoot> </table> </div> <div class=\"row\"> <div class=\"col-md-12\"> <h2 class=\"text-center\" "
@@ -338,7 +338,7 @@ static const char COMPONENTS_JS_EN_US_P2[] PROGMEM = ""
 
 static const char COMPONENTS_JS_EN_US_P3[] PROGMEM = ""
 ";\n"
-"var counter_mcp3800 = ";
+"var counter_mcp3008 = ";
 
 static const char COMPONENTS_JS_EN_US_P4[] PROGMEM = ""
 ";\n"
@@ -358,9 +358,9 @@ static const char COMPONENTS_JS_EN_US_P6[] PROGMEM = ""
 "{\n"
 "$(\"#addrow-bmp180\").attr(\"disabled\",true);\n"
 "}\n"
-"if (counter_mcp3800 > 0)\n"
+"if (counter_mcp3008 > 0)\n"
 "{\n"
-"$(\"#addrow-mcp3800\").attr(\"disabled\",true);\n"
+"$(\"#addrow-mcp3008\").attr(\"disabled\",true);\n"
 "}\n"
 "if (counter_ssd160 > 0)\n"
 "{\n"
@@ -427,41 +427,41 @@ static const char COMPONENTS_JS_EN_US_P11[] PROGMEM = ""
 "$(this).closest(\"tr\").remove();\n"
 "$(\"#addrow-bmp180\").attr(\"disabled\",false);\n"
 "});\n"
-"$(\"#addrow-mcp3800\").on(\"click\", function () {\n"
+"$(\"#addrow-mcp3008\").on(\"click\", function () {\n"
 "var newRow = $(\"<tr>\");\n"
 "var cols_digital = \"\";\n"
-"cols_digital += '<th scope=\"row\" class=\"align-middle\" style=\"\">MCP3800</th>';\n"
+"cols_digital += '<th scope=\"row\" class=\"align-middle\" style=\"\">MCP3008</th>';\n"
 "cols_digital += '<td class=\"align-middle\"><label>MCP3008 Clock GPIO</label> <select class=\"form-control h-25\" "
-"id=\"component_mcp3008_clock_' + counter_mcp3800 + '\" name=\"component_mcp3008_clock_' + counter_mcp3800 + '\"> ";
+"id=\"component_mcp3008_clock_' + counter_mcp3008 + '\" name=\"component_mcp3008_clock_' + counter_mcp3008 + '\"> ";
 
 static const char COMPONENTS_JS_EN_US_P12[] PROGMEM = ""
 "</select> <label><br>MCP3008 MISO GPIO</label> <select class=\"form-control h-25\" id=\"component_mcp3008_miso_' + "
-"counter_mcp3800 + '\" name=\"component_mcp3008_miso_' + counter_mcp3800 + '\">";
+"counter_mcp3008 + '\" name=\"component_mcp3008_miso_' + counter_mcp3008 + '\">";
 
 static const char COMPONENTS_JS_EN_US_P13[] PROGMEM = ""
 "</select> <label><br>MCP3008 MOSI GPIO</label> <select class=\"form-control h-25\" id=\"component_mcp3008_mosi_' + "
-"counter_mcp3800 + '\" name=\"component_mcp3008_mosi_' + counter_mcp3800 + '\">";
+"counter_mcp3008 + '\" name=\"component_mcp3008_mosi_' + counter_mcp3008 + '\">";
 
 static const char COMPONENTS_JS_EN_US_P14[] PROGMEM = ""
-"</select> <label><br>MCP3008 CS GPIO</label> <select class=\"form-control h-25\" id=\"component_mcp3008_cs_' + counter_mcp3800"
-" + '\" name=\"component_mcp3008_cs_' + counter_mcp3800 + '\">";
+"</select> <label><br>MCP3008 CS GPIO</label> <select class=\"form-control h-25\" id=\"component_mcp3008_cs_' + counter_mcp3008"
+" + '\" name=\"component_mcp3008_cs_' + counter_mcp3008 + '\">";
 
 static const char COMPONENTS_JS_EN_US_P15[] PROGMEM = ""
 "</select></td>';\n"
-"cols_digital += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-mcp3800 btn btn-primary my-2\"  value=\"Delete\"></td>';\n"
+"cols_digital += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-mcp3008 btn btn-primary my-2\"  value=\"Delete\"></td>';\n"
 "newRow.append(cols_digital);\n"
-"$(\"table.table-mcp3800\").append(newRow);\n"
-"counter_mcp3800++;\n"
-"if (counter_mcp3800 > 0)\n"
+"$(\"table.table-mcp3008\").append(newRow);\n"
+"counter_mcp3008++;\n"
+"if (counter_mcp3008 > 0)\n"
 "{\n"
 "$(this).attr(\"disabled\",true);\n"
 "}\n"
 "});\n"
-"$(\"table.table-mcp3800\").on(\"click\", \".ibtnDel-mcp3800\", function (event) {\n";
+"$(\"table.table-mcp3008\").on(\"click\", \".ibtnDel-mcp3008\", function (event) {\n";
 
 static const char COMPONENTS_JS_EN_US_P16[] PROGMEM = ""
 "$(this).closest(\"tr\").remove();\n"
-"$(\"#addrow-mcp3800\").attr(\"disabled\",false);\n"
+"$(\"#addrow-mcp3008\").attr(\"disabled\",false);\n"
 "});\n"
 "$(\"#addrow-ssd160\").on(\"click\", function () {\n"
 "var newRow = $(\"<tr>\");\n"

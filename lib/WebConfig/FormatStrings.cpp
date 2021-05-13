@@ -309,7 +309,7 @@ String WebConfig::getComponentMcp3008(String indexMcp3008)
   String componentMcp3008MisoStr = "component_mcp3008_miso_" + indexMcp3008Str; //input-output
   String componentMcp3008MosiStr = "component_mcp3008_mosi_" + indexMcp3008Str; //output
   String componentMcp3008CsStr = "component_mcp3008_cs_" + indexMcp3008Str; //output
-  String mcp3008Str = "<tr> <th scope=\"row\" class=\"align-middle\" style=\"\">MCP3800</th> "
+  String mcp3008Str = "<tr> <th scope=\"row\" class=\"align-middle\" style=\"\">MCP3008</th> "
   "<td class=\"align-middle\"> <label>MCP3008 Clock GPIO</label> <select class=\"form-control h-25\" "
   "id=\"" + componentMcp3008ClockStr + "\" name=\"" + componentMcp3008ClockStr + "\">";
   mcp3008Str += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(componentMcp3008ClockStr.c_str()));
@@ -321,7 +321,7 @@ String WebConfig::getComponentMcp3008(String indexMcp3008)
   mcp3008Str += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(componentMcp3008MosiStr.c_str()));
   mcp3008Str += "<label><br>MCP3008 CS GPIO</label> <select class=\"form-control h-25\" "
   "id=\"" + componentMcp3008CsStr + "\" name=\"" + componentMcp3008CsStr + "\">";
-  mcp3008Str += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-mcp3800 btn "
+  mcp3008Str += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-mcp3008 btn "
   "btn-primary my-2\" value=\"Delete\"></td> </tr>";
   return mcp3008Str;
 }
@@ -395,6 +395,7 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   digitalBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
   actionDigitalGpioTarget + "\" name=\"" + actionDigitalGpioTarget + "\">";
   digitalBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionDigitalGpioTarget.c_str()));
+  #ifdef TELEGRAM
   digitalBody += "</select> <label><br>Telegram message (output)</label><input name=\"" + actionDigitalTelegramMessage +
   "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + actionDigitalTelegramMessage + "\" "
   "value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalTelegramMessage.c_str())) + "\"><label><br>Waiting Time Before "
@@ -403,6 +404,7 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   "\" value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalWaitingTimeRearm.c_str())) + "\">  </td> <td "
   "class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-digital btn btn-primary my-2\" value=\"Delete\"></td>"
   " </tr>";
+  #endif
   return digitalBody;
 }
 
