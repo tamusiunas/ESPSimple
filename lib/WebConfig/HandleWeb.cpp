@@ -29,8 +29,8 @@ void WebConfig::handlePages()
   _webServer->on("/pwm.html", std::bind(&WebConfig::handlePwm, this));
   _webServer->on("/pwmConfig", std::bind(&WebConfig::handlePwmConfig, this));
   _webServer->on("/telegram.html", std::bind(&WebConfig::handleTelegram, this));
-  _webServer->on("/alexa.html", std::bind(&WebConfig::handleAlexa, this));
   _webServer->on("/telegramConfig", std::bind(&WebConfig::handleTelegramConfig, this));
+  _webServer->on("/alexa.html", std::bind(&WebConfig::handleAlexa, this));
   _webServer->on("/alexaConfig", std::bind(&WebConfig::handleAlexaConfig, this));
   _webServer->on("/components.html", std::bind(&WebConfig::handleComponents, this));
   _webServer->on("/componentsConfig", std::bind(&WebConfig::handleComponentsConfig, this));
@@ -199,6 +199,7 @@ void WebConfig::handleComponents()
         String dhtTypeValueStr = String(_espConfig->getDataStore()->getValue(dhtTypeStr.c_str()));
         dhtLength += getComponentDht(dhtStr,dhtTypeValueStr).length();
       }
+      #ifdef ENABLE_BMP180
       else
       if (parameterLocal.indexOf("component_bmp180_sda_") == 0)
       {
@@ -206,6 +207,8 @@ void WebConfig::handleComponents()
         String bmp180Str = parameterLocal.substring(21);
         bmp180Length += getComponentBmp180(bmp180Str).length();
       }
+      #endif
+      #ifdef ENABLE_MCP3008
       else
       if (parameterLocal.indexOf("component_mcp3008_clock_") == 0)
       {
@@ -213,6 +216,8 @@ void WebConfig::handleComponents()
         String mcp3008Str = parameterLocal.substring(24);
         mcp3008Length += getComponentMcp3008(mcp3008Str).length();
       }
+      #endif
+      #ifdef ENABLE_SSD160
       else
       if (parameterLocal.indexOf("component_ssd160_sda_") == 0)
       {
@@ -227,6 +232,7 @@ void WebConfig::handleComponents()
         String ssd160frameStr = parameterLocal.substring(28);
         ssd160FramesLength += getComponentSsd160Frame(ssd160frameStr).length();
       }
+      #endif
     }
   }
 
@@ -267,6 +273,7 @@ void WebConfig::handleComponents()
   }
   _webServer->sendContent_P(COMPONENTS_EN_US_P2);
   _webServer->sendContent_P(COMPONENTS_EN_US_P3);
+  #ifdef ENABLE_BMP180
   for (int cont=0; cont<totalParameters; cont++)
   {
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
@@ -279,7 +286,9 @@ void WebConfig::handleComponents()
       }
     }
   }
+  #endif
   _webServer->sendContent_P(COMPONENTS_EN_US_P4);
+  #ifdef ENABLE_MCP3008
   for (int cont=0; cont<totalParameters; cont++)
   {
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
@@ -292,8 +301,10 @@ void WebConfig::handleComponents()
       }
     }
   }
+  #endif
   _webServer->sendContent_P(COMPONENTS_EN_US_P5);
   _webServer->sendContent_P(COMPONENTS_EN_US_P6);
+  #ifdef ENABLE_SSD160
   for (int cont=0; cont<totalParameters; cont++)
   {
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
@@ -306,7 +317,9 @@ void WebConfig::handleComponents()
       }
     }
   }
+  #endif
   _webServer->sendContent_P(COMPONENTS_EN_US_P7);
+  #ifdef ENABLE_SSD160
   for (int cont=0; cont<totalParameters; cont++)
   {
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
@@ -319,6 +332,7 @@ void WebConfig::handleComponents()
       }
     }
   }
+  #endif
   _webServer->sendContent_P(COMPONENTS_EN_US_P8);
   _webServer->sendContent_P(FOOTER_EN_US_P1);
   _webServer->sendContent_P(COMPONENTS_JS_EN_US_P1);

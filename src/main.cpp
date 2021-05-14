@@ -9,7 +9,7 @@ void setup(){
   {
     mustStartWebConfig = true;
     doubleReset.stop(); // it's a double reset so stop double reset check
-    Serial.println("doubleReset.getResetValue(): " + String(doubleReset.getResetValue()));
+    Serial.println("Double reset detected. Starting WEB Server");
   }  
 
   DataStore *dataStore = new DataStore(); // initialize DataStore
