@@ -25,11 +25,16 @@ static const char HEADER_EN_US[] PROGMEM = "<!DOCTYPE html><html><head> <meta ch
 #ifdef ESP32
 "<li class=\"nav-item\"><a class=\"nav-link\" href=\"adc.html\">ADC</a></li> "
 #endif
-"<li class=\"nav-item\"><a class=\"nav-link\" href=\"management.html\">Management</a></li> <li class=\"nav-item\"><a class=\"nav-link\""
-" href=\"telegram.html\">Telegram<br></a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"components.html\">Components</a></li> "
-"<li class=\"nav-item\"><a class=\"nav-link\" href=\"pwm.html\">PWM</a></li> <li class=\"nav-item\"><a class=\"nav-link\" href=\"alexa.html\">Alexa</a></li>"
-"<li class=\"nav-item\"><a class=\"nav-link\" href=\"/exit.html\">Exit</a></li> </ul> <a class=\"btn btn-outline-light "
-"navbar-btn ml-md-2\" target=\"_blank\" href=\"https://github.com/tamusiunas/ESPSimple\" id=\"github.com\">Project Page</a> "
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"management.html\">Management</a></li> "
+#ifdef ENABLE_TELEGRAM
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"telegram.html\">Telegram<br></a></li> "
+#endif
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"components.html\">Components</a></li> "
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"pwm.html\">PWM</a></li> "
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"alexa.html\">Alexa</a></li>"
+"<li class=\"nav-item\"><a class=\"nav-link\" href=\"/exit.html\">Save and Exit</a></li> "
+"</ul> <a class=\"btn btn-outline-light navbar-btn ml-md-2\" target=\"_blank\" "
+"href=\"https://github.com/tamusiunas/ESPSimple\" id=\"github.com\">Project Page</a> "
 "</div> </div> </nav>";
 
 static const char FOOTER_EN_US_P1[] PROGMEM = "<script src=\"jquery-3.3.1.slim.min.js\"></script> "
@@ -296,36 +301,60 @@ static const char COMPONENTS_EN_US_P2[] PROGMEM = ""
 
 static const char COMPONENTS_EN_US_P3[] PROGMEM = ""
 "value=\"Add DHT(11/22)\"> </td> </tr> <tr> </tr> </tfoot> </table> </div> <div class=\"col-md-12 p-3\" style=\"\"> "
-"<table id=\"table-bmp180\" class=\"table table-bmp180 table-hover table-striped table-bordered\"> <tbody>";
+#ifdef ENABLE_BMP180
+"<table id=\"table-bmp180\" class=\"table table-bmp180 table-hover table-striped table-bordered\"> <tbody>"
+#endif
+"";
 
 static const char COMPONENTS_EN_US_P4[] PROGMEM = ""
+#ifdef ENABLE_BMP180
 "</tbody> "
 "<tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> <input type=\"button\" class=\"btn btn-primary my-2 \" "
 "id=\"addrow-bmp180\" value=\"Add BMP180\"> </td> </tr> <tr> </tr> </tfoot> </table> </div> "
+#endif
+#ifdef ENABLE_MCP3008
 "<div class=\"col-md-12 p-3\" style=\"\"> <table id=\"table-mcp3008\" class=\"table table-mcp3008 table-hover "
 "table-striped table-bordered\"> <tbody>";
+#endif
+"";
 
 static const char COMPONENTS_EN_US_P5[] PROGMEM = ""
+#ifdef ENABLE_MCP3008
 "</tbody> <tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> "
-"<input type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow-mcp3008\" value=\"Add MCP3008\"> </td> </tr> ";
+"<input type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow-mcp3008\" value=\"Add MCP3008\"> </td> </tr> "
+#endif
+"";
 
 static const char COMPONENTS_EN_US_P6[] PROGMEM = ""
-"<tr> </tr> </tfoot> </table> </div> <div class=\"row\"> <div class=\"col-md-12\"> <h2 class=\"text-center\" "
+#ifdef ENABLE_MCP3008
+"<tr> </tr> </tfoot> </table> </div> "
+#endif
+#ifdef ENABLE_SSD160
+"<div class=\"row\"> <div class=\"col-md-12\"> <h2 class=\"text-center\" "
 "style=\"\">Displays</h2> </div> </div> <div class=\"col-md-12 p-3\" style=\"\"> <table id=\"table-ssd160\" "
-"class=\"table table-ssd160 table-hover table-striped table-bordered\"> <tbody>";
+"class=\"table table-ssd160 table-hover table-striped table-bordered\"> <tbody>"
+#endif
+"";
 
 static const char COMPONENTS_EN_US_P7[] PROGMEM = ""
+#ifdef ENABLE_SSD160
 "</tbody> <tfoot> <tr> <td colspan=\"5\""
 "style=\"text-align: left;\"> <input type=\"button\" class=\"btn btn-primary my-2 \" id=\"addrow-ssd160\" "
 "value=\"Add SSD160\"> </td> </tr> <tr> </tr> </tfoot> </table> </div> <div class=\"col-md-12 p-3\" style=\"\"> "
 "<table id=\"table-ssd160-frames\" class=\"table table-ssd160-frames table-hover table-striped table-bordered\"> "
-"<tbody>";
+"<tbody>"
+#endif
+"";
 
 static const char COMPONENTS_EN_US_P8[] PROGMEM = ""
+#ifdef ENABLE_SSD160
 "</tbody> <tfoot> <tr> <td colspan=\"5\" style=\"text-align: left;\"> <input type=\"button\" "
 "class=\"btn btn-primary my-2 \" id=\"addrow-ssd160-frames\" value=\"Add SSD160 Frame\"> </td> </tr> <tr> </tr> "
-"</tfoot> </table> <button type=\"submit\" class=\"btn btn-primary my-2\">Submit</button></div> </div> </div> </div>"
-" </div> </form>";
+"</tfoot> </table>"
+#endif
+"<button type=\"submit\" class=\"btn btn-primary my-2\">Submit</button></div> </div> </div> </div>"
+" </div> </form>"
+"";
 
 static const char COMPONENTS_JS_EN_US_P1[] PROGMEM = ""
 "<script>\n"

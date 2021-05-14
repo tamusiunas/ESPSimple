@@ -113,5 +113,6 @@ void WebConfig::processClient()
   {
     _dnsServer->processNextRequest();
     _webServer->handleClient();
+    sleep(1);
   }
 }

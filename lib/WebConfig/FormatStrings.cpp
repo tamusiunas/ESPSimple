@@ -395,16 +395,19 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   digitalBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
   actionDigitalGpioTarget + "\" name=\"" + actionDigitalGpioTarget + "\">";
   digitalBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionDigitalGpioTarget.c_str()));
-  #ifdef TELEGRAM
-  digitalBody += "</select> <label><br>Telegram message (output)</label><input name=\"" + actionDigitalTelegramMessage +
+  digitalBody += "</select>";
+  #ifdef ENABLE_TELEGRAM
+  digitalBody += "<label><br>Telegram message (output)</label><input name=\"" + actionDigitalTelegramMessage +
   "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + actionDigitalTelegramMessage + "\" "
-  "value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalTelegramMessage.c_str())) + "\"><label><br>Waiting Time Before "
+  "value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalTelegramMessage.c_str())) + "\">";
+  #endif
+
+  digitalBody += "<label><br>Waiting Time Before "
   "Rearming Trigger (ms)</label><input name=\"" + actionDigitalWaitingTimeRearm + "\" type=\"number\" "
   "class=\"form-control h-25\" placeholder=\"\" maxlength=\"5\" id=\"" + actionDigitalWaitingTimeRearm +
   "\" value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalWaitingTimeRearm.c_str())) + "\">  </td> <td "
   "class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-digital btn btn-primary my-2\" value=\"Delete\"></td>"
   " </tr>";
-  #endif
   return digitalBody;
 }
 
@@ -437,10 +440,13 @@ String WebConfig::getActionAdcBody(String indexAdc)
   adcBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" ";
   adcBody += "id=\"" + actionAdcGpioTarget + "\" name=\"" + actionAdcGpioTarget + "\">";
   adcBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionAdcGpioTarget.c_str()));
-  adcBody += "</select><label><br>Telegram message (output)</label><input name=\"" + actionAdcTelegramMessage + "\" "
+  adcBody += "</select>";
+  #ifdef ENABLE_TELEGRAM
+  adcBody += "<label><br>Telegram message (output)</label><input name=\"" + actionAdcTelegramMessage + "\" "
   "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + actionAdcTelegramMessage + "\" value=\"" +
-  getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTelegramMessage.c_str())) + "\"> "
-  "<label><br>Waiting Time Before Rearming Trigger (ms)</label><input name=\"" + actionAdcWaitingTimeRearm + "\" "
+  getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTelegramMessage.c_str())) + "\"> ";
+  #endif
+  adcBody += "<label><br>Waiting Time Before Rearming Trigger (ms)</label><input name=\"" + actionAdcWaitingTimeRearm + "\" "
   "type=\"number\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"5\" id=\"" +
   actionAdcWaitingTimeRearm + "\" value=\"" +
   getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcWaitingTimeRearm.c_str())) + "\">  </td> "
@@ -684,8 +690,11 @@ String WebConfig::getGpioActionJS()
   "<label><br />For GPIO Target</label> <select class=\"form-control h-25\" id=\"gpio_target_r_' + counter + '\" "
   "name=\"gpio_target_r_' + counter + '\">";
   gpioActionJSStr += getGpioOutputOptions(-1,"");
-  gpioActionJSStr += "</select><label><br />Telegram message (output)</label><input name=\"telegram_message_r_' + counter + '\" class=\"form-control h-25\" placeholder=\"\" "
+  gpioActionJSStr += "</select>";
+  #ifdef ENABLE_TELEGRAM
+  gpioActionJSStr += "<label><br />Telegram message (output)</label><input name=\"telegram_message_r_' + counter + '\" class=\"form-control h-25\" placeholder=\"\" "
   "maxlength=\"100\" id=\"telegram_message_r_' + counter + '\">  </td>';\n";
+  #endif
   gpioActionJSStr += "cols += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary "
   "my-2\"  value=\"Delete\"></td>';\n";
   return gpioActionJSStr;

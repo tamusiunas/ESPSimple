@@ -6,6 +6,16 @@
 #include "ESPConfig.h"
 #include "DebugMessage.h"
 
+/**
+ * @file WebStatic.h
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Common class to manage WiFi Access
+ * @version 0.1
+ * @date 2019-02-09
+ * 
+ * @copyright Copyright (c) 2019-2021
+ * 
+ */
 class WiFiSTIManager
 {
 public:

@@ -125,7 +125,7 @@ bool GpioActionInterrupts::executeDigitalAction(String action, int gpioPinTarget
     gpioNewValue = LOW;
     configureGpio = true;
   }
-  #ifdef TELEGRAM
+  #ifdef ENABLE_TELEGRAM
   else if (action == "sendmessagetelegram")
   {
     // Serial.println("Sending Telegram message: " + telegramMessage);
