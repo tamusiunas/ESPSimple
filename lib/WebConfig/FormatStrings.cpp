@@ -103,10 +103,10 @@ String WebConfig::getPwmZeroCrossOptions(String zeroCrossConfigured)
   }
   #ifdef ESP8266
   return "<option value=\"nonzerocross\" " + nonZeroCrossStr +
-         ">Do not use Zero Cross</option>";
+         ">Do not use zero-cross</option>";
   #else
-  return "<option value=\"zerocross\">Based on Zero Cross</option><option value=\"nonzerocross\" " + nonZeroCrossStr +
-         ">Do not use Zero Cross</option>";
+  return "<option value=\"zerocross\">Based on zero-cross</option><option value=\"nonzerocross\" " + nonZeroCrossStr +
+         ">Do not use zero-cross</option>";
   #endif
 }
 
@@ -228,7 +228,7 @@ String WebConfig::getTelegramBody(String indexTelegram)
   "<td class=\"align-middle\"> <label>Action</label> <select class=\"form-control h-25\" id=\"" + telegramGpioActionStr +
   "\" name=\"" + telegramGpioActionStr + "\">";
   telegramBody += getOnOffReversedOption(_espConfig->getDataStore()->getValue(telegramGpioActionStr.c_str()));
-  telegramBody += "</select> <label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
+  telegramBody += "</select> <label><br>GPIO target</label> <select class=\"form-control h-25\" id=\"" +
   telegramGpioTargetStr + "\" name=\"" + telegramGpioTargetStr + "\">";
   telegramBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(telegramGpioTargetStr.c_str()));
   telegramBody += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary "
@@ -249,7 +249,7 @@ String WebConfig::getAlexaBody(String indexAlexa)
   "<td class=\"align-middle\"> <label>Support Dimmer?</label> <select class=\"form-control h-25\" id=\"" + alexaGpioActionStr +
   "\" name=\"" + alexaGpioActionStr + "\">";
   alexaBody += getYesNoOptions(_espConfig->getDataStore()->getValue(alexaGpioActionStr.c_str()));
-  alexaBody += "</select> <label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
+  alexaBody += "</select> <label><br>GPIO target</label> <select class=\"form-control h-25\" id=\"" +
   alexaGpioTargetStr + "\" name=\"" + alexaGpioTargetStr + "\">";
   alexaBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(alexaGpioTargetStr.c_str()));
   alexaBody += "</select> </td> <td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary "
@@ -380,7 +380,7 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   String digitalBody = "<tr> <td scope=\"row\" class=\"align-middle\" style=\"\"> <label>GPIO</label> <select "
   "class=\"form-control h-25\" id=\"" + actionDigitalGpioOrigin + "\" name=\"" + actionDigitalGpioOrigin + "\">";
   digitalBody += getGpioInputOptions(-1,_espConfig->getDataStore()->getValue(actionDigitalGpioOrigin.c_str()));
-  digitalBody += "</select> </td> <td class=\"align-middle\"> <label>Trigger Analisis Type</label> <select "
+  digitalBody += "</select> </td> <td class=\"align-middle\"> <label>On event</label> <select "
   "class=\"form-control h-25\" id=\"" + actionDigitalTriggerAnalisisType + "\" name=\"" +
   actionDigitalTriggerAnalisisType + "\">";
   digitalBody += getOnOffReversedOption(_espConfig->getDataStore()->getValue(actionDigitalTriggerAnalisisType.c_str()));
@@ -388,10 +388,10 @@ String WebConfig::getActionDigitalBody(String indexDigital)
   "\" name=\"" + actionDigitalAction + "\">";
   digitalBody += getActionOptions(_espConfig->getDataStore()->getValue(actionDigitalAction.c_str()));
   digitalBody += "</select>"; 
-  digitalBody += "<label><br>Time Before Action Reversal</label><input name=\"" + actionDigitalTimeBeforeActionReversal +
+  digitalBody += "<label><br>Time before action reversal (ms)</label><input name=\"" + actionDigitalTimeBeforeActionReversal +
   "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"" +  actionDigitalTimeBeforeActionReversal +
   "\" value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionDigitalTimeBeforeActionReversal.c_str())) + "\">"; 
-  digitalBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" id=\"" +
+  digitalBody += "<label><br>GPIO target</label> <select class=\"form-control h-25\" id=\"" +
   actionDigitalGpioTarget + "\" name=\"" + actionDigitalGpioTarget + "\">";
   digitalBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionDigitalGpioTarget.c_str()));
   digitalBody += "</select>";
@@ -425,7 +425,7 @@ String WebConfig::getActionAdcBody(String indexAdc)
   String adcBody = "<tr> <td scope=\"row\" class=\"align-middle\" style=\"\"> <label>GPIO</label> "
   "<select class=\"form-control h-25\" id=\"" + actionAdcGpioOrigin + "\" name=\"" + actionAdcGpioOrigin + "\">";
   adcBody += getGpioAdcOptions(-1,_espConfig->getDataStore()->getValue(actionAdcGpioOrigin.c_str()));
-  adcBody += "</select> </td> <td class=\"align-middle\"> <label>Trigger Analisis Type</label> <select "
+  adcBody += "</select> </td> <td class=\"align-middle\"> <label>On event</label> <select "
   "class=\"form-control h-25\" id=\"" + actionAdcTriggerAnalisisType + "\" name=\"" + actionAdcTriggerAnalisisType + "\">";
   adcBody += getAdcAnalisisTypeOptions(_espConfig->getDataStore()->getValue(actionAdcTriggerAnalisisType.c_str()));
   adcBody += "</select> <label><br>Value</label><input name=\"" + actionAdcTriggerValueAction + "\" type=\"number\" "
@@ -433,10 +433,10 @@ String WebConfig::getActionAdcBody(String indexAdc)
   getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTriggerValueAction.c_str())) + "\">";
   adcBody += "<label><br>Action</label> <select class=\"form-control h-25\" id=\"" + actionAdcAction + "\" name=\"" + actionAdcAction + "\">";
   adcBody += getActionOptions(_espConfig->getDataStore()->getValue(actionAdcAction.c_str()));
-  adcBody += "</select><label><br />Time Before Action Reversal</label><input name=\"" + actionAdcTimeBeforeActionReversal;
+  adcBody += "</select><label><br />Time before action reversal (ms)</label><input name=\"" + actionAdcTimeBeforeActionReversal;
   adcBody += "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"" + actionAdcTimeBeforeActionReversal;
   adcBody += "\" value=\"" + getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTimeBeforeActionReversal.c_str())) + "\">";
-  adcBody += "<label><br>GPIO Target</label> <select class=\"form-control h-25\" ";
+  adcBody += "<label><br>GPIO target</label> <select class=\"form-control h-25\" ";
   adcBody += "id=\"" + actionAdcGpioTarget + "\" name=\"" + actionAdcGpioTarget + "\">";
   adcBody += getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue(actionAdcGpioTarget.c_str()));
   adcBody += "</select>";
@@ -445,7 +445,7 @@ String WebConfig::getActionAdcBody(String indexAdc)
   "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + actionAdcTelegramMessage + "\" value=\"" +
   getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTelegramMessage.c_str())) + "\"> ";
   #endif
-  adcBody += "<label><br>Waiting Time Before Rearming Trigger (ms)</label><input name=\"" + actionAdcWaitingTimeRearm + "\" "
+  adcBody += "<label><br>Waiting time before rearming trigger (ms)</label><input name=\"" + actionAdcWaitingTimeRearm + "\" "
   "type=\"number\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"5\" id=\"" +
   actionAdcWaitingTimeRearm + "\" value=\"" +
   getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcWaitingTimeRearm.c_str())) + "\">  </td> "
@@ -603,7 +603,7 @@ String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
     // ESP32 allows attenuation. That's great! 
     if ((_espConfig->getPinGpioAdcNumberArray()[gpioNumber] >= 0) and (_espConfig->getPinGpioAdcChannelArray()[gpioNumber] == 1))
     {
-      gpioSelectStr += "<label><br />ADC Attenuation</label><select class=\"form-control h-25\" id=\"" + gpioAdcAttenStr + "\" name=\"" +
+      gpioSelectStr += "<label><br />ADC attenuation</label><select class=\"form-control h-25\" id=\"" + gpioAdcAttenStr + "\" name=\"" +
                        gpioAdcAttenStr + "\"><option value=\"0\">0 DB (1.1V)</option>"
                         "<option value=\"2.5\" " + adcAtten2_5Str + ">2.5 DB (1.5V)</option>"
                         "<option value=\"6\" " + adcAtten6Str + ">6 DB (2.2V)</option>"
@@ -664,7 +664,7 @@ String WebConfig::getGpioActionRow(int gpioNumber)
                        "id=\"" + gpioGpioActionStr + "\" name=\"" + gpioGpioActionStr + "\">"
                        "<option value=\"none\">None</option>"
                        "<option value=\"reverse\">Reverse Voltage</option>"
-                       "</select><label><br>GPIO Target</label>"
+                       "</select><label><br>GPIO target</label>"
                        "<select class=\"form-control h-25\" id=\"" + gpioGpioTargetStr + "\" name=\"" +
                        gpioGpioTargetStr + "\">" + getGpioOutputOptions(gpioNumber,"") + "</select></td> </tr> ";
   }
@@ -685,7 +685,7 @@ String WebConfig::getGpioActionJS()
   "name=\"gpio_action_r_' + counter + '\"> <option value=\"reverse\">Reverse Voltage</option> "
   "<option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> <option "
   "value=\"sendmessagetelegram\">Send Telegram Message</option></select> "
-  "<label><br />For GPIO Target</label> <select class=\"form-control h-25\" id=\"gpio_target_r_' + counter + '\" "
+  "<label><br />For GPIO target</label> <select class=\"form-control h-25\" id=\"gpio_target_r_' + counter + '\" "
   "name=\"gpio_target_r_' + counter + '\">";
   gpioActionJSStr += getGpioOutputOptions(-1,"");
   gpioActionJSStr += "</select>";

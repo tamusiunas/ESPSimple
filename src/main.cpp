@@ -52,7 +52,7 @@ void setup(){
     syslogPort = String(dataStore->getValue("syslog_port")).toInt();
   }
   const char* syslogIpAddress = dataStore->getValue("syslog_ip_address");
-  //Check if syslog IP Address is blank
+  //Check if syslog IP address is blank
   if (strcmp(syslogIpAddress,""))
   {
     Serial.println("Configuring Syslog");

@@ -66,7 +66,7 @@ static const char TELEGRAM_JS_EN_US_P2[] PROGMEM = ""
 "          cols += '<td class=\"align-middle\"> <label>Action</label> <select class=\"form-control h-25\" "
 "id=\"telegram_gpio_action_r_' + counter + '\" name=\"telegram_gpio_action_r_' + counter + '\"> <option value=\"reverse\">"
 "Reverse Voltage</option> <option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> </select> "
-"<label><br />GPIO Target</label> <select class=\"form-control h-25\" id=\"telegram_gpio_target_r_' + counter + '\" "
+"<label><br />GPIO target</label> <select class=\"form-control h-25\" id=\"telegram_gpio_target_r_' + counter + '\" "
 "name=\"telegram_gpio_target_r_' + counter + '\"> ";
 
 static const char TELEGRAM_JS_EN_US_P3[] PROGMEM = ""
@@ -94,7 +94,7 @@ static const char ALEXA_JS_EN_US_P2[] PROGMEM = ""
 "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"alexa_device_name_r_' + counter + '\"></td>';\n"
 "          cols += '<td class=\"align-middle\"> <label>Support Dimmer?</label> <select class=\"form-control h-25\" "
 "id=\"alexa_support_dimmer_r_' + counter + '\" name=\"alexa_support_dimmer_r_' + counter + '\"> <option value=\"yes\">Yes</option>"
-" <option value=\"no\">No</option> </select> <label><br />GPIO Target</label> <select class=\"form-control h-25\" "
+" <option value=\"no\">No</option> </select> <label><br />GPIO target</label> <select class=\"form-control h-25\" "
 "id=\"alexa_gpio_target_r_' + counter + '\" name=\"alexa_gpio_target_r_' + counter + '\"> ";
 
 static const char ALEXA_JS_EN_US_P3[] PROGMEM = ""
@@ -181,12 +181,12 @@ static const char PWM_EN_US_P1[] PROGMEM = "<form method=\"post\" action=\"/pwmC
 "<div class=\"col-md-12 p-3\" style=\"\"> "
 "<table class=\"table table-hover table-striped table-bordered\" "
 "id=\"tablezerocross\"> <tbody> <tr> <th scope=\"row\" class=\"align-middle\" style=\"\" "
-">Zero Cross</th> <td class=\"align-middle\"> <label>Enable Zero Cross</label> "
+">Zero-cross</th> <td class=\"align-middle\"> <label>Enable zero-cross</label> "
 "<select class=\"form-control h-25\" id=\"pwm_enable_zero_cross\" name=\"pwm_enable_zero_cross\"> "
-"{::SELECTZEROCROSSENABLE::} </select> <label><br>Zero Cross "
+"{::SELECTZEROCROSSENABLE::} </select> <label><br>Zero-cross "
 "Frequency</label><select class=\"form-control h-25\" id=\"pwm_zero_cross_frequency\" name=\"pwm_zero_cross_frequency\">"
 "{::SELECTZEROCROSSFREQUENCY::}"
-"</select><label><br>Zero Cross GPIO</label>"
+"</select><label><br>Zero-cross GPIO</label>"
 " <select class=\"form-control h-25\" id=\"pwm_zero_cross_gpio\" name=\"pwm_zero_cross_gpio\">";
 
 static const char PWM_EN_US_P2[] PROGMEM = "</select> </td> </tr> </tbody> </table> </div> <div class=\"row\"> "
@@ -220,7 +220,7 @@ static const char MANAGEMENT_EN_US_P2[] PROGMEM = "\" id=\"mqtt_ip_address\"> <l
 "placeholder=\"1833\" maxlength=\"10\" id=\"mqtt_port\" type=\"number\" value=\"";
 
 static const char MANAGEMENT_EN_US_P3[] PROGMEM = "\"></td> </tr> <tr> <th scope=\"row\" class=\"align-middle\" "
-"style=\"\" >Syslog</th> <td class=\"align-middle\"><label>IP Address</label> "
+"style=\"\" >Syslog</th> <td class=\"align-middle\"><label>IP address</label> "
 "<input name=\"syslog_ip_address\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" "
 "id=\"syslog_ip_address\" value=\"";
 
@@ -232,21 +232,21 @@ static const char MANAGEMENT_EN_US_P5[] PROGMEM = "\"></td> </tr> <tr> <th scope
 "id=\"enable_ota\" name=\"enable_ota\">";
 
 static const char MANAGEMENT_EN_US_P6[] PROGMEM = "</select> "
-"<label><br>OTA Password</label> <input name=\"ota_password\" class=\"form-control h-25\" "
+"<label><br>OTA password</label> <input name=\"ota_password\" class=\"form-control h-25\" "
 "placeholder=\"\" maxlength=\"100\" id=\"ota_password\" value=\"";
 
 static const char MANAGEMENT_EN_US_P7[] PROGMEM = ""
-"\"></td> </tr> <tr><th scope=\"row\" class=\"align-middle\" style=\"\" >Web Config GPIO</th>  <td class=\"align-middle\">"
-"<label>Web Config Trigger GPIO</label> <select class=\"form-control h-25\" id=\"web_config_gpio\" "
+"\"></td> </tr> <tr><th scope=\"row\" class=\"align-middle\" style=\"\" >Web config GPIO</th>  <td class=\"align-middle\">"
+"<label>Web config trigger GPIO</label> <select class=\"form-control h-25\" id=\"web_config_gpio\" "
 "name=\"web_config_gpio\">";
 
 static const char MANAGEMENT_EN_US_P8[] PROGMEM = "</select>";
 
-static const char MANAGEMENT_EN_US_P9[] PROGMEM = "<label><br />GPIO Indicating Configuration</label> "
+static const char MANAGEMENT_EN_US_P9[] PROGMEM = "<label><br />GPIO indicating configuration</label> "
 "<select class=\"form-control h-25\" id=\"web_config_indicating\" "
 "name=\"web_config_indicating\">";
 
-static const char MANAGEMENT_EN_US_P10[] PROGMEM = "</select><label><br />GPIO Indicating Configuration Status</label> "
+static const char MANAGEMENT_EN_US_P10[] PROGMEM = "</select><label><br />GPIO indicating configuration Status</label> "
 "<select class=\"form-control h-25\" id=\"web_config_indicating_status\" "
 "name=\"web_config_indicating_status\">";
 
@@ -258,10 +258,10 @@ static const char WIFI_EN_US_P1[] PROGMEM = "<div class=\"py-5\"> <div class=\"c
 "Wi-Fi</h2> </div> </div> <form method=\"post\" action=\"/wifiConfig\"> <div class=\"col-md-12 p-3\" style=\"\"> <table "
 "class=\"table table-hover table-striped table-bordered\"> <tbody> <tr> <th scope=\"row\" class=\"align-middle\" "
 "style=\"\">Access Point</th> <td class=\"align-middle\"> <label><a href=\"wifi-refresh.html\" "
-"class=\"btn btn-primary my-2\">Refresh Networks</a><br />Choose a Network</label> <select class=\"form-control "
+"class=\"btn btn-primary my-2\">Refresh Networks</a><br />Choose a network</label> <select class=\"form-control "
 "h-25\" id=\"access_point_select\" name=\"access_point_select\">";
 
-static const char WIFI_EN_US_P2[] PROGMEM = "</select> <label><br>Or Enter the Network Name</label> <input "
+static const char WIFI_EN_US_P2[] PROGMEM = "</select> <label><br>or enter the network name</label> <input "
 "name=\"access_point_manual\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"15\" "
 "id=\"access_point_manual\" value=\"";
 
@@ -271,11 +271,11 @@ static const char WIFI_EN_US_P3[] PROGMEM = "\"> </td> </tr> <tr> <th scope=\"ro
 
 static const char WIFI_EN_US_P4[] PROGMEM = "\"> </td> </tr> <tr> <th scope=\"row\" "
 "class=\"align-middle\" style=\"\" >IP Config (optional)</th> <td class=\"align-middle\">"
-" <label>IP Address</label> <input name=\"ip_address\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"15\" ";
+" <label>IP address</label> <input name=\"ip_address\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"15\" ";
 
 static const char WIFI_EN_US_P5[] PROGMEM = "id=\"ip_address\" value=\"";
 
-static const char WIFI_EN_US_P6[] PROGMEM = "\"> <label><br>IP Mask</label> <input name=\"ip_mask\" "
+static const char WIFI_EN_US_P6[] PROGMEM = "\"> <label><br>IP mask</label> <input name=\"ip_mask\" "
 "class=\"form-control h-25\" placeholder=\"\" "
 "maxlength=\"15\" id=\"ip_mask\" value=\"";
 
@@ -585,7 +585,7 @@ static const char ACTIONS_JS_EN_US_P2[] PROGMEM = ""
 
 static const char ACTIONS_JS_EN_US_P3[] PROGMEM = ""
 "</select></td>';\n"
-"cols_digital += '<td class=\"align-middle\"> <label>Trigger Analisis Type</label> "
+"cols_digital += '<td class=\"align-middle\"> <label>On event</label> "
 "<select class=\"form-control h-25\" id=\"action_digital_trigger_analisis_type_r_' + counter_digital + '\" "
 "name=\"action_digital_trigger_analisis_type_r_' + counter_digital + '\"> <option value=\"on\">On</option> "
 "<option value=\"off\">Off</option> <option value=\"reversed\">Reversed</option> </select> <label><br />"
@@ -593,17 +593,17 @@ static const char ACTIONS_JS_EN_US_P3[] PROGMEM = ""
 "'\" name=\"action_digital_action_r_' + counter_digital + '\"> <option value=\"reverse\">Reverse Voltage</option> "
 "<option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> <option "
 "value=\"sendmessagetelegram\">Send Telegram Message</option></select>" 
-"<label><br>Time Before Action Reversal</label><input name=\"action_digital_time_before_action_reversal_r_' + counter_digital + '\""
+"<label><br>Time before action reversal (ms)</label><input name=\"action_digital_time_before_action_reversal_r_' + counter_digital + '\""
 "class=\"form-control h-25\" placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"action_digital_time_before_action_reversal_r_' + counter_digital + "
 "'\"  value=\"\">"
-"<label><br />GPIO Target</label> "
+"<label><br />GPIO target</label> "
 "<select class=\"form-control h-25\" id=\"action_digital_gpio_target_r_' + counter_digital + '\" "
 "name=\"action_digital_gpio_target_r_' + counter_digital + '\">";
 
 static const char ACTIONS_JS_EN_US_P4[] PROGMEM = ""
 "</select><label><br />Telegram message (output)</label><input name=\"action_digital_telegram_message_r_' + counter_digital + '\" "
 "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"action_digital_telegram_message_r_' + counter_digital "
-"+ '\"><label><br />Waiting Time Before Rearming Trigger (ms)</label><input name=\"action_digital_waiting_time_rearm_r_' + "
+"+ '\"><label><br />Waiting time before rearming trigger (ms)</label><input name=\"action_digital_waiting_time_rearm_r_' + "
 "counter_digital + '\" type=\"number\" class=\"form-control h-25\" value=0 placeholder=\"\" maxlength=\"5\" "
 "id=\"action_digital_waiting_time_rearm_r_' + counter_digital + '\">  </td>';\n"
 "cols_digital += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-digital btn btn-primary "
@@ -624,7 +624,7 @@ static const char ACTIONS_JS_EN_US_P4[] PROGMEM = ""
 
 static const char ACTIONS_JS_EN_US_P5[] PROGMEM = ""
 "</select></td>';\n"
-"cols_adc += '<td class=\"align-middle\"> <label>Trigger Analisis Type</label> <select class=\"form-control h-25\" "
+"cols_adc += '<td class=\"align-middle\"> <label>On event</label> <select class=\"form-control h-25\" "
 "id=\"action_adc_trigger_analisis_type_r_' + counter_adc + '\" name=\"action_adc_trigger_analisis_type_r_' + counter_adc + '\"> "
 "<option value=\"variation\">Variation</option> <option value=\"greaterthan\">Greater Than</option> "
 "<option value=\"lowerthan\">Lower Than</option> </select> <label><br />Value</label><input "
@@ -635,13 +635,13 @@ static const char ACTIONS_JS_EN_US_P5[] PROGMEM = ""
 "off</option> <option value=\"sendmessagetelegram\">Send Telegram Message</option></select> <label><br />Time Before Action "
 "Reversal</label><input name=\"action_adc_time_before_action_reversal_r_' + counter_adc + '\" class=\"form-control h-25\" "
 "placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"action_adc_time_before_action_reversal_r_' + counter_adc + '\"> <label><br />"
-"GPIO Target</label> <select class=\"form-control h-25\" id=\"action_adc_gpio_target_r_' + counter_adc + '\" "
+"GPIO target</label> <select class=\"form-control h-25\" id=\"action_adc_gpio_target_r_' + counter_adc + '\" "
 "name=\"action_adc_gpio_target_r_' + counter_adc + '\">";
 
 static const char ACTIONS_JS_EN_US_P6[] PROGMEM = ""
 "</select><label><br />Telegram message (output)</label><input name=\"action_adc_telegram_message_r_' + counter_adc + '\" "
 "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"action_adc_telegram_message_r_' + counter_adc + '\">"
-"<label><br />Waiting Time Before Rearming Trigger (ms)</label><input name=\"action_adc_waiting_time_rearm_r_' + counter_adc"
+"<label><br />Waiting time before rearming trigger (ms)</label><input name=\"action_adc_waiting_time_rearm_r_' + counter_adc"
 " + '\" type=\"number\" class=\"form-control h-25\" value=0 placeholder=\"\" maxlength=\"5\" "
 "id=\"action_adc_waiting_time_rearm_r_' + counter_adc + '\">  </td>';\n"
 "         cols_adc += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel-adc btn btn-primary my-2\"  "
@@ -674,9 +674,9 @@ static const char PWM_JS_EN_US_P3[] PROGMEM = ""
 "cols += '<td class=\"align-middle\"> <label>PWM Source</label><select class=\"form-control h-25\" "
 "id=\"pwm_source_r_' + counter + '\" name=\"pwm_source_r_' + counter + '\">"
 #ifndef ESP8266
-"<option value=\"zerocross\">Based on Zero Cross</option>"
+"<option value=\"zerocross\">Based on zero-cross</option>"
 #endif
-"<option value=\"nonzerocross\">Do not use Zero Cross</option>"
+"<option value=\"nonzerocross\">Do not use Zero-cross</option>"
 "</select></td>';\n"
 "cols += '<td class=\"align-middle\"><input type=\"button\" class=\"ibtnDel btn btn-primary my-2\"  "
 "value=\"Delete\"></td>';\n"

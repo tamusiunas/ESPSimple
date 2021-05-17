@@ -1,8 +1,8 @@
 #include "DebugMessage.h"
 
 volatile int DebugMessage::_messageTotal = 0;
-#ifdef DEBUG_MESSAGE_MAX_CACHE
-  volatile int DebugMessage::_debugMessageMax = DEBUG_MESSAGE_MAX_CACHE;
+#ifdef DEBUG_MESSAGE_BUFFER
+  volatile int DebugMessage::_debugMessageMax = DEBUG_MESSAGE_BUFFER;
 #else
   volatile int DebugMessage::_debugMessageMax = 15;
 #endif

@@ -17,7 +17,7 @@ public:
      * 
      * The hostname used will be the chip ID
      * 
-     * @param mqttServer Server name or IP Address
+     * @param mqttServer Server name or IP address
      * @param mqttPort TCP port number
      * @param *espConfig Pointer to ESPConfig object
      * @param *gpioManager Pointer ro GpioManager object
@@ -29,7 +29,7 @@ public:
      * 
      * The hostname used will be the chip ID
      * 
-     * @param mqttServer Server name or IP Address
+     * @param mqttServer Server name or IP address
      * @param mqttPort TCP port number
      * @param hostName (prefix "-in" will be added to hostname)
      * @param *espConfig Pointer to ESPConfig object

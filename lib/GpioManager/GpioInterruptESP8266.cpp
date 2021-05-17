@@ -15,7 +15,6 @@
 
 void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 {
-  _debugMessage->debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
 
   // Pointer to struct to transport gpio status and ESPConfig to the handleInterruptrr
   volatile interruptParameters *iparameters = (interruptParameters *)malloc(sizeof(interruptParameters));
@@ -40,7 +39,6 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   else
   {
     iparameters->isReconfigGpio = false;
-    _debugMessage->debug("web_config_gpio is configured as none");
   }
   #endif
 

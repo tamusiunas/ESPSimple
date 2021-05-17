@@ -56,7 +56,7 @@ void GpioManager::initializeTimers()
     }
     else
     {
-      // To-Do Configure Zero Cross Auto
+      // To-Do Configure zero-cross auto
     }
   }
   if (_zeroCrossEnable)

@@ -25,7 +25,7 @@ public:
    * 
    * The hostname used will be the chip ID
    * 
-   * @param mqttServer Server name or IP Address
+   * @param mqttServer Server name or IP address
    * @param mqttPort TCP port number
    */
   MqttManagerOut(String mqttServer, uint16_t mqttPort);
@@ -35,7 +35,7 @@ public:
    * 
    * The hostname used will be the chip ID
    * 
-   * @param mqttServer Server name or IP Address
+   * @param mqttServer Server name or IP address
    * @param mqttPort TCP port number
    * @param hostName Hostname
    */
