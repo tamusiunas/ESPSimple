@@ -92,7 +92,7 @@ static const char ALEXA_JS_EN_US_P2[] PROGMEM = ""
 "          var cols = \"\";\n"
 "          cols += '<td class=\"align-middle\"><label>Device Name</label><input name=\"alexa_device_name_r_' + counter + '\" "
 "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"alexa_device_name_r_' + counter + '\"></td>';\n"
-"          cols += '<td class=\"align-middle\"> <label>Support Dimmer?</label> <select class=\"form-control h-25\" "
+"          cols += '<td class=\"align-middle\"> <label>Support dimmer?</label> <select class=\"form-control h-25\" "
 "id=\"alexa_support_dimmer_r_' + counter + '\" name=\"alexa_support_dimmer_r_' + counter + '\"> <option value=\"yes\">Yes</option>"
 " <option value=\"no\">No</option> </select> <label><br />GPIO target</label> <select class=\"form-control h-25\" "
 "id=\"alexa_gpio_target_r_' + counter + '\" name=\"alexa_gpio_target_r_' + counter + '\"> ";
@@ -184,7 +184,7 @@ static const char PWM_EN_US_P1[] PROGMEM = "<form method=\"post\" action=\"/pwmC
 ">Zero-cross</th> <td class=\"align-middle\"> <label>Enable zero-cross</label> "
 "<select class=\"form-control h-25\" id=\"pwm_enable_zero_cross\" name=\"pwm_enable_zero_cross\"> "
 "{::SELECTZEROCROSSENABLE::} </select> <label><br>Zero-cross "
-"Frequency</label><select class=\"form-control h-25\" id=\"pwm_zero_cross_frequency\" name=\"pwm_zero_cross_frequency\">"
+"frequency</label><select class=\"form-control h-25\" id=\"pwm_zero_cross_frequency\" name=\"pwm_zero_cross_frequency\">"
 "{::SELECTZEROCROSSFREQUENCY::}"
 "</select><label><br>Zero-cross GPIO</label>"
 " <select class=\"form-control h-25\" id=\"pwm_zero_cross_gpio\" name=\"pwm_zero_cross_gpio\">";
@@ -211,9 +211,9 @@ static const char MANAGEMENT_EN_US_P1[] PROGMEM = "<div class=\"py-5\"> <div cla
 "<div class=\"col-md-12 p-0\"> <div class=\"row\"> <div class=\"col-md-12\"> <h2 class=\"text-center\" style=\"\">"
 "Management</h2> </div> </div> <form method=\"post\" action=\"/managementConfig\"> <div class=\"col-md-12 p-3\" style=\"\"> "
 "<table class=\"table table-hover table-striped table-bordered\"> <thead class=\"thead-inverse\"> <tr> "
-"<th scope=\"col\">Server</th> <th scope=\"col\">Address</th> </tr> </thead> <tbody> <tr> <th scope=\"row\" "
+"<th scope=\"col\">Service</th> <th scope=\"col\">Configuration</th> </tr> </thead> <tbody> <tr> <th scope=\"row\" "
 "class=\"align-middle\" style=\"\" >MQTT</th> <td class=\"align-middle\"><label>IP "
-"Address</label> <input name=\"mqtt_ip_address\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" value=\"";
+"address</label> <input name=\"mqtt_ip_address\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" value=\"";
 
 static const char MANAGEMENT_EN_US_P2[] PROGMEM = "\" id=\"mqtt_ip_address\"> <label><br>Port</label> "
 "<input name=\"mqtt_port\" class=\"form-control h-25\" "
@@ -246,7 +246,7 @@ static const char MANAGEMENT_EN_US_P9[] PROGMEM = "<label><br />GPIO indicating 
 "<select class=\"form-control h-25\" id=\"web_config_indicating\" "
 "name=\"web_config_indicating\">";
 
-static const char MANAGEMENT_EN_US_P10[] PROGMEM = "</select><label><br />GPIO indicating configuration Status</label> "
+static const char MANAGEMENT_EN_US_P10[] PROGMEM = "</select><label><br />GPIO indicating configuration status</label> "
 "<select class=\"form-control h-25\" id=\"web_config_indicating_status\" "
 "name=\"web_config_indicating_status\">";
 

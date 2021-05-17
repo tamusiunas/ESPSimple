@@ -58,7 +58,7 @@ String WebConfig::getZeroCrossFrequencyOptions()
     selectedAuto = "selected";
   }
   return "<option value=\"50\">50 hz</option><option value=\"60\" " + selected60Hz +
-         ">60 hz</option><option value=\"auto\" " + selectedAuto + ">Auto</option>";
+         ">60 hz</option>";
 }
 
 String WebConfig::getGpioAdcOptions(int ignoreGpioInt, String configParameterStr)
@@ -246,7 +246,7 @@ String WebConfig::getAlexaBody(String indexAlexa)
   String alexaBody = "<tr> <td class=\"align-middle\"><label>Device Name</label><input name=\"" + alexaMessageStr +
   "\" class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"" + alexaMessageStr + "\" value=\"" +
   getStringFormatted(_espConfig->getDataStore()->getValue(alexaMessageStr.c_str())) + "\"></td> "
-  "<td class=\"align-middle\"> <label>Support Dimmer?</label> <select class=\"form-control h-25\" id=\"" + alexaGpioActionStr +
+  "<td class=\"align-middle\"> <label>Support dimmer?</label> <select class=\"form-control h-25\" id=\"" + alexaGpioActionStr +
   "\" name=\"" + alexaGpioActionStr + "\">";
   alexaBody += getYesNoOptions(_espConfig->getDataStore()->getValue(alexaGpioActionStr.c_str()));
   alexaBody += "</select> <label><br>GPIO target</label> <select class=\"form-control h-25\" id=\"" +
