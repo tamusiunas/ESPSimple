@@ -9,7 +9,6 @@ void setup(){
   {
     mustStartWebConfig = true;
     doubleReset.stop(); // it's a double reset so stop double reset check
-    Serial.println("Double reset detected. Starting WEB Server");
   }  
 
   DataStore *dataStore = new DataStore(); // initialize DataStore
@@ -40,8 +39,8 @@ void setup(){
     webConfig.processClient();
   }
 
-  wiFiSTIManager = new WiFiSTIManager(espConfig);
-  wiFiSTIManager->start();
+  wiFiSTIManager = WiFiSTIManager(espConfig);
+  wiFiSTIManager.start();
 
   /*timeClient = new NTPClient(ntpUDP,"pool.ntp.org",0,1800);
   timeClient->begin();
@@ -58,12 +57,12 @@ void setup(){
   {
     Serial.println("Configuring Syslog");
     DebugMessage::syslogManager = new SyslogManager(dataStore->getValue("syslog_ip_address"), syslogPort);
-    debugMessage = new DebugMessage();
-    debugMessage->debug("DEBUG started");
+    debugMessage = DebugMessage();
+    debugMessage.debug("DEBUG started");
   }
   else
   {
-    debugMessage = new DebugMessage();
+    debugMessage = DebugMessage();
   }
 
   otaHandler = new OTAHandler();
@@ -118,7 +117,7 @@ void setup(){
   }
   else
   {
-    debugMessage->debug("There's no DHT configured");
+    debugMessage.debug("There's no DHT configured");
   }
 
 
@@ -131,7 +130,7 @@ void setup(){
     pwmAdcDataLocal->adcActionWhenReverseInMillis[cont] = 0;
   }
 
-  debugMessage->debug("Configuring MQTT");
+  debugMessage.debug("Configuring MQTT");
   String mqttServerStr = dataStore->getValue("mqtt_ip_address");
   if (mqttServerStr != "")
   {
@@ -144,22 +143,22 @@ void setup(){
     {
       mqttPort = 1883;
     }
-    debugMessage->debug("mqttServerStr: " + mqttServerStr);
-    debugMessage->debug("mqttPort: " + String(mqttPort));
+    debugMessage.debug("mqttServerStr: " + mqttServerStr);
+    debugMessage.debug("mqttPort: " + String(mqttPort));
     mqttManagerIn = new MqttManagerIn(mqttServerStr.c_str(), mqttPort, espConfig, gpioManager, pwmAdcDataLocal);
     mqttManagerIn->connect();
     mqttManagerOut = new MqttManagerOut(mqttServerStr.c_str(), mqttPort);
     mqttManagerOut->connect();
   }
 
-  debugMessage->debug("Configuring GPIO");
-  gpioManager = new GpioManager(espConfig,debugMessage);
+  debugMessage.debug("Configuring GPIO");
+  gpioManager = new GpioManager(espConfig);
   //gpioManager = new GpioManager(espConfig);
   gpioManager->initializeGpio();
 
   if (strcmp(dataStore->getValue("alexa_enable"),"yes") == 0)
   {
-    debugMessage->debug("Configuring Alexa");
+    debugMessage.debug("Configuring Alexa");
     alexaStruct = (AlexaStruct *)malloc(sizeof(AlexaStruct));
     alexaStruct->espConfig = espConfig;
     alexaStruct->gpioManager = gpioManager;
@@ -171,9 +170,9 @@ void setup(){
 
   checkActionMqtt = new CheckActionMqtt(mqttManagerOut, pwmAdcDataLocal, gpioManager, espConfig);
 
-  debugMessage->debug("WifiGetChipId(): " + String(WifiGetChipId()));
-  debugMessage->debug("Free size: " + String(ESP.getFreeSketchSpace()));
-  debugMessage->debug("Free Heap: " + String(ESP.getFreeHeap()));
+  debugMessage.debug("WifiGetChipId(): " + String(WifiGetChipId()));
+  debugMessage.debug("Free size: " + String(ESP.getFreeSketchSpace()));
+  debugMessage.debug("Free Heap: " + String(ESP.getFreeHeap()));
 
   //rf_driver.init();
  
@@ -186,6 +185,13 @@ void loop()
   {
       amazonAlexa->handle();
   }
+
+  #ifdef SYSLOGDEBUG
+    if (wiFiSTIManager.isConnected())
+    {
+      debugMessage.handleSyslog();
+    }
+  #endif
 
   // check for ntp reset each second
   /*if ((millis() - lastTimeinMillisNtp) > 1000)

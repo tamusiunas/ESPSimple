@@ -123,16 +123,13 @@ void WebConfig::handleAlexa()
   int totalParameters = _espConfig->getDataStore()->getDataParametersCount();
   int alexaLength = 0;
   int totalAlexa = 0;
-  //Serial.println("P1");
   for (int cont=0; cont<totalParameters; cont++)
   {
     if (_espConfig->getDataStore()->getParameterByPos(cont) != NULL)
     {
       String parameterLocal = _espConfig->getDataStore()->getParameterByPos(cont)->getField();
-      //Serial.println(parameterLocal);
       if (parameterLocal.indexOf("alexa_device_name_r_") == 0)
       {
-        //Serial.println("Found I1");
         ++totalAlexa;
         String alexaIndexStr = parameterLocal.substring(20);
         alexaLength += getAlexaBody(alexaIndexStr).length();
@@ -415,7 +412,6 @@ void WebConfig::handlePwm()
       if (parameterLocal.indexOf("pwm_gpio_r_") == 0)
       {
         String pwmIndexStr = parameterLocal.substring(11);
-        Serial.println("(handlePwm) Found id: " + pwmIndexStr);
         _webServer->sendContent(getPwmBody(pwmIndexStr));
       }
     }
@@ -564,8 +560,6 @@ void WebConfig::handleAdcConfig()
 {
   for (int cont = 0; cont < _webServer->args(); cont++)
   {
-    Serial.println("Name: " + String(_webServer->argName(cont).c_str()));
-    Serial.println("Value: " + String(_webServer->arg(cont).c_str()));
     _espConfig->getDataStore()->deleteParameter(_webServer->argName(cont).c_str());
     _espConfig->getDataStore()->addParameter(new DataParameter(_webServer->argName(cont).c_str(),_webServer->arg(cont).c_str()));
   }
@@ -577,8 +571,6 @@ void WebConfig::handleManagementConfig()
 {
   for (int cont = 0; cont < _webServer->args(); cont++)
   {
-    Serial.println("Name: " + String(_webServer->argName(cont).c_str()));
-    Serial.println("Value: " + String(_webServer->arg(cont).c_str()));
     _espConfig->getDataStore()->deleteParameter(_webServer->argName(cont).c_str());
     _espConfig->getDataStore()->addParameter(new DataParameter(_webServer->argName(cont).c_str(),_webServer->arg(cont).c_str()));
   }
@@ -592,8 +584,6 @@ void WebConfig::handleGpioConfig()
   _espConfig->getDataStore()->deleteParameterPrefix("gpio_comment_");
   for (int cont = 0; cont < _webServer->args(); cont++)
   {
-    Serial.println("Name: " + String(_webServer->argName(cont).c_str()));
-    Serial.println("Value: " + String(_webServer->arg(cont).c_str()));
     //_espConfig->getDataStore()->deleteParameter(_webServer->argName(cont).c_str());
     _espConfig->getDataStore()->addParameter(new DataParameter(_webServer->argName(cont).c_str(),_webServer->arg(cont).c_str()));
   }
@@ -857,8 +847,6 @@ void WebConfig::handleWifiConfig()
 {
   for (int cont = 0; cont < _webServer->args(); cont++)
   {
-    Serial.println("Name: " + String(_webServer->argName(cont).c_str()));
-    Serial.println("Value: " + String(_webServer->arg(cont).c_str()));
     _espConfig->getDataStore()->deleteParameter(_webServer->argName(cont).c_str());
     _espConfig->getDataStore()->addParameter(new DataParameter(_webServer->argName(cont).c_str(),_webServer->arg(cont).c_str()));
   }

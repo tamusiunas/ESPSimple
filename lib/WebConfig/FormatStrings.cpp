@@ -238,7 +238,6 @@ String WebConfig::getTelegramBody(String indexTelegram)
 
 String WebConfig::getAlexaBody(String indexAlexa)
 {
-  //Serial.println("getAlexaBody: " + indexAlexa);
   String indexAlexaStr = String(indexAlexa);
   String alexaMessageStr = "alexa_device_name_r_" + indexAlexaStr;
   String alexaGpioActionStr = "alexa_support_dimmer_r_" + indexAlexaStr;
@@ -511,7 +510,6 @@ String WebConfig::getGpioOutputOptions(int ignoreGpioInt, String configuredParam
 String WebConfig::getGpioInOutAdcRowSelect(int gpioNumber)
 {
   String gpioSelectStr = "";
-  // Serial.println("getPinAnalogOnly()[" + String(gpioNumber) + "]: " + String(_espConfig->getPinAnalogOnly()[gpioNumber]));
   if (_espConfig->getPinAnalogOnly()[gpioNumber] == 1)
   {
     String gpioAdcAttenStr = "gpio_adc_analog_only_" + String(gpioNumber);

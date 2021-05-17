@@ -115,7 +115,7 @@ DoubleReset doubleReset = DoubleReset(5000);
 bool mustStartWebConfig = false;
 OTAHandler *otaHandler;
 ESPConfig *espConfig; // Config values passed through objects
-WiFiSTIManager *wiFiSTIManager; // To configure WiFi parameters
+WiFiSTIManager wiFiSTIManager; // To configure WiFi parameters
 MqttManagerIn *mqttManagerIn; // Receive MQTT Messages
 MqttManagerOut *mqttManagerOut = NULL; // Send MQTT Messages
 GpioManager *gpioManager; // Config and read data from GPIO
@@ -126,7 +126,7 @@ WiFiUDP ntpUDP;
 DhtManager **dhtManagerArray;
 CheckActionMqtt *checkActionMqtt;
 
-DebugMessage *debugMessage;
+DebugMessage debugMessage;
 SyslogManager *syslogManager;
 SyslogManager *DebugMessage::syslogManager;
 

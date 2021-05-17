@@ -51,7 +51,7 @@ bool MqttManagerOut::publishMessage(String mqttMessage)
 bool MqttManagerOut::publishMessageJson(String mqttKey[], String mqttValue[], int arraySize, String title)
 {
   JsonManager *jsonManager = new JsonManager();
-  _debugMessage.debug(jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
+  _debugMessage.debug("MQTT publish to " + _hostName + ": " + jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
   return publishMessage(jsonManager->formatJson(mqttKey,mqttValue,arraySize,title.c_str()));
 }
 

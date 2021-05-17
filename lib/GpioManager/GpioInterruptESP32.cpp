@@ -15,7 +15,7 @@
 
 void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 {
-  _debugMessage->debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
+  _debugMessage.debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
   gpio_num_t gpioReceived = (gpio_num_t) gpioInterruptPin;
   if (!interrupInitialized)
   {
@@ -48,7 +48,7 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   else
   {
     iparameters->isReconfigGpio = false;
-    _debugMessage->debug("web_config_gpio is configured as none");
+    _debugMessage.debug("web_config_gpio is configured as none");
   }
   #endif
   
