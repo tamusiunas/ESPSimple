@@ -13,6 +13,7 @@
 #define SpiffsManager_h
 
 #include "DataStore.h"
+#include "ArduinoJson.h"
 #include <FS.h>
 #ifdef ESP32
 #include <SPIFFS.h>

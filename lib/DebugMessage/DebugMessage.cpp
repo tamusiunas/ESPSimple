@@ -1,36 +1,92 @@
 #include "DebugMessage.h"
 
+volatile int DebugMessage::_messageTotal = 0;
+#ifdef DEBUG_MESSAGE_MAX_CACHE
+  volatile int DebugMessage::_debugMessageMax = DEBUG_MESSAGE_MAX_CACHE;
+#else
+  volatile int DebugMessage::_debugMessageMax = 15;
+#endif
+volatile MessageStruct *DebugMessage::_firstMessage;
+volatile MessageStruct *DebugMessage::_lastMessage;
+
 DebugMessage::DebugMessage()
 {
 }
 
 DebugMessage::DebugMessage(SyslogManager *syslogManager)
 {
-    _syslogManager = syslogManager;
+    _syslogManager = syslogManager;    
+}
+
+bool DebugMessage::handleSyslog()
+{
+  #ifdef SYSLOGDEBUG
+  if (syslogManager != NULL)
+  {
+    
+    if (_firstMessage != NULL)
+    {
+      while (_firstMessage != NULL)
+      {
+        this->syslogManager->sendMessage((char *)_firstMessage->message);
+
+        volatile MessageStruct *old_message = _firstMessage;
+        _firstMessage = _firstMessage->next;
+        
+        delete[] old_message->message;
+        delete old_message;
+        
+      }
+      _lastMessage = NULL;
+      _messageTotal = 0;
+    }
+
+    return true;
+  }
+  #endif
+  return false;
 }
 
 void DebugMessage::debug(String debugMessage)
 {
-    String messageFormatted = formatString(debugMessage);
+    // to avoid trash
+    String messageFormatted = "Log " + getPlatform() + " (" + String(WifiGetChipId()) 
+      + ") - Uptime: " + String(millis()) +  " - " + formatString(debugMessage);
+
     #ifdef SERIALDEBUG
-    #ifdef ESP8266
-    Serial.println("Log ESP8266 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
-    #endif
-    #ifdef ESP32
-    Serial.println("Log ESP32 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
-    #endif
+      Serial.println(messageFormatted);
     #endif
     #ifdef SYSLOGDEBUG
-    if (syslogManager != NULL)
+    if (_messageTotal < 15)
     {
-        #ifdef ESP8266
-        this->syslogManager->sendMessage("Log ESP8266 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
-        #endif
-        #ifdef ESP32
-        this->syslogManager->sendMessage("Log ESP32 (" + String(WifiGetChipId()) + ") - Uptime: " + String(millis()) +  " - " + messageFormatted);
-        #endif
+
+      volatile MessageStruct *newMessage = new volatile MessageStruct;
+
+      newMessage->message = new volatile char[messageFormatted.length() + 1];
+      strcpy((char *)newMessage->message,messageFormatted.c_str());
+      newMessage->next = NULL;
+
+      if (_firstMessage == NULL)
+      {
+        _firstMessage = newMessage; // init the list
+      }
+      else
+      {
+        _lastMessage->next = newMessage; //_lastMessage-next receives new message
+      }
+      _lastMessage = newMessage; // _lastMessage is the new message
+      ++_messageTotal;
     }
     #endif
+}
+
+String DebugMessage::getPlatform()
+{
+  #ifdef ESP8266
+    return "ESP8266";
+  #else
+    return "ESP32";
+  #endif
 }
 
 String DebugMessage::formatString(String message)

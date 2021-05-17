@@ -67,15 +67,15 @@ void AmazonAlexa::enable()
         String alexaGpioTargetStr = "alexa_gpio_target_r_" + String(deviceId);
         if (strcmp(alexaStructLocal->espConfig->getDataStore()->getValue(alexaDeviceNameStr.c_str()),"") != 0)
         {
-            Serial.println("ID: " + String(deviceId));
+            debugMessageLocal.debug("Received Alexa request for device " + String(deviceId));
             if (strcmp(alexaStructLocal->espConfig->getDataStore()->getValue(alexaSupportDimmerStr.c_str()),"yes") == 0)
             {
-                debugMessageLocal.debug("Aleza Request is for a dimmer");
+                debugMessageLocal.debug("Alexa Request is for a dimmer");
                 isDimmer = true;
             }
             else
             {
-                debugMessageLocal.debug("Aleza Request is not for a dimmer");
+                debugMessageLocal.debug("Alexa Request is not for a dimmer");
             }
             if (strcmp(alexaStructLocal->espConfig->getDataStore()->getValue(alexaGpioTargetStr.c_str()),"") != 0)
             {

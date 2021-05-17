@@ -21,7 +21,7 @@ void GpioManager::configGpioPwm(uint32_t gpio, int channel, int timer)
   led_config.timer_sel = (ledc_timer_t) timer; // timer (2-bit)
   led_config.duty = (1 << DUTY_BIT_DEPTH) - 1; // 0-1023 (config as 1023 since DUTY_BIT_DEPTH = 10-bit)
   led_config.intr_type = LEDC_INTR_DISABLE; // disable LECD interrupt
-  _debugMessage->debug("Configuring GPIO " + String(gpio) + " as PWM - Channel: " + String(channel) + " - Timer: " + String(timer));
+  _debugMessage.debug("Configuring GPIO " + String(gpio) + " as PWM - Channel: " + String(channel) + " - Timer: " + String(timer));
   ledc_channel_config(&led_config);
 }
 
@@ -100,7 +100,6 @@ void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal
       int duty = (pwm*(dutyBitDec/totalSteps));
       duty -= (dutyBitDec - duty - hpoint);
       ledc_set_duty_and_update(LEDC_HIGH_SPEED_MODE, (ledc_channel_t) channel, duty, hpoint);
-      Serial.println("gpio " + String(gpio) + ": " + String(pwm));
       pwmAdcDataLocal->pinGpioPwmStatusChanged[gpio] = 1;
       pwmAdcDataLocal->pinGpioPwmStatus[gpio] = pwm;
       debugMessageLocal.debug("Setting PWM - Channel: " + String(channel) + " - Total Steps: " + String(totalSteps) + " - DutyBitDec: " + 
@@ -117,14 +116,14 @@ void GpioManager::setPwm(int gpio, int pwm, volatile PwmAdcData *pwmAdcDataLocal
 void GpioManager::addGpioPwmZeroCross(int gpio)
 {
   int pwmChannel = _espConfig->addGpioToPwmChanneHw(gpio);
-  _debugMessage->debug("Configuring ZeroCross PWM: " + String(gpio) + " - Channel " + String(pwmChannel));
+  _debugMessage.debug("Configuring ZeroCross PWM: " + String(gpio) + " - Channel " + String(pwmChannel));
   configGpioPwm(gpio, pwmChannel, ZEROCROSSTIMER);
 }
 
 void GpioManager::addGpioPwmNonZeroCross(int gpio)
 {
   int pwmChannel = _espConfig->addGpioToPwmChanneHw(gpio);
-  _debugMessage->debug("Configuring NonZeroCross PWM: " + String(gpio) + " - Channel " + String(pwmChannel));
+  _debugMessage.debug("Configuring NonZeroCross PWM: " + String(gpio) + " - Channel " + String(pwmChannel));
   configGpioPwm(gpio, pwmChannel, NONZEROCROSSTIMER);
 }
 

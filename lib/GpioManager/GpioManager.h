@@ -52,7 +52,7 @@ public:
    * 
    * @param espConfig ESPConfig Object with config parameters
    */
-  GpioManager(ESPConfig *espConfig, DebugMessage *debugMessage);
+  GpioManager(ESPConfig *espConfig);
   
   /**
    * @brief Destroy the Gpio Manager object
@@ -235,7 +235,7 @@ private:
   //MqttManagerOut *_mqttManagerOut;
   bool interrupInitialized = false;
   bool _zeroCrossEnable = false;
-  DebugMessage *_debugMessage;
+  DebugMessage _debugMessage;
 };
 
 #endif

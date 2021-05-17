@@ -20,6 +20,7 @@ class WiFiSTIManager
 {
 public:
   WiFiSTIManager(ESPConfig *espConfig);
+  WiFiSTIManager();
   ~WiFiSTIManager();
   void start();
   void stop();

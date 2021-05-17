@@ -15,7 +15,7 @@
 
 void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
 {
-  _debugMessage->debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
+  _debugMessage.debug("Configuring interrupt for GPIO: " + String(gpioInterruptPin));
   gpio_num_t gpioReceived = (gpio_num_t) gpioInterruptPin;
   if (!interrupInitialized)
   {
@@ -48,7 +48,7 @@ void GpioManager::setInterrupt(uint32_t gpioInterruptPin)
   else
   {
     iparameters->isReconfigGpio = false;
-    _debugMessage->debug("web_config_gpio is configured as none");
+    _debugMessage.debug("web_config_gpio is configured as none");
   }
   #endif
   
@@ -80,10 +80,9 @@ void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
   #endif 
   
   iparameters->gpioInterruptPinStatus = gpioInterruptStatus;
-  Serial.println("Receiving an interruption for " + String(iparameters->gpioInterruptPin) + " - status: " + String(gpioInterruptStatus));
   GpioActionInterrupts gpioActionInterrupts = GpioActionInterrupts(iparameters);
 
-  bool digitalActionStatus = gpioActionInterrupts.processDigitalAction();
+  gpioActionInterrupts.processDigitalAction();
 
   portYIELD_FROM_ISR();
 }

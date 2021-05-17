@@ -10,6 +10,11 @@ WiFiSTIManager::~WiFiSTIManager()
 
 }
 
+WiFiSTIManager::WiFiSTIManager()
+{
+
+}
+
 void WiFiSTIManager::start()
 {
 
