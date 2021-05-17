@@ -1,7 +1,7 @@
 /**
  * @file DataStore.cpp
  * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
- * @brief Objects to store user parameters
+ * @brief Object to manage and store parameters used in the project
  * @version 0.1
  * @date 2019-02-11
  * 
@@ -11,61 +11,9 @@
 
 #include "DataStore.h"
 
-DataParameter::DataParameter()
-{
-  _field = NULL;
-  _value = NULL;
-}
-
-DataParameter::DataParameter(const char *field, const char *value)
-{
-  _field = strdup(field);
-  strcpy(_field,field);
-  _value = strdup(value);
-  strcpy(_value, value);
-}
-
-DataParameter::DataParameter(String field, String value)
-{
-  _field = strdup(field.c_str());
-  strcpy(_field,field.c_str());
-  _value = strdup(value.c_str());
-  strcpy(_value, value.c_str());
-}
-
-DataParameter::~DataParameter()
-{
-  delete _field;
-  delete _value;
-}
-
-const char* DataParameter::getField()
-{
-  return _field;
-}
-
-const char* DataParameter::getValue()
-{
-  return _value;
-}
-
-
-void DataParameter::setField(const char *field)
-{
-  free(_field);
-  _field = strdup(field);
-  strcpy(_field,field);
-}
-
-void DataParameter::setValue(const char *value)
-{
-  free(_value);
-  _value = strdup(value);
-}
-
-
 DataStore::DataStore() {
     _max_params = DATASTORE_MAX_PARAMS;
+    _debugMessage = DebugMessage();
     _parameters = (DataParameter**)malloc(_max_params * sizeof(DataParameter*));
 }
 
@@ -90,7 +38,8 @@ bool DataStore::addParameter(DataParameter *parameter) {
 
   if(_paramsCount + 1 > _max_params)
   {
-    _max_params += DATASTORE_MAX_PARAMS;  // rezise the params array
+    // if params are full increase params by 5 to be faster (so dont need to resize every new parameter)
+    _max_params += 5;  
 
     DataParameter** new_parameters = (DataParameter**)realloc(_parameters, _max_params * sizeof(DataParameter*));
     if (new_parameters != NULL) {
@@ -212,15 +161,17 @@ DataParameter* DataStore::getDataParameter(const char *field)
 }
 
 void DataStore::printParameters()
-{
+{ 
+  String parametersStr = "";
   for (int parameterPos = 0; parameterPos < _paramsCount; parameterPos++)
   {
     if (_parameters[parameterPos] != NULL)
     {
-      _debugMessage->debug("DataStore - Key: " + String(_parameters[parameterPos]->_field) +
-                     " - Value: " + String(_parameters[parameterPos]->_value));
+      parametersStr += "Key: " + String(_parameters[parameterPos]->_field) +
+                     " - Value: " + String(_parameters[parameterPos]->_value) + "\n";
     }
   }
+  _debugMessage.debug("DataStore keys:\n" + parametersStr);
 }
 
 DataParameter** DataStore::getParameters()

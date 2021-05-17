@@ -80,10 +80,9 @@ void IRAM_ATTR GpioManager::handleInterrupt(void* arg)
   #endif 
   
   iparameters->gpioInterruptPinStatus = gpioInterruptStatus;
-  Serial.println("Receiving an interruption for " + String(iparameters->gpioInterruptPin) + " - status: " + String(gpioInterruptStatus));
   GpioActionInterrupts gpioActionInterrupts = GpioActionInterrupts(iparameters);
 
-  bool digitalActionStatus = gpioActionInterrupts.processDigitalAction();
+  gpioActionInterrupts.processDigitalAction();
 
   portYIELD_FROM_ISR();
 }

@@ -27,6 +27,7 @@ public:
 
 private:
   interruptParameters *_iparameters;
+  DebugMessage _debugMessage;
 };
 
 #endif
