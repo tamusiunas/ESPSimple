@@ -194,9 +194,14 @@ String WebConfig::getActionOptions(String actionOptionConfigured)
   {
     telegramStr = "selected";
   }
-  return "<option value=\"reverse\">Reverse Voltage</option> <option value=\"on\" " + turnOnStr + ">Turn on</option> "
+  #ifdef ENABLE_TELEGRAM
+  return "<option value=\"reverse\">Reverse voltage</option> <option value=\"on\" " + turnOnStr + ">Turn on</option> "
   "<option value=\"off\" " + turnOffStr + ">Turn off</option> <option value=\"sendmessagetelegram\" " + telegramStr +
   ">Send Telegram Message</option>";
+  #else
+  return "<option value=\"reverse\">Reverse voltage</option> <option value=\"on\" " + turnOnStr + ">Turn on</option> "
+  "<option value=\"off\" " + turnOffStr + ">Turn off</option>";
+  #endif
 }
 
 String WebConfig::getPwmBody(String indexPwmStr)
@@ -663,7 +668,7 @@ String WebConfig::getGpioActionRow(int gpioNumber)
                        ")</th><td class=\"align-middle\"><label>Action</label><select class=\"form-control h-25\""
                        "id=\"" + gpioGpioActionStr + "\" name=\"" + gpioGpioActionStr + "\">"
                        "<option value=\"none\">None</option>"
-                       "<option value=\"reverse\">Reverse Voltage</option>"
+                       "<option value=\"reverse\">Reverse voltage</option>"
                        "</select><label><br>GPIO target</label>"
                        "<select class=\"form-control h-25\" id=\"" + gpioGpioTargetStr + "\" name=\"" +
                        gpioGpioTargetStr + "\">" + getGpioOutputOptions(gpioNumber,"") + "</select></td> </tr> ";
@@ -682,7 +687,7 @@ String WebConfig::getGpioActionJS()
   " id=\"gpio_status_r_' + counter + '\" name=\"gpio_status_r_' + counter + '\"> <option value=\"on\">On</option> "
   "<option value=\"off\">Off</option> <option value=\"reversed\">Reversed</option> </select> "
   "<label><br />Do the Action</label> <select class=\"form-control h-25\" id=\"gpio_action_r_' + counter + '\" "
-  "name=\"gpio_action_r_' + counter + '\"> <option value=\"reverse\">Reverse Voltage</option> "
+  "name=\"gpio_action_r_' + counter + '\"> <option value=\"reverse\">Reverse voltage</option> "
   "<option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> <option "
   "value=\"sendmessagetelegram\">Send Telegram Message</option></select> "
   "<label><br />For GPIO target</label> <select class=\"form-control h-25\" id=\"gpio_target_r_' + counter + '\" "
