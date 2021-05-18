@@ -433,7 +433,7 @@ String WebConfig::getActionAdcBody(String indexAdc)
   adcBody += "</select> </td> <td class=\"align-middle\"> <label>On event</label> <select "
   "class=\"form-control h-25\" id=\"" + actionAdcTriggerAnalisisType + "\" name=\"" + actionAdcTriggerAnalisisType + "\">";
   adcBody += getAdcAnalisisTypeOptions(_espConfig->getDataStore()->getValue(actionAdcTriggerAnalisisType.c_str()));
-  adcBody += "</select> <label><br>Value</label><input name=\"" + actionAdcTriggerValueAction + "\" type=\"number\" "
+  adcBody += "</select> <label><br>Value (1-1023)</label><input name=\"" + actionAdcTriggerValueAction + "\" type=\"number\" "
   "class=\"form-control h-25\" placeholder=\"\" maxlength=\"5\" id=\"" + actionAdcTriggerValueAction + "\" value=\"" +
   getStringFormatted(_espConfig->getDataStore()->getValue(actionAdcTriggerValueAction.c_str())) + "\">";
   adcBody += "<label><br>Action</label> <select class=\"form-control h-25\" id=\"" + actionAdcAction + "\" name=\"" + actionAdcAction + "\">";
