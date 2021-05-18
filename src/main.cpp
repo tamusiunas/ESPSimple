@@ -226,11 +226,8 @@ void loop()
 
   if ((millis() - lastTimeinMillisAdc) > 500)
   {
-    //gpioManager->checkAdcReverse(pwmAdcDataLocal);
     checkActionMqtt->checkAdcReverse();
-    //gpioManager->checkGpioDigitalReverse();
     checkActionMqtt->checkGpioDigitalReverse();
-    //gpioManager->checkAdcGpioActions(mqttManagerOut, pwmAdcDataLocal);
     checkActionMqtt->checkAdcGpioActions();
     lastTimeinMillisAdc = millis();
   }
