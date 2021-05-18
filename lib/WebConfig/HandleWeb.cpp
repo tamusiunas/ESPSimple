@@ -486,12 +486,18 @@ void WebConfig::handleManagement()
   _webServer->sendContent(otaPasswordStr);
   _webServer->sendContent_P(MANAGEMENT_EN_US_P7);
   _webServer->sendContent(getNoneOption());
+  #ifdef ENABLE_GPIO_WEB_CONFIG
   _webServer->sendContent(getGpioInputOptions(-1,_espConfig->getDataStore()->getValue("web_config_gpio")));
+  #endif
   _webServer->sendContent_P(MANAGEMENT_EN_US_P8);
   _webServer->sendContent_P(MANAGEMENT_EN_US_P9);
+  #ifdef ENABLE_GPIO_WEB_CONFIG
   _webServer->sendContent(getGpioOutputOptions(-1,_espConfig->getDataStore()->getValue("web_config_indicating")));
+  #endif
   _webServer->sendContent_P(MANAGEMENT_EN_US_P10);
+  #ifdef ENABLE_GPIO_WEB_CONFIG
   _webServer->sendContent(getOnOffOption(_espConfig->getDataStore()->getValue("web_config_indicating_status")));
+  #endif
   _webServer->sendContent_P(MANAGEMENT_EN_US_P11);
   _webServer->sendContent_P(FOOTER_EN_US_P1);
   _webServer->sendContent_P(FOOTER_EN_US_P2);

@@ -65,7 +65,7 @@ static const char TELEGRAM_JS_EN_US_P2[] PROGMEM = ""
 "class=\"form-control h-25\" placeholder=\"\" maxlength=\"100\" id=\"telegram_message_r_' + counter + '\"></td>';\n"
 "          cols += '<td class=\"align-middle\"> <label>Action</label> <select class=\"form-control h-25\" "
 "id=\"telegram_gpio_action_r_' + counter + '\" name=\"telegram_gpio_action_r_' + counter + '\"> <option value=\"reverse\">"
-"Reverse Voltage</option> <option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> </select> "
+"Reverse voltage</option> <option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> </select> "
 "<label><br />GPIO target</label> <select class=\"form-control h-25\" id=\"telegram_gpio_target_r_' + counter + '\" "
 "name=\"telegram_gpio_target_r_' + counter + '\"> ";
 
@@ -236,7 +236,11 @@ static const char MANAGEMENT_EN_US_P6[] PROGMEM = "</select> "
 "placeholder=\"\" maxlength=\"100\" id=\"ota_password\" value=\"";
 
 static const char MANAGEMENT_EN_US_P7[] PROGMEM = ""
-"\"></td> </tr> <tr><th scope=\"row\" class=\"align-middle\" style=\"\" >Web config GPIO</th>  <td class=\"align-middle\">"
+"\"></td> </tr> "
+
+#ifdef ENABLE_GPIO_WEB_CONFIG
+
+"<tr><th scope=\"row\" class=\"align-middle\" style=\"\" >Web config GPIO</th>  <td class=\"align-middle\">"
 "<label>Web config trigger GPIO</label> <select class=\"form-control h-25\" id=\"web_config_gpio\" "
 "name=\"web_config_gpio\">";
 
@@ -250,7 +254,23 @@ static const char MANAGEMENT_EN_US_P10[] PROGMEM = "</select><label><br />GPIO i
 "<select class=\"form-control h-25\" id=\"web_config_indicating_status\" "
 "name=\"web_config_indicating_status\">";
 
-static const char MANAGEMENT_EN_US_P11[] PROGMEM = "</select></td></tr></tbody> </table> <button type=\"submit\" "
+static const char MANAGEMENT_EN_US_P11[] PROGMEM = "</select></td></tr>"
+
+#else
+
+"";
+
+static const char MANAGEMENT_EN_US_P8[] PROGMEM = "";
+
+static const char MANAGEMENT_EN_US_P9[] PROGMEM = "";
+
+static const char MANAGEMENT_EN_US_P10[] PROGMEM = "";
+
+static const char MANAGEMENT_EN_US_P11[] PROGMEM = ""
+
+#endif
+
+"</tbody> </table> <button type=\"submit\" "
 "class=\"btn btn-primary my-2\">Submit</button> </div> </form> </div> </div> </div> </div>";
 
 static const char WIFI_EN_US_P1[] PROGMEM = "<div class=\"py-5\"> <div class=\"container\"> <div class=\"row\"> <div"
@@ -590,7 +610,7 @@ static const char ACTIONS_JS_EN_US_P3[] PROGMEM = ""
 "name=\"action_digital_trigger_analisis_type_r_' + counter_digital + '\"> <option value=\"on\">On</option> "
 "<option value=\"off\">Off</option> <option value=\"reversed\">Reversed</option> </select> <label><br />"
 "Action</label> <select class=\"form-control h-25\" id=\"action_digital_action_r_' + counter_digital + "
-"'\" name=\"action_digital_action_r_' + counter_digital + '\"> <option value=\"reverse\">Reverse Voltage</option> "
+"'\" name=\"action_digital_action_r_' + counter_digital + '\"> <option value=\"reverse\">Reverse voltage</option> "
 "<option value=\"on\">Turn on</option> <option value=\"off\">Turn off</option> <option "
 "value=\"sendmessagetelegram\">Send Telegram Message</option></select>" 
 "<label><br>Time before action reversal (ms)</label><input name=\"action_digital_time_before_action_reversal_r_' + counter_digital + '\""
@@ -626,12 +646,12 @@ static const char ACTIONS_JS_EN_US_P5[] PROGMEM = ""
 "</select></td>';\n"
 "cols_adc += '<td class=\"align-middle\"> <label>On event</label> <select class=\"form-control h-25\" "
 "id=\"action_adc_trigger_analisis_type_r_' + counter_adc + '\" name=\"action_adc_trigger_analisis_type_r_' + counter_adc + '\"> "
-"<option value=\"variation\">Variation</option> <option value=\"greaterthan\">Greater Than</option> "
-"<option value=\"lowerthan\">Lower Than</option> </select> <label><br />Value</label><input "
+"<option value=\"variation\">Variation</option> <option value=\"greaterthan\">Greater than</option> "
+"<option value=\"lowerthan\">Lower than</option> </select> <label><br />Value</label><input "
 "name=\"action_adc_trigger_value_r_' + counter_adc + '\" type=\"number\" class=\"form-control h-25\" placeholder=\"\" "
 "maxlength=\"5\" id=\"action_adc_trigger_value_r_' + counter_adc + '\"><label><br />Action</label> <select "
 "class=\"form-control h-25\" id=\"action_adc_action_r_' + counter_adc + '\" name=\"action_adc_action_r_' + counter_adc + '\"> "
-"<option value=\"reverse\">Reverse Voltage</option> <option value=\"on\">Turn on</option> <option value=\"off\">Turn "
+"<option value=\"reverse\">Reverse voltage</option> <option value=\"on\">Turn on</option> <option value=\"off\">Turn "
 "off</option> <option value=\"sendmessagetelegram\">Send Telegram Message</option></select> <label><br />Time Before Action "
 "Reversal</label><input name=\"action_adc_time_before_action_reversal_r_' + counter_adc + '\" class=\"form-control h-25\" "
 "placeholder=\"\" maxlength=\"10\" type=\"number\" id=\"action_adc_time_before_action_reversal_r_' + counter_adc + '\"> <label><br />"
