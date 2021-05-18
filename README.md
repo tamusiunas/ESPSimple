@@ -57,9 +57,11 @@ To start the configuration interface:
 - Search for an Wi-Fi network called "IOT-XXXXXXXXXX" where XXXXXXXXXX is the board ID
 - Connect to the network and access the URL [http://192.168.4.1](https://192.168.4.1)
 
-## WiFi config
+## Web config
 
-###This tab allows to configure the Wi-Fi access.
+### WiFi config
+
+#### This tab allows to configure the Wi-Fi access.
 
 - **Access Point** 
  - Choose your network - If it's not hidden and not present here, click on Refresh Network button. 
@@ -73,7 +75,7 @@ To start the configuration interface:
  
 ![Wi-Fi config](http://192.168.1.110:8080/ESPSimple_wifi.png)
 
-## Management config
+### Management config
 
 This tab is used to configure services
 
@@ -96,7 +98,7 @@ This tab is used to configure services
  
 ![Management config](http://192.168.1.110:8080/ESPSimple_management.png)
 
-## GPIO config
+### GPIO config
 
 This tab is used to configure the GPIO available.
 
@@ -110,9 +112,9 @@ This tab is used to configure the GPIO available.
 
 ![GPIO config](http://192.168.1.110:8080/ESPSimple_gpio_cut.pdf)
 
-## Components config
+### Components config
 
-### Sensors
+#### Sensors
 
 - **Add DHT(11/22)**: Add a new DHT11/DHT22 sensor (to measure environmental temperature and humidity).
 - **DHT Type**: DHT11 or DTH22.
@@ -120,51 +122,57 @@ This tab is used to configure the GPIO available.
 
 ![Components config](http://192.168.1.110:8080/ESPSimple_components.png)
 
-## Actions config
+### Actions config
 
 This tab allow to configure actions (digital and analog) to be generated when a digital input GPIO is changed or a configured amount of voltage is changed in an analog GPIO INPUT.
 
-### Actions (Digital)
+#### Actions (Digital)
 
 - **GPIO**: INPUT GPIO to be analysed (must be configured as INPUT_PULLUP on GPIO config tab).
-- **Add Action (Digital)**: add an action based on a digital GPIO
-- **On event**: Event analysed
- - On: act when GPIO is changed to on
- - Off: act when GPIO is changed off
- - Reversed: act when GPIO is changed to a different status
-- **Action**: action performed when event matches
- - Reverse Voltage: invert the GPIO target status
- - Turn On: turn on GPIO target status
- - Turn Off: turn off GPIO target status
+- **Add Action (Digital)**: add an action based on a digital GPIO.
+- **On event**: Event analysed.
+ - On: act when GPIO is changed to on.
+ - Off: act when GPIO is changed off.
+ - Reversed: act when GPIO is changed to a different status.
+- **Action**: action performed when event matches.
+ - Reverse Voltage: invert the GPIO target status.
+ - Turn on: turn on GPIO target status.
+ - Turn off: turn off GPIO target status.
 - **Time before action reversal (ms)**:Time in milliseconds before revert the action performed. Note: blank or zero disable this feature.
-- **GPIO target**: OUTPUT GPIO target for the action 
+- **GPIO target**: OUTPUT GPIO target for the action .
 - **Waiting Time Before Rearming Trigger (ms)**: Waiting time in milliseconds before this action can be performed again.
 
-### Actions (ADC - Analog-to-Digital)
+#### Actions (ADC - Analog-to-Digital)
 
 - **GPIO**: INPUT GPIO to be analysed (must be configured as ADC).
-- **Add Action (ADC)**: add an action based on an ADC GPIO
-- **On event**: Event analysed
- - Variation: act when GPIO is changed to on
- - Greater Than: act when GPIO is changed off
- - Lower Than: act when GPIO is changed to a different status
+- **Add Action (ADC)**: add an action based on an ADC GPIO.
+- **On event**: Event analysed.
+ - Variation: active the action when a variation of the voltage specified in 0.5 seconds occurs.
+ - Greater than: active the action when the voltage analysed is greater than specified in value field.
+ - Lower than: active the action when the voltage analysed is lower than specified in value field.
+- **Value (1-2023)**: value to be analysed by the event (value must be between 1 and 1023 when 1023 is the greatest amount of voltage allowed).
 - **Action**: action performed when event matches
  - Reverse Voltage: invert the GPIO target status
- - Turn On: turn on GPIO target status
- - Turn Off: turn off GPIO target status
+ - Turn on: turn on GPIO target status
+ - Turn off: turn off GPIO target status
 - **Time before action reversal (ms)**:Time in milliseconds before revert the action performed. Note: blank or zero disable this feature.
 - **GPIO target**: OUTPUT GPIO target for the action 
 - **Waiting Time Before Rearming Trigger (ms)**: Waiting time in milliseconds before this action can be performed again.
-
 
 ![Actions config](http://192.168.1.110:8080/ESPSimple_actions.png)
 
-## ADC GPIO VREF config
+### ADC GPIO VREF config
 
 ![ADC GPIO VREF config](http://192.168.1.110:8080/ESPSimple_adc.png)
 
-## Alexa config
+### Alexa config
 
 ![Alexa config](http://192.168.1.110:8080/ESPSimple_alexa.png)
 
-## 
+## MQTT
+
+###MQTT Messages
+
+## Alexa
+
+
