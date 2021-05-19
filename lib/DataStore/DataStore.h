@@ -1,7 +1,7 @@
 /**
  * @file DataStore.h
  * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
- * @brief Objects to store user parameters
+ * @brief Headers for DataStore
  * @version 0.1
  * @date 2019-02-11
  * 
