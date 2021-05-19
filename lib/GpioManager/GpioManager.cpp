@@ -143,7 +143,7 @@ void GpioManager::checkGpioPwmStatusChanged(MqttManagerOut *mqttManagerOut, vola
     String mqttValue[2];
     mqttKey[0] = "gpio";
     mqttValue[0] = String(position);
-    mqttKey[1] = "status";
+    mqttKey[1] = "value";
     mqttValue[1] = String(pinGpioPwmStatusLocal);
     _debugMessage.debug("GPIO PWM Value Changed - GPIO: " + String(position) + " -  New Value: " + mqttValue[1]);
     pwmAdcDataLocal->pinGpioPwmStatusChanged[position] = 0;

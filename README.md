@@ -163,16 +163,164 @@ This tab allow to configure actions (digital and analog) to be generated when a 
 
 ### ADC GPIO VREF config
 
+Config VREF GPIO (ESP32 only)
+
+- **GPIO VREF**: choose the GPIO pin used for ADC calibration.
+
 ![ADC GPIO VREF config](http://192.168.1.110:8080/ESPSimple_adc.png)
 
 ### Alexa config
+
+In this tab is possible to config the device to work with Amazon Alexa.
+
+#### Alexa
+
+- **Enable Alexa**: Enable or not Alexa (Yes/No).
+
+#### Alexa Actions
+
+- **Add Row**: Create a new Alexa Device
+- **Device Name**: Set the device name (this name will appear for Alexa).
+- **Support dimmer?**: Device support for dimmer (Yes/No)
+- **GPIO Target**: OUTPUT GPIO target for the action
 
 ![Alexa config](http://192.168.1.110:8080/ESPSimple_alexa.png)
 
 ## MQTT
 
+MQTT is composed by subscriptions and message. A device is subscribed to a server using a topic. This topic is used to send and receive messages through it. ESPSimple uses two topics, one to send messages and one to receive messages. Once the MQTT is configured (enable, IP address and port) the strings used for subscriptions are automatically specified.
+
+- Subscription strings, where XXXXXXXXXX is the board ID:
+ - to send message to ESPSimple: "**IOT-XXXXXXXXXX-in**" 
+ - to receive message from ESPSimple: "**IOT-XXXXXXXXXX-out**"
+ 
 ###MQTT Messages
 
+ESPSimple uses JSON messages to receive requests and send responses to MQTT server. Every time one action is performed a message is send to MQTT informing about the action. It guarantees uniformity with all platforms using ([Homebridge](https://homebridge.io), [Eclipse Mosquitto](https://mosquitto.org) and not using MQTT (Alexa, local actions, etc.).
+
+####GetDHT
+Direction: IN
+
+Message
+```json
+{
+    "GetDHT": {
+		"dhtId": <ID>,
+		"key": "<KEY>"
+	}
+}
+```
+Description: get information from DHT11/22 sensors, where \<ID\> is the sensor id based on the order included in "Components config" (first DHT included is 0, the second is 1, etc.) and \<KEY\> can be "humidity" (to get percent of air humidity), "celsius" or "fahrenheit" (to get the temperature).
+
+####SetDigitalGpio
+Direction: IN
+
+Message
+```json
+{
+	"SetDigitalGpio": {
+		"gpio": <GPIO>,
+		"value": "<VALUE>"
+	}
+}
+
+```
+Description: set GPIO OUTPUT status, where \<GPIO\> is the GPIO pin and \<VALUE\> is the status to be set, "high" or "low". 
+
+####SetPwmGpio
+Direction: IN
+
+Message
+```json
+{
+	"SetPwmGpio": {
+		"gpio": <GPIO>,
+		"value": <VALUE>
+	}
+}
+
+```
+Description: set PWM, where \<GPIO\> is the GPIO pin and \<VALUE\> is the value from 0 (disabled) to 1023 (completely enabled).
+
+####GetAdcGpio
+Direction: IN
+
+Message
+```json
+{
+	"GetAdcGpio": {
+		"gpio": <GPIO>
+	}
+}
+
+```
+Description: request the ADC INPUT value for \<GPIO\>.
+
+####InfoDigitalGpio
+Direction: OUT
+
+Message
+```json
+{
+	"InfoDigitalGpio": {
+		"gpio": <GPIO>,
+		"status": <STATUS>
+	}
+}
+
+```
+
+Description: inform change on gpio \<GPIO\> status \<STATUS\>.
+
+####InfoPwmGpio
+Direction: OUT
+
+Message
+```json
+{
+	"InfoPwmGpio": {
+		"gpio": <GPIO>,
+		"value": <VALUE>
+	}
+}
+
+```
+
+Description: inform PWM value \<VALUE\> for GPIO \<GPIO\>.
+
+Description: inform change on gpio \<GPIO\> status \<STATUS\>.
+
+####InfoAdcGpio
+Direction: OUT
+
+Message
+```json
+{
+	"InfoAdcGpio": {
+		"gpio": <GPIO>,
+		"value": <VALUE>
+	}
+}
+
+```
+
+Description: inform ADC value \<VALUE\> for GPIO \<GPIO\>.
+
+###MQTT example
+
+The example bellow uses the software [Eclipse Mosquitto](https://mosquitto.org) to describe MQTT usage example
+
+```bash
+
+```
+
+
 ## Alexa
+
+## PWM
+
+## Homebridge
+
+[Homebridge](https://homebridge.io) implements the Apple Homekit protocol used by Apple Home apps. Once you have it installed you can integrate ESPSimple with Homebridge and use your Apple device (iPhone, iPad, etc.) to control your board. The integrations can be made using the MQTT protocol.
 
 
