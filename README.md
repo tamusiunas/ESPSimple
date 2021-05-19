@@ -31,7 +31,7 @@ Some features:
 
 This system is been developed using [PlatformIO](https://platformio.org).
   
-To install ESPSimple to ESP32 or ESP8266 devices is neccessary to install [PlatformIO IDE](https://platformio.org/platformio-ide) or [PlatformIO Core](https://docs.platformio.org/en/latest//core/installation.html#installation-methods)
+To install ESPSimple to ESP32 or ESP8266 devices it's neccessary to install [PlatformIO IDE](https://platformio.org/platformio-ide) or [PlatformIO Core](https://docs.platformio.org/en/latest//core/installation.html#installation-methods)
 
 ## Running ESPSimple
 
