@@ -1,16 +1,16 @@
 # Development Status
 - [X] GPIO Config
 - [X] WiFi Config
-- [ ] Actions (Digital)
-- [ ] Actions (ADC)
-- [ ] ADC (GPIO VREF)
+- [X] Actions (Digital)
+- [X] Actions (ADC)
+- [X] ADC (GPIO VREF)
 - [X] MQTT
 - [X] Syslog
 - [X] OTA
-- [ ] WwebConfig GPIO
+- [X] WebConfig GPIO
 - [ ] Telegram Config
 - [ ] Telegram Actions
-- [ ] Sensor DHT
+- [X] Sensor DHT
 - [ ] Sendor BMP180
 - [ ] Display SSD160
 - [X] PWM Zero Cross (ESP32 only)
