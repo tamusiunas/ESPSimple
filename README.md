@@ -322,8 +322,7 @@ mosquitto_sub -t iot-2653461020-out &
 #
 # send a message to topic iot-2653461020-in requesting to change to GPIO 13 to "high"
 #
-mosquitto_pub -m "{ "SetDigitalGpio": { "gpio": 13, "value": "high" }
- }" -t iot-2653461020-in -d
+mosquitto_pub -m "{ "SetDigitalGpio": { "gpio": 13, "value": "high" } }" -t iot-2653461020-in
 Client (null) sending CONNECT
 Client (null) received CONNACK (0)
 Client (null) sending PUBLISH (d0, q0, r0, m1, 'iot-2653461020-in', ... (45 bytes))
