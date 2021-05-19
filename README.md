@@ -66,15 +66,15 @@ To start the configuration interface:
 
 #### This tab allows to configure the Wi-Fi access.
 
-- **Access Point** 
- - Choose your network - If it's not hidden and not present here, click on Refresh Network button. 
- - If the network is configured as hidden, enter the network name on the field below.
+- **Access Point**
+  - Choose your network - If it's not hidden and not present here, click on Refresh Network button. 
+  - If the network is configured as hidden, enter the network name on the field below.
 - **Password**: Network password
-- **IP Config (optional)** - Use these fields if you are using static address (not using DHCP)
- - IP address: IP address
- - IP mask: IP mask
- - Gateway: Gateway IP address
- - DNS: DNS server
+- **IP Config (optional)** : - Use these fields if you are using static address (not using DHCP)
+  - IP address: IP address
+  - IP mask: IP mask
+  - Gateway: Gateway IP address
+  - DNS: DNS server
  
 ![Wi-Fi config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_wifi.png)
 
@@ -83,21 +83,21 @@ To start the configuration interface:
 This tab is used to configure services
 
 - **MQTT** - MQTT is actually the standard for IoT messaging. It can be used to send and receive messages from the device (board) to a message broker. It can be used to send actions and receive status change from the device. 
- - IP address: MQTT IP address.
- - Port: TCP port (default is 1883).
+  - IP address: MQTT IP address.
+  - Port: TCP port (default is 1883).
 
 - **Syslog** - Syslog is a implementation for [RFC 5424](https://www.rfc-editor.org/rfc/rfc5424.txt). It's intended to send log messages to be registered in a remote device.
- - IP address: Syslog IP address.
- - Port: UDP port (default is 554).
+  - IP address: Syslog IP address.
+  - Port: UDP port (default is 554).
 
 - **OTA** - Over-the-Air update system. It's used by ESP32 and ESP8266 to update devices remotely.
- - Enable OTA: Yes or No.
- - OTA Password: Password for OTA update.
+  - Enable OTA: Yes or No.
+  - OTA Password: Password for OTA update.
 
 - **Web config GPIO** - Enable a GPIO (INPUT) to be used to start the configuration WEB service when on.
- - Web config trigger GPIO: GPIO (DIGITAL INPUT PULLUP) to be used to start the WEB interface when turned "On".
- - GPIO indicating configuration: GPIO (DIGITAL OUTPUT) that will have the status configured when available the WEB interface for config.
- - GPIO indicating configuration status: Status for the GPIO indicating the availability of the WEB interface.
+  - Web config trigger GPIO: GPIO (DIGITAL INPUT PULLUP) to be used to start the WEB interface when turned "On".
+  - GPIO indicating configuration: GPIO (DIGITAL OUTPUT) that will have the status configured when available the WEB interface for config.
+  - GPIO indicating configuration status: Status for the GPIO indicating the availability of the WEB interface.
  
 ![Management config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_management.png)
 
@@ -106,10 +106,10 @@ This tab is used to configure services
 This tab is used to configure the GPIO available.
 
 - **Mode**: Depending the GPIO the modes can be:
- - INPUT - Configure the GPIO as DIGITAL INPUT.
- - OUTPUT - Configure the GPIO as DIGITAL OUTPUT.
- - INPUT_PULLUP - Configure the GPIO as DIGITAL INPUT configuring it to create a system interruption when it status is changed (ON/OFF). This mode is MANDATORY for GPIO used as INPUT in Digital Actions. 
- - ADC - Configure the GPIO as an INPUT Analog-to-Digital mode. It's used to monitor the voltage variation on the GPIO.  
+  - INPUT - Configure the GPIO as DIGITAL INPUT.
+  - OUTPUT - Configure the GPIO as DIGITAL OUTPUT.
+  - INPUT_PULLUP - Configure the GPIO as DIGITAL INPUT configuring it to create a system interruption when it status is changed (ON/OFF). This mode is MANDATORY for GPIO used as INPUT in Digital Actions. 
+  - ADC - Configure the GPIO as an INPUT Analog-to-Digital mode. It's used to monitor the voltage variation on the GPIO.  
 - **ADC attenuation**: The attenuation applied for GPIO when it's configured as ADC. This must be configured depending the input voltage, from 1.1v to 3.9v. (ESP32 only)
 - **Comment**: Notes for the GPIO configuration.
 
@@ -134,13 +134,13 @@ This tab allow to configure actions (digital and analog) to be generated when a 
 - **GPIO**: INPUT GPIO to be analysed (must be configured as INPUT_PULLUP on GPIO config tab).
 - **Add Action (Digital)**: add an action based on a digital GPIO.
 - **On event**: Event analysed.
- - On: act when GPIO is changed to on.
- - Off: act when GPIO is changed off.
- - Reversed: act when GPIO is changed to a different status.
+  - On: act when GPIO is changed to on.
+  - Off: act when GPIO is changed off.
+  - Reversed: act when GPIO is changed to a different status.
 - **Action**: action performed when event matches.
- - Reverse Voltage: invert the GPIO target status.
- - Turn on: turn on GPIO target status.
- - Turn off: turn off GPIO target status.
+  - Reverse Voltage: invert the GPIO target status.
+  - Turn on: turn on GPIO target status.
+  - Turn off: turn off GPIO target status.
 - **Time before action reversal (ms)**:Time in milliseconds before revert the action performed. Note: blank or zero disable this feature.
 - **GPIO target**: OUTPUT GPIO target for the action .
 - **Waiting Time Before Rearming Trigger (ms)**: Waiting time in milliseconds before this action can be performed again.
@@ -150,14 +150,14 @@ This tab allow to configure actions (digital and analog) to be generated when a 
 - **GPIO**: INPUT GPIO to be analysed (must be configured as ADC).
 - **Add Action (ADC)**: add an action based on an ADC GPIO.
 - **On event**: Event analysed.
- - Variation: active the action when a variation of the voltage specified in 0.5 seconds occurs.
- - Greater than: active the action when the voltage analysed is greater than specified in value field.
- - Lower than: active the action when the voltage analysed is lower than specified in value field.
+  - Variation: active the action when a variation of the voltage specified in 0.5 seconds occurs.
+  - Greater than: active the action when the voltage analysed is greater than specified in value field.
+  - Lower than: active the action when the voltage analysed is lower than specified in value field.
 - **Value (1-2023)**: value to be analysed by the event (value must be between 1 and 1023 when 1023 is the greatest amount of voltage allowed).
 - **Action**: action performed when event matches
- - Reverse Voltage: invert the GPIO target status
- - Turn on: turn on GPIO target status
- - Turn off: turn off GPIO target status
+  - Reverse Voltage: invert the GPIO target status
+  - Turn on: turn on GPIO target status
+  - Turn off: turn off GPIO target status
 - **Time before action reversal (ms)**:Time in milliseconds before revert the action performed. Note: blank or zero disable this feature.
 - **GPIO target**: OUTPUT GPIO target for the action 
 - **Waiting Time Before Rearming Trigger (ms)**: Waiting time in milliseconds before this action can be performed again.
@@ -194,8 +194,8 @@ In this tab is possible to config the device to work with Amazon Alexa.
 MQTT is composed by subscriptions and message. A device is subscribed to a server using a topic. This topic is used to send and receive messages through it. ESPSimple uses two topics, one to send messages and one to receive messages. Once the MQTT is configured (enable, IP address and port) the strings used for subscriptions are automatically specified.
 
 - Subscription strings, where XXXXXXXXXX is the board ID:
- - to send message to ESPSimple: "**IOT-XXXXXXXXXX-in**" 
- - to receive message from ESPSimple: "**IOT-XXXXXXXXXX-out**"
+  - to send message to ESPSimple: "**IOT-XXXXXXXXXX-in**" 
+  - to receive message from ESPSimple: "**IOT-XXXXXXXXXX-out**"
  
 ### MQTT Messages
 
@@ -359,15 +359,15 @@ Here is an example configuring ESPSimple and Alexa to create a lamp managed by A
 
 - Open Alexa App and add a new device:
 
- - Step 1
+  - Step 1
 
 ![Alexa config part 1](https://github.com/tamusiunas/ESPSimple/raw/assets/Alexa_Office_Lamp_1.png)
 
- - Step 2
+  - Step 2
 
 ![Alexa config part 1](https://github.com/tamusiunas/ESPSimple/raw/assets/Alexa_Office_Lamp_2.png)
 
- - Step 3
+  - Step 3
  
 ![Alexa config part 1](https://github.com/tamusiunas/ESPSimple/raw/assets/Alexa_Office_Lamp_3.png)
 
