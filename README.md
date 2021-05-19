@@ -61,10 +61,10 @@ python.exe get-platformio.py
 ```bash
 git clone https://github.com/tamusiunas/ESPSimple.git
 cd ESPSimple
-# Edit platformio.inf informing about your board
-# If you're using Windows
+# - Edit platformio.inf informing about your board
+# If you're using Windows type:
 ~\.platformio\penv\Scripts\platformio.exe run
-# If you're using Linux/macOS
+# If you're using Linux/macOS type:
 ~/.platformio/penv/bin/platformio run
 ```
 
@@ -73,10 +73,12 @@ cd ESPSimple
 ```bash
 git clone https://github.com/tamusiunas/ESPSimple.git
 cd ESPSimple
-# Edit platformio.inf informing about your board
-# If using Windows
+# - Edit platformio.inf informing about your board
+# - Connect your board (ESP) to your computer vi USB
+#   If you're using Windows the installation of the device driver may be necessary
+# If you're using Windows type:
 ~\.platformio\penv\Scripts\platformio.exe run --target upload
-# If using Linux/macOS
+# If you're using Linux/macOS type:
 ~/.platformio/penv/bin/platformio run --target upload
 ```
 
