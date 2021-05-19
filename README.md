@@ -56,6 +56,8 @@ cd C:\path\to\dir\where\is\located\script\get-platformio.py
 python.exe get-platformio.py
 ```
 
+### If you are using Windows install [git-scm](https://git-scm.com/download/win)
+
 ### How to compile ESPSimple
 
 ```bash
