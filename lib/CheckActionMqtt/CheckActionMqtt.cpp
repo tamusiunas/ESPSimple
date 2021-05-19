@@ -1,3 +1,14 @@
+/**
+ * @file CheckActionMqtt.cpp
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Check MQTT Actions
+ * @version 0.1
+ * @date 2019-02-11
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
 #include "CheckActionMqtt.h"
 
 CheckActionMqtt::CheckActionMqtt(MqttManagerOut *mqttManagerOut, volatile PwmAdcData *pwmAdcDataLocal, GpioManager *gpioManager, ESPConfig *espConfig)

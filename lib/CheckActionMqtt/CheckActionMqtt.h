@@ -1,3 +1,14 @@
+/**
+ * @file CheckActionMqtt.h
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Headers for CheckActionMqtt.cpp
+ * @version 0.1
+ * @date 2019-02-11
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
 #ifndef CheckActionMqtt_h
 #define CheckActionMqtt_h
 

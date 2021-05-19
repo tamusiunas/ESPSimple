@@ -1,7 +1,7 @@
 /**
  * @file AmazonAlexa.h
  * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
- * @brief Uses FauxmoESP to integrate project with Amazon Alexa
+ * @brief Headers for AmazonAlexa.cpp
  * @version 0.1
  * @date 2019-02-11
  *  
