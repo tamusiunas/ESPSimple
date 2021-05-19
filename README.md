@@ -2,7 +2,7 @@
 
 ESPSimple is a system written in C++ that allows the configuration of Espressif microcontrollers (ESP8266 and ESP32) in a simple way through an intuitive WEB interface allowing even those who do not know programming to program it.
 
-This is a system that can be used by different types of audiences, both by those who have good knowledge of electronics and for those who want to learn IoT without having the need to program in C, C++ or Python.
+This system can be used by different kind of audiences, both by those who have good knowledge of electronics and for those who want to learn IoT without having the need to program in C, C++ or Python.
 
 Some features:
 
@@ -34,7 +34,7 @@ To use it download and install PlatformIO at [https://platformio.org/platformio-
 ### How to compile ESPSimple
 
 ```bash
-git clone https://github.com/esp
+git clone https://github.com/tamusiunas/ESPSimple.git
 cd ESPSimple
 # Edit platformio.inf informing about your board
 platformio run
@@ -43,6 +43,7 @@ platformio run
 ### How up upload ESPSimple to the board (ESP32 or ESP8266)
 
 ```bash
+git clone https://github.com/tamusiunas/ESPSimple.git
 cd ESPSimple
 # Edit platformio.inf informing about your board
 platformio run --target upload
@@ -65,7 +66,7 @@ To start the configuration interface:
 
 - **Access Point** 
  - Choose your network - If it's not hidden and not present here, click on Refresh Network button. 
- - If the network is configured as hidden, enter the network name on the field bellow.
+ - If the network is configured as hidden, enter the network name on the field below.
 - **Password**: Network password
 - **IP Config (optional)** - Use these fields if you are using static address (not using DHCP)
  - IP address: IP address
@@ -308,7 +309,7 @@ Description: inform ADC value \<VALUE\> for GPIO \<GPIO\>.
 
 ###MQTT example
 
-The example bellow uses the software [Eclipse Mosquitto](https://mosquitto.org) to present an MQTT usage example (the Eclipse Mosquitto is installed locally):
+The example below uses the software [Eclipse Mosquitto](https://mosquitto.org) to present an MQTT usage example (the Eclipse Mosquitto is installed locally):
 
 ```bash
 #
@@ -330,11 +331,60 @@ Client (null) sending DISCONNECT
 # Receive the response confirming the new status
 #
 {"InfoDigitalGpio":{"gpio":"13","status":"high"}}
+
+#
+# kill mosquitto_sub
+#
+killall mosquitto_sub
 ```
 
-## Alexa
+## Example configuring Alexa
+
+Here is an example configuring ESPSimple and Alexa to create a lamp managed by Alexa.
+
+**Note**: Alexa must be in the same network than ESPSimple.
+
+###ESPSimple Config:
+
+![ESPSimple Alexa config office lamp](http://192.168.1.110:8080/ESPSimple_Alexa_office_lamp.png)
+
+###Alexa config
+
+####Simple way
+
+- Ask to Alexa: "Alexa, search for a new device".
+
+###Manual
+
+- Open Alexa App and add a new device:
+
+ - Step 1
+
+![Alexa config part 1](http://192.168.1.110:8080/Alexa_Office_Lamp_1.png)
+
+ - Step 2
+
+![Alexa config part 1](http://192.168.1.110:8080/Alexa_Office_Lamp_2.png)
+
+ - Step 3
+ 
+![Alexa config part 1](http://192.168.1.110:8080/Alexa_Office_Lamp_3.png)
 
 ## PWM
+
+If you are using ESP32, ESPSimple uses hardware resources to create PWM (Pulse-Width Modulation). It guarantees a better precision for motors and dimmers.
+
+PWM permits to define how much voltage will be send to the controlled device. In this case the devices can be from dimmers to motors, using AC or DC networks.
+
+If you're expecting to use ESPSimple to control AC devices (lamp, fan, etc.) you will need to use a TRIAC (Triode for Alternating Current). It's a device that permits to control AC electric current using PWM. In this case is **HIGHLY** recommended to use a TRIAC with zero-cross support. It permit to ESPSimple to know when the INPUT AC electric current got and effect called "zero-cross" (when the frequency wave "crosses" the zero). It allows the system to create a great dimmer effect.
+
+Below is an example of a zero-cross TRIAC device:
+
+![AC dimmer module](http://192.168.1.110:8080/AC_dimmer_module_15.png)
+
+This device can be easily found on [amazon](https://amazon.com), [ebay](https://ebay.com) or [aliexpress](https://aliexpress.com). Search for "AC Light Dimmer Module for PWM".
+
+**Note**: Since it uses AC electric current only use it if you know what you are doing!!
 
 ## Homebridge
 
