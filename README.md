@@ -1,4 +1,6 @@
-![ESPSimple logo](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_logo_640.png)
+<p align="center">
+  <img src="https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_logo_640.png" />
+</p>
 
 ESPSimple is a system written in C++ that allows the configuration of Espressif microcontrollers (ESP8266 and ESP32) in a simple way through an intuitive WEB interface allowing even those who do not know programming to program it.
 
