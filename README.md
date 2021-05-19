@@ -62,11 +62,10 @@ python.exe get-platformio.py
 git clone https://github.com/tamusiunas/ESPSimple.git
 cd ESPSimple
 # Edit platformio.inf informing about your board
-# If using Windows
+# If you're using Windows
 ~\.platformio\penv\Scripts\platformio.exe run
-# If using Linux/macOS
+# If you're using Linux/macOS
 ~/.platformio/penv/bin/platformio run
-
 ```
 
 ### How up upload ESPSimple to the board (ESP32 or ESP8266)
