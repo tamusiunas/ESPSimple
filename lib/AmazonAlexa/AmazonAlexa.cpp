@@ -96,7 +96,7 @@ void AmazonAlexa::enable()
                 }
                 else
                 {
-                    if (state)
+                    /*if (state)
                     {   
                         debugMessageLocal.debug("Alexa - Setting " + String(gpioTarget) + " to high");
                         alexaStructLocal->gpioManager->setDigitalOutput(gpioTarget,HIGH);
@@ -105,7 +105,12 @@ void AmazonAlexa::enable()
                     {
                         debugMessageLocal.debug("Alexa - Setting " + String(gpioTarget) + " to low");
                         alexaStructLocal->gpioManager->setDigitalOutput(gpioTarget,LOW);
-                    }
+                    }*/
+                    debugMessageLocal.debug("Alexa - Setting " + String(gpioTarget) + " to " + state);
+                    alexaStructLocal->gpioManager->setDigitalOutput(gpioTarget,state);
+                    alexaStructLocal->espConfig->setPinGpioDigitalStatusChanged(gpioTarget,1);
+                    alexaStructLocal->espConfig->setPinGpioDigitalStatus(gpioTarget,state);
+
                 }
             } 
         } 

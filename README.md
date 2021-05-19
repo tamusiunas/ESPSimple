@@ -240,7 +240,7 @@ Message
 }
 
 ```
-Description: set PWM, where \<GPIO\> is the GPIO pin and \<VALUE\> is the value from 0 (disabled) to 1023 (completely enabled).
+Description: set PWM, where \<GPIO\> is the GPIO pin and \<VALUE\> is the value from 0 (disabled) to 2047 (completely enabled).
 
 ####GetAdcGpio
 Direction: IN
@@ -308,12 +308,29 @@ Description: inform ADC value \<VALUE\> for GPIO \<GPIO\>.
 
 ###MQTT example
 
-The example bellow uses the software [Eclipse Mosquitto](https://mosquitto.org) to describe MQTT usage example
+The example bellow uses the software [Eclipse Mosquitto](https://mosquitto.org) to present an MQTT usage example (the Eclipse Mosquitto is installed locally):
 
 ```bash
+#
+# subscribe to iot-2653461020-out
+#
+mosquitto_sub -t iot-2653461020-out &
 
+#
+# send a message to topic iot-2653461020-in requesting to change to GPIO 13 to "high"
+#
+mosquitto_pub -m "{ "SetDigitalGpio": { "gpio": 13, "value": "high" }
+ }" -t iot-2653461020-in -d
+Client (null) sending CONNECT
+Client (null) received CONNACK (0)
+Client (null) sending PUBLISH (d0, q0, r0, m1, 'iot-2653461020-in', ... (45 bytes))
+Client (null) sending DISCONNECT
+
+#
+# Receive the response confirming the new status
+#
+{"InfoDigitalGpio":{"gpio":"13","status":"high"}}
 ```
-
 
 ## Alexa
 
