@@ -1,3 +1,14 @@
+/**
+ * @file DebugMessage.h
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Send messages to Serial or Syslog
+ * @version 0.1
+ * @date 2019-02-11
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "DebugMessage.h"
 
 volatile int DebugMessage::_messageTotal = 0;

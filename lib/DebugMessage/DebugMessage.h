@@ -1,3 +1,14 @@
+/**
+ * @file DebugMessage.h
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Headers for DebugMessage
+ * @version 0.1
+ * @date 2019-02-11
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef Debug_h
 #define Debug_h
 #include "SyslogManager.h"
