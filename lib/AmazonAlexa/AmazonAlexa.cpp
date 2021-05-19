@@ -1,3 +1,14 @@
+/**
+ * @file AmazonAlexa.cpp
+ * @author Fabricio Tamusiunas (fabricio@tamusiunas.com)
+ * @brief Uses FauxmoESP to integrate project with Amazon Alexa
+ * @version 0.1
+ * @date 2019-02-11
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
 #include "AmazonAlexa.h"
 
 AmazonAlexa::AmazonAlexa(AlexaStruct *alexaStruct, volatile PwmAdcData *pwmAdcData, unsigned long tcpPort)
