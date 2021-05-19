@@ -8,11 +8,11 @@
 - [X] Syslog
 - [X] OTA
 - [X] WebConfig GPIO
-- [ ] Telegram Config
-- [ ] Telegram Actions
+- [ ] Telegram
 - [X] Sensor DHT
 - [ ] Sendor BMP180
 - [ ] Display SSD160
+- [ ] I2C
 - [X] PWM Zero Cross (ESP32 only)
 - [X] PWM Config
 - [X] Amazon Alexa
