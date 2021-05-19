@@ -197,11 +197,11 @@ MQTT is composed by subscriptions and message. A device is subscribed to a serve
  - to send message to ESPSimple: "**IOT-XXXXXXXXXX-in**" 
  - to receive message from ESPSimple: "**IOT-XXXXXXXXXX-out**"
  
-###MQTT Messages
+### MQTT Messages
 
 ESPSimple uses JSON messages to receive requests and send responses to MQTT server. Every time one action is performed a message is send to MQTT informing about the action. It guarantees uniformity with all platforms using ([Homebridge](https://homebridge.io), [Eclipse Mosquitto](https://mosquitto.org) and not using MQTT (Alexa, local actions, etc.).
 
-####GetDHT
+#### GetDHT
 Direction: IN
 
 Message
@@ -215,7 +215,7 @@ Message
 ```
 Description: get information from DHT11/22 sensors, where \<ID\> is the sensor id based on the order included in "Components config" (first DHT included is 0, the second is 1, etc.) and \<KEY\> can be "humidity" (to get percent of air humidity), "celsius" or "fahrenheit" (to get the temperature).
 
-####SetDigitalGpio
+#### SetDigitalGpio
 Direction: IN
 
 Message
@@ -230,7 +230,7 @@ Message
 ```
 Description: set GPIO OUTPUT status, where \<GPIO\> is the GPIO pin and \<VALUE\> is the status to be set, "high" or "low". 
 
-####SetPwmGpio
+#### SetPwmGpio
 Direction: IN
 
 Message
@@ -245,7 +245,7 @@ Message
 ```
 Description: set PWM, where \<GPIO\> is the GPIO pin and \<VALUE\> is the value from 0 (disabled) to 2047 (completely enabled).
 
-####GetAdcGpio
+#### GetAdcGpio
 Direction: IN
 
 Message
@@ -259,7 +259,7 @@ Message
 ```
 Description: request the ADC INPUT value for \<GPIO\>.
 
-####InfoDigitalGpio
+#### InfoDigitalGpio
 Direction: OUT
 
 Message
@@ -275,7 +275,7 @@ Message
 
 Description: inform change on gpio \<GPIO\> status \<STATUS\>.
 
-####InfoPwmGpio
+#### InfoPwmGpio
 Direction: OUT
 
 Message
@@ -293,7 +293,7 @@ Description: inform PWM value \<VALUE\> for GPIO \<GPIO\>.
 
 Description: inform change on gpio \<GPIO\> status \<STATUS\>.
 
-####InfoAdcGpio
+#### InfoAdcGpio
 Direction: OUT
 
 Message
@@ -309,7 +309,7 @@ Message
 
 Description: inform ADC value \<VALUE\> for GPIO \<GPIO\>.
 
-###MQTT example
+### MQTT example
 
 The example below uses the software [Eclipse Mosquitto](https://mosquitto.org) to present an MQTT usage example (the Eclipse Mosquitto is installed locally):
 
@@ -346,17 +346,17 @@ Here is an example configuring ESPSimple and Alexa to create a lamp managed by A
 
 **Note**: Alexa must be in the same network than ESPSimple.
 
-###ESPSimple Config:
+### ESPSimple Config:
 
 ![ESPSimple Alexa config office lamp](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_Alexa_office_lamp.png)
 
-###Alexa config
+### Alexa config
 
-####Simple way
+#### Simple way
 
 - Ask to Alexa: "Alexa, search for a new device".
 
-###Manual
+### Manual
 
 - Open Alexa App and add a new device:
 
