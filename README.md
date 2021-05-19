@@ -31,7 +31,30 @@ Some features:
 
 This system is been developed using [PlatformIO](https://platformio.org).
   
-To use it download and install PlatformIO at [https://platformio.org/platformio-ide](https://platformio.org/platformio-ide)
+To install ESPSimple is neccessary to install [PlatformIO IDE](https://platformio.org/platformio-ide) or [PlatformIO Core](https://docs.platformio.org/en/latest//core/installation.html#installation-methods)
+
+### How to install PlatformIO Core
+
+- If you are using Windows, install [Python 3](https://www.python.org/downloads/)
+- To install or upgrade PlatformIO Core, download (save as…) [get-platformio.py](https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py) script. Then run the following:
+
+```bash
+# change directory to folder where is located downloaded "get-platformio.py"
+cd /path/to/dir/where/is/located/get-platformio.py/script
+
+# run it
+python get-platformio.py
+```
+
+- On Windows OS it may look like:
+
+``` bash
+# change directory to folder where is located downloaded "get-platformio.py"
+cd C:\path\to\dir\where\is\located\script\get-platformio.py
+
+# run it
+python.exe get-platformio.py
+```
 
 ### How to compile ESPSimple
 
