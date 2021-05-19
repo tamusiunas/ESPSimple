@@ -76,7 +76,7 @@ To start the configuration interface:
  - Gateway: Gateway IP address
  - DNS: DNS server
  
-![Wi-Fi config](http://192.168.1.110:8080/ESPSimple_wifi.png)
+![Wi-Fi config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_wifi.png)
 
 ### Management config
 
@@ -99,7 +99,7 @@ This tab is used to configure services
  - GPIO indicating configuration: GPIO (DIGITAL OUTPUT) that will have the status configured when available the WEB interface for config.
  - GPIO indicating configuration status: Status for the GPIO indicating the availability of the WEB interface.
  
-![Management config](http://192.168.1.110:8080/ESPSimple_management.png)
+![Management config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_management.png)
 
 ### GPIO config
 
@@ -113,7 +113,7 @@ This tab is used to configure the GPIO available.
 - **ADC attenuation**: The attenuation applied for GPIO when it's configured as ADC. This must be configured depending the input voltage, from 1.1v to 3.9v. (ESP32 only)
 - **Comment**: Notes for the GPIO configuration.
 
-![GPIO config](http://192.168.1.110:8080/ESPSimple_gpio_cut.pdf)
+![GPIO config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_gpio_cut.pdf)
 
 ### Components config
 
@@ -123,7 +123,7 @@ This tab is used to configure the GPIO available.
 - **DHT Type**: DHT11 or DTH22.
 - **DHT GPIO**: GPIO INPUT which DHT sensor is connected.
 
-![Components config](http://192.168.1.110:8080/ESPSimple_components.png)
+![Components config](https://github.com/tamusiunas/ESPSimple/raw/assets0/ESPSimple_components.png)
 
 ### Actions config
 
@@ -162,7 +162,7 @@ This tab allow to configure actions (digital and analog) to be generated when a 
 - **GPIO target**: OUTPUT GPIO target for the action 
 - **Waiting Time Before Rearming Trigger (ms)**: Waiting time in milliseconds before this action can be performed again.
 
-![Actions config](http://192.168.1.110:8080/ESPSimple_actions.png)
+![Actions config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_actions.png)
 
 ### ADC GPIO VREF config
 
@@ -170,7 +170,7 @@ Config VREF GPIO (ESP32 only)
 
 - **GPIO VREF**: choose the GPIO pin used for ADC calibration.
 
-![ADC GPIO VREF config](http://192.168.1.110:8080/ESPSimple_adc.png)
+![ADC GPIO VREF config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_adc.png)
 
 ### Alexa config
 
@@ -187,7 +187,7 @@ In this tab is possible to config the device to work with Amazon Alexa.
 - **Support dimmer?**: Device support for dimmer (Yes/No)
 - **GPIO Target**: OUTPUT GPIO target for the action
 
-![Alexa config](http://192.168.1.110:8080/ESPSimple_alexa.png)
+![Alexa config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_alexa.png)
 
 ## MQTT
 
@@ -348,7 +348,7 @@ Here is an example configuring ESPSimple and Alexa to create a lamp managed by A
 
 ###ESPSimple Config:
 
-![ESPSimple Alexa config office lamp](http://192.168.1.110:8080/ESPSimple_Alexa_office_lamp.png)
+![ESPSimple Alexa config office lamp](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_Alexa_office_lamp.png)
 
 ###Alexa config
 
@@ -362,15 +362,15 @@ Here is an example configuring ESPSimple and Alexa to create a lamp managed by A
 
  - Step 1
 
-![Alexa config part 1](http://192.168.1.110:8080/Alexa_Office_Lamp_1.png)
+![Alexa config part 1](https://github.com/tamusiunas/ESPSimple/raw/assets/Alexa_Office_Lamp_1.png)
 
  - Step 2
 
-![Alexa config part 1](http://192.168.1.110:8080/Alexa_Office_Lamp_2.png)
+![Alexa config part 1](https://github.com/tamusiunas/ESPSimple/raw/assets/Alexa_Office_Lamp_2.png)
 
  - Step 3
  
-![Alexa config part 1](http://192.168.1.110:8080/Alexa_Office_Lamp_3.png)
+![Alexa config part 1](https://github.com/tamusiunas/ESPSimple/raw/assets/Alexa_Office_Lamp_3.png)
 
 ## PWM
 
@@ -382,7 +382,7 @@ If you're expecting to use ESPSimple to control AC devices (lamp, fan, etc.) you
 
 Below is an example of a zero-cross TRIAC device:
 
-![AC dimmer module](http://192.168.1.110:8080/AC_dimmer_module_15.png)
+![AC dimmer module](https://github.com/tamusiunas/ESPSimple/raw/assets/AC_dimmer_module_15.png)
 
 This device can be easily found on [amazon](https://amazon.com), [ebay](https://ebay.com) or [aliexpress](https://aliexpress.com). Search for "AC Light Dimmer Module for PWM".
 
