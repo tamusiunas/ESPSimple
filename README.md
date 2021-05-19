@@ -113,7 +113,7 @@ This tab is used to configure the GPIO available.
 - **ADC attenuation**: The attenuation applied for GPIO when it's configured as ADC. This must be configured depending the input voltage, from 1.1v to 3.9v. (ESP32 only)
 - **Comment**: Notes for the GPIO configuration.
 
-![GPIO config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_gpio_cut.pdf)
+![GPIO config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_gpio_cut.png)
 
 ### Components config
 
@@ -123,7 +123,7 @@ This tab is used to configure the GPIO available.
 - **DHT Type**: DHT11 or DTH22.
 - **DHT GPIO**: GPIO INPUT which DHT sensor is connected.
 
-![Components config](https://github.com/tamusiunas/ESPSimple/raw/assets0/ESPSimple_components.png)
+![Components config](https://github.com/tamusiunas/ESPSimple/raw/assets/ESPSimple_components.png)
 
 ### Actions config
 
