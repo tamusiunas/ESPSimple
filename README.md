@@ -33,7 +33,9 @@ This system is been developed using [PlatformIO](https://platformio.org).
   
 To install ESPSimple to ESP32 or ESP8266 devices is neccessary to install [PlatformIO IDE](https://platformio.org/platformio-ide) or [PlatformIO Core](https://docs.platformio.org/en/latest//core/installation.html#installation-methods)
 
-### How to install PlatformIO Core
+## Running ESPSimple
+
+### - How to install PlatformIO Core
 
 - If you are using Windows, install [Python 3](https://www.python.org/downloads/)
 - To install or upgrade PlatformIO Core, download (save as…) [get-platformio.py](https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py) script. Then run the following:
@@ -56,9 +58,9 @@ cd C:\path\to\dir\where\is\located\script\get-platformio.py
 python.exe get-platformio.py
 ```
 
-### If you are using Windows install [git-scm](https://git-scm.com/download/win)
+### - If you are using Windows install [git-scm](https://git-scm.com/download/win)
 
-### How to compile ESPSimple
+### - How to compile ESPSimple
 
 ```bash
 git clone https://github.com/tamusiunas/ESPSimple.git
@@ -70,7 +72,7 @@ cd ESPSimple
 ~/.platformio/penv/bin/platformio run
 ```
 
-### How up upload ESPSimple to the board (ESP32 or ESP8266)
+### - How up upload ESPSimple to the board (ESP32 or ESP8266)
 
 ```bash
 git clone https://github.com/tamusiunas/ESPSimple.git
